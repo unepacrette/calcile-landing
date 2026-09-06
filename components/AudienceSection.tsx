@@ -10,7 +10,7 @@ const AUDIENCES: Audience[] = [
     title: "Étudiants",
     description:
       "Vérifie tes réponses et comprends chaque étape de résolution — comme un prof particulier disponible 24/7.",
-    price: "10€/mois",
+    price: "4,90€/mois",
     annualNote: "ou 39€/an en annuel",
   },
   {

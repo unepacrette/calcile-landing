@@ -10,7 +10,7 @@ type Tier = {
 const TIERS: Tier[] = [
   {
     name: "Student",
-    price: "10€/mois",
+    price: "4,90€/mois",
     annualNote: "ou 39€/an (3,25€/mois) en facturation annuelle",
     description: "Pour vérifier tes réponses et progresser.",
     features: [
