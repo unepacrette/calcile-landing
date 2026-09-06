@@ -22,6 +22,7 @@ const TIERS: Tier[] = [
   {
     name: "Prof",
     price: "50€/mois",
+    annualNote: "ou 450€/an (37,50€/mois) en facturation annuelle",
     description: "Pour automatiser la correction d'exercices.",
     features: [
       "Tout ce qui est inclus dans Student",

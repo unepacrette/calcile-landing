@@ -18,6 +18,7 @@ const AUDIENCES: Audience[] = [
     description:
       "Automatise la correction d'exercices. Économise 3-4h par semaine.",
     price: "50€/mois",
+    annualNote: "ou 450€/an en annuel",
   },
   {
     title: "Labs/Universités",
