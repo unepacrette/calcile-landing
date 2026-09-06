@@ -4,7 +4,7 @@ export default function LanguageSwitcher() {
   const { lang, setLang } = useLanguage();
 
   return (
-    <div className="fixed right-4 top-4 z-50 flex overflow-hidden rounded-full border border-gray-300 bg-white text-xs font-semibold shadow-sm">
+    <div className="flex overflow-hidden rounded-full border border-gray-300 bg-white text-xs font-semibold shadow-sm">
       <button
         type="button"
         onClick={() => setLang("fr")}
