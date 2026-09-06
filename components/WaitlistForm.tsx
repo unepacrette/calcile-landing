@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import { useLanguage } from "@/lib/i18n";
 
 type Status = "idle" | "loading" | "success" | "alreadySubscribed" | "error";
 
@@ -15,6 +16,7 @@ export default function WaitlistForm({
   selectedTier = null,
   onClearTier,
 }: WaitlistFormProps) {
+  const { t } = useLanguage();
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
 
@@ -57,23 +59,20 @@ export default function WaitlistForm({
     <section id="waitlist" className="bg-violet-700">
       <div className="mx-auto max-w-2xl px-6 py-20 text-center">
         <h2 className="text-3xl font-bold text-white">
-          Sois parmi les premiers testeurs
+          {t.waitlist.heading}
         </h2>
-        <p className="mt-3 text-violet-100">
-          Laisse-nous ton email, on te prévient dès que Calcile ouvre ses
-          portes.
-        </p>
+        <p className="mt-3 text-violet-100">{t.waitlist.subtitle}</p>
 
         {tier && (
           <p className="mt-4 text-sm text-violet-100">
-            Tu t&apos;inscris en tant que :{" "}
+            {t.waitlist.tierPrefix}{" "}
             <span className="font-semibold text-white">{tier}</span>{" "}
             <button
               type="button"
               onClick={handleClearTier}
               className="underline underline-offset-2 hover:text-white"
             >
-              Changer
+              {t.waitlist.change}
             </button>
           </p>
         )}
@@ -83,7 +82,7 @@ export default function WaitlistForm({
           className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center"
         >
           <label htmlFor="waitlist-email" className="sr-only">
-            Adresse email
+            {t.waitlist.emailLabel}
           </label>
           <input
             id="waitlist-email"
@@ -91,7 +90,7 @@ export default function WaitlistForm({
             required
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            placeholder="ton@email.com"
+            placeholder={t.waitlist.emailPlaceholder}
             className="w-full rounded-lg border-0 px-4 py-3 text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-300 sm:max-w-xs"
           />
           <button
@@ -99,23 +98,23 @@ export default function WaitlistForm({
             disabled={status === "loading"}
             className="rounded-lg bg-gray-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {status === "loading" ? "Inscription…" : "Je m'inscris"}
+            {status === "loading" ? t.waitlist.submitLoading : t.waitlist.submit}
           </button>
         </form>
 
         {status === "success" && (
           <p className="mt-4 text-sm font-medium text-white">
-            Merci, tu es sur la liste !
+            {t.waitlist.success}
           </p>
         )}
         {status === "alreadySubscribed" && (
           <p className="mt-4 text-sm font-medium text-white">
-            Tu es déjà inscrit !
+            {t.waitlist.alreadySubscribed}
           </p>
         )}
         {status === "error" && (
           <p className="mt-4 text-sm font-medium text-red-100">
-            Une erreur est survenue, réessaie dans un instant.
+            {t.waitlist.error}
           </p>
         )}
       </div>

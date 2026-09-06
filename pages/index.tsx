@@ -6,19 +6,21 @@ import HowItWorks from "@/components/HowItWorks";
 import Pricing from "@/components/Pricing";
 import WaitlistForm from "@/components/WaitlistForm";
 import Footer from "@/components/Footer";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { useLanguage } from "@/lib/i18n";
 
 export default function Home() {
   const [selectedTier, setSelectedTier] = useState<string | null>(null);
+  const { t } = useLanguage();
 
   return (
     <>
       <Head>
-        <title>Calcile — Résous tes maths, comprends chaque étape</title>
-        <meta
-          name="description"
-          content="L'API de calcul symbolique qui explique, pas juste qui répond. Comme WolframAlpha, mais avec les étapes détaillées et 80% moins cher."
-        />
+        <title>{t.meta.title}</title>
+        <meta name="description" content={t.meta.description} />
       </Head>
+
+      <LanguageSwitcher />
 
       <main>
         <Hero />
