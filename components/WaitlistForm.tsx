@@ -1,18 +1,18 @@
 import { useState, type FormEvent } from "react";
 
-type Status = "idle" | "loading" | "success" | "error";
+type Status = "idle" | "loading" | "success" | "alreadySubscribed" | "error";
+
+type WaitlistApiResponse =
+  | { success: true; alreadySubscribed?: boolean }
+  | { success: false; error: string };
 
 export default function WaitlistForm() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
 
-  // TODO: connecter au formulaire d'inscription Mailchimp une fois l'embed
-  // code récupéré. Pour l'instant, on log l'email et on poste vers une
-  // route API interne (/api/waitlist) qui ne fait elle-même que logger.
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setStatus("loading");
-    console.log("[waitlist] email soumis :", email);
 
     try {
       const response = await fetch("/api/waitlist", {
@@ -21,11 +21,14 @@ export default function WaitlistForm() {
         body: JSON.stringify({ email }),
       });
 
-      if (!response.ok) {
-        throw new Error("Réponse non-ok du serveur");
+      const body = (await response.json()) as WaitlistApiResponse;
+
+      if (!body.success) {
+        setStatus("error");
+        return;
       }
 
-      setStatus("success");
+      setStatus(body.alreadySubscribed ? "alreadySubscribed" : "success");
       setEmail("");
     } catch (error) {
       console.error("[waitlist] échec de l'inscription :", error);
@@ -71,7 +74,12 @@ export default function WaitlistForm() {
 
         {status === "success" && (
           <p className="mt-4 text-sm font-medium text-white">
-            Merci ! Tu es sur la liste 🎉
+            Merci, tu es sur la liste !
+          </p>
+        )}
+        {status === "alreadySubscribed" && (
+          <p className="mt-4 text-sm font-medium text-white">
+            Tu es déjà inscrit !
           </p>
         )}
         {status === "error" && (
