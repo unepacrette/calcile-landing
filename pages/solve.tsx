@@ -1,5 +1,6 @@
 import { useEffect, useState, type FormEvent } from "react";
 import Head from "next/head";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useLanguage } from "@/lib/i18n";
@@ -153,6 +154,12 @@ export default function Solve() {
       </Head>
 
       <div className="fixed right-4 top-4 z-50 flex items-center gap-3">
+        <Link
+          href="/profile"
+          className="text-xs font-medium text-gray-500 hover:text-gray-700"
+        >
+          {t.solve.profileLink}
+        </Link>
         <button
           type="button"
           onClick={handleLogout}

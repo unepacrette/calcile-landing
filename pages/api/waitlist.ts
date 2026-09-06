@@ -1,5 +1,6 @@
 import { createHash } from "crypto";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { API_URL } from "@/lib/api";
 
 type WaitlistResponse =
   | { success: true; alreadySubscribed?: boolean }
@@ -30,6 +31,47 @@ type MailchimpConfig = {
 
 function basicAuthHeader(apiKey: string): string {
   return "Basic " + Buffer.from(`anystring:${apiKey}`).toString("base64");
+}
+
+// Provisions a beta account for `email` via calcile-api (idempotent: a
+// second call for the same email is a safe no-op). Best-effort only: the
+// waitlist signup has already succeeded by the time this runs, so any
+// failure here is logged server-side and swallowed — it must never affect
+// the client response.
+async function provisionBetaAccount(email: string): Promise<void> {
+  const internalSecret = process.env.INTERNAL_INVITE_SECRET;
+
+  if (!internalSecret) {
+    console.error(
+      "[waitlist] INTERNAL_INVITE_SECRET manquant, provisioning ignoré"
+    );
+    return;
+  }
+
+  try {
+    const response = await fetch(`${API_URL}/api/auth/invite`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Internal-Secret": internalSecret,
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    if (!response.ok) {
+      const body = await response.text().catch(() => "");
+      console.error(
+        "[waitlist] échec du provisioning de compte :",
+        response.status,
+        body
+      );
+    }
+  } catch (error) {
+    console.error(
+      "[waitlist] erreur réseau lors du provisioning de compte :",
+      error
+    );
+  }
 }
 
 // Tags a subscriber by tier. Best-effort only: the waitlist signup has
@@ -118,6 +160,7 @@ export default async function handler(
       if (tagName) {
         await tagSubscriberByTier(email, tagName, mailchimpConfig);
       }
+      await provisionBetaAccount(email);
       return res.status(200).json({ success: true });
     }
 
@@ -129,6 +172,7 @@ export default async function handler(
       if (tagName) {
         await tagSubscriberByTier(email, tagName, mailchimpConfig);
       }
+      await provisionBetaAccount(email);
       return res.status(200).json({ success: true, alreadySubscribed: true });
     }
 

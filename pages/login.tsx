@@ -115,13 +115,14 @@ export default function Login() {
           </form>
 
           <p className="mt-6 text-center text-sm text-gray-600">
-            {t.auth.noAccountYet}{" "}
+            {t.auth.noAccountPrefix}{" "}
             <Link
-              href="/signup"
+              href="/"
               className="font-semibold text-violet-700 hover:underline"
             >
-              {t.auth.goToSignup}
+              {t.auth.noAccountLinkLabel}
             </Link>
+            {t.auth.noAccountSuffix}
           </p>
         </div>
       </main>
