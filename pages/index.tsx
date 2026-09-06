@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Head from "next/head";
 import Hero from "@/components/Hero";
 import AudienceSection from "@/components/AudienceSection";
@@ -7,6 +8,8 @@ import WaitlistForm from "@/components/WaitlistForm";
 import Footer from "@/components/Footer";
 
 export default function Home() {
+  const [selectedTier, setSelectedTier] = useState<string | null>(null);
+
   return (
     <>
       <Head>
@@ -21,8 +24,11 @@ export default function Home() {
         <Hero />
         <AudienceSection />
         <HowItWorks />
-        <Pricing />
-        <WaitlistForm />
+        <Pricing onSelectTier={setSelectedTier} />
+        <WaitlistForm
+          selectedTier={selectedTier}
+          onClearTier={() => setSelectedTier(null)}
+        />
       </main>
 
       <Footer />

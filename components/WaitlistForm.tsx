@@ -6,9 +6,26 @@ type WaitlistApiResponse =
   | { success: true; alreadySubscribed?: boolean }
   | { success: false; error: string };
 
-export default function WaitlistForm() {
+type WaitlistFormProps = {
+  selectedTier?: string | null;
+  onClearTier?: () => void;
+};
+
+export default function WaitlistForm({
+  selectedTier = null,
+  onClearTier,
+}: WaitlistFormProps) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
+
+  // Source of truth lives in the parent (pages/index.tsx): it passes
+  // selectedTier and onClearTier, and onClearTier resets it to null,
+  // which flows back down through the prop. No local state needed here.
+  const tier = selectedTier;
+
+  function handleClearTier() {
+    onClearTier?.();
+  }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -18,7 +35,7 @@ export default function WaitlistForm() {
       const response = await fetch("/api/waitlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, tier }),
       });
 
       const body = (await response.json()) as WaitlistApiResponse;
@@ -46,6 +63,20 @@ export default function WaitlistForm() {
           Laisse-nous ton email, on te prévient dès que Calcile ouvre ses
           portes.
         </p>
+
+        {tier && (
+          <p className="mt-4 text-sm text-violet-100">
+            Tu t&apos;inscris en tant que :{" "}
+            <span className="font-semibold text-white">{tier}</span>{" "}
+            <button
+              type="button"
+              onClick={handleClearTier}
+              className="underline underline-offset-2 hover:text-white"
+            >
+              Changer
+            </button>
+          </p>
+        )}
 
         <form
           onSubmit={handleSubmit}

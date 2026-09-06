@@ -40,7 +40,11 @@ const TIERS: Tier[] = [
   },
 ];
 
-export default function Pricing() {
+type PricingProps = {
+  onSelectTier: (tierName: string) => void;
+};
+
+export default function Pricing({ onSelectTier }: PricingProps) {
   return (
     <section className="bg-white">
       <div className="mx-auto max-w-5xl px-6 py-20">
@@ -76,6 +80,7 @@ export default function Pricing() {
               </ul>
               <a
                 href="#waitlist"
+                onClick={() => onSelectTier(tier.name)}
                 className={`mt-6 rounded-lg px-4 py-2.5 text-center text-sm font-semibold transition ${
                   tier.highlighted
                     ? "bg-violet-600 text-white hover:bg-violet-700"
