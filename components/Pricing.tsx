@@ -1,6 +1,7 @@
 type Tier = {
   name: string;
   price: string;
+  annualNote?: string;
   description: string;
   features: string[];
   highlighted?: boolean;
@@ -10,6 +11,7 @@ const TIERS: Tier[] = [
   {
     name: "Student",
     price: "10€/mois",
+    annualNote: "ou 39€/an (3,25€/mois) en facturation annuelle",
     description: "Pour vérifier tes réponses et progresser.",
     features: [
       "Résolution d'équations, dérivées, intégrales",
@@ -67,6 +69,11 @@ export default function Pricing({ onSelectTier }: PricingProps) {
               <p className="mt-1 text-2xl font-bold text-violet-700">
                 {tier.price}
               </p>
+              {tier.annualNote && (
+                <p className="mt-1 text-xs font-medium text-violet-600">
+                  {tier.annualNote}
+                </p>
+              )}
               <p className="mt-3 text-sm text-gray-600">{tier.description}</p>
               <ul className="mt-4 flex-1 space-y-2 text-sm text-gray-700">
                 {tier.features.map((feature) => (
