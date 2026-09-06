@@ -2,6 +2,7 @@ type Audience = {
   title: string;
   description: string;
   price: string;
+  annualNote?: string;
 };
 
 const AUDIENCES: Audience[] = [
@@ -10,6 +11,7 @@ const AUDIENCES: Audience[] = [
     description:
       "Vérifie tes réponses et comprends chaque étape de résolution — comme un prof particulier disponible 24/7.",
     price: "10€/mois",
+    annualNote: "ou 39€/an en annuel",
   },
   {
     title: "Profs",
@@ -47,6 +49,11 @@ export default function AudienceSection() {
               <p className="mt-4 text-base font-semibold text-violet-700">
                 {audience.price}
               </p>
+              {audience.annualNote && (
+                <p className="mt-0.5 text-xs font-medium text-violet-500">
+                  {audience.annualNote}
+                </p>
+              )}
             </div>
           ))}
         </div>
