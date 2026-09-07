@@ -115,7 +115,7 @@ export const translations = {
       noAccountPrefix:
         "Pas encore de compte ? Inscris-toi à la waitlist sur la",
       noAccountLinkLabel: "page d'accueil",
-      noAccountSuffix: ", tu recevras tes identifiants par email.",
+      noAccountSuffix: ", tu recevras un accès une fois validé.",
       genericError: "Une erreur est survenue, réessaie dans un instant.",
       profile: {
         heading: "Mon profil",
@@ -374,7 +374,7 @@ export const translations = {
       noAccountPrefix:
         "Don't have an account yet? Sign up for the waitlist on the",
       noAccountLinkLabel: "homepage",
-      noAccountSuffix: ", you'll receive your credentials by email.",
+      noAccountSuffix: ", you'll get access once it's granted.",
       genericError: "Something went wrong, try again in a moment.",
       profile: {
         heading: "My profile",
