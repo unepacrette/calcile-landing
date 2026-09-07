@@ -3,6 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import MathRender from "@/components/MathRender";
 import { useLanguage } from "@/lib/i18n";
 import {
   API_URL,
@@ -14,19 +15,33 @@ import {
 type Operation = "solve" | "derivative" | "integral";
 type Status = "idle" | "loading" | "error";
 
+type StepApi = { description: string; latex: string };
+
 type SolveApiResponse = {
   solution: string[];
-  steps: string[];
+  method: string;
+  input_latex: string;
+  result_latex: string;
+  steps: StepApi[];
+  steps_text: string[];
 };
 
 type CalcApiResponse = {
   result: string;
-  steps: string[];
+  method: string;
+  input_latex: string;
+  result_latex: string;
+  steps: StepApi[];
+  steps_text: string[];
 };
 
 type Result = {
   values: string[];
-  steps: string[];
+  method: string;
+  inputLatex: string;
+  resultLatex: string;
+  steps: StepApi[];
+  stepsText: string[];
 };
 
 const inputClass =
@@ -125,10 +140,24 @@ export default function Solve() {
 
       if (operation === "solve") {
         const body = (await response.json()) as SolveApiResponse;
-        setResult({ values: body.solution, steps: body.steps });
+        setResult({
+          values: body.solution,
+          method: body.method,
+          inputLatex: body.input_latex,
+          resultLatex: body.result_latex,
+          steps: body.steps ?? [],
+          stepsText: body.steps_text ?? [],
+        });
       } else {
         const body = (await response.json()) as CalcApiResponse;
-        setResult({ values: [body.result], steps: body.steps });
+        setResult({
+          values: [body.result],
+          method: body.method,
+          inputLatex: body.input_latex,
+          resultLatex: body.result_latex,
+          steps: body.steps ?? [],
+          stepsText: body.steps_text ?? [],
+        });
       }
       setStatus("idle");
     } catch (err) {
@@ -286,24 +315,65 @@ export default function Solve() {
 
           {result && (
             <div className="mt-8 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-              <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-                {t.solve.resultHeading}
-              </h2>
-              <p className="mt-2 text-lg font-semibold text-violet-700">
-                {result.values.join(", ")}
-              </p>
+              {result.method && (
+                <span className="inline-block rounded-full bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">
+                  {t.solve.methodLabel} : {result.method}
+                </span>
+              )}
 
-              {result.steps.length > 0 && (
+              {result.inputLatex && (
+                <div className="mt-4 overflow-x-auto text-center text-gray-800">
+                  <MathRender latex={result.inputLatex} />
+                </div>
+              )}
+
+              {result.steps.length > 0 ? (
                 <>
-                  <h3 className="mt-6 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                  <h3 className="mt-8 text-xs font-semibold uppercase tracking-wide text-gray-500">
                     {t.solve.stepsHeading}
                   </h3>
-                  <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-gray-700">
+                  <ol className="mt-3 space-y-4">
                     {result.steps.map((step, index) => (
-                      <li key={index}>{step}</li>
+                      <li
+                        key={index}
+                        className="border-l-2 border-violet-200 pl-4"
+                      >
+                        <p className="text-sm text-gray-700">
+                          {step.description}
+                        </p>
+                        <div className="mt-1 overflow-x-auto text-gray-900">
+                          <MathRender latex={step.latex} />
+                        </div>
+                      </li>
                     ))}
                   </ol>
                 </>
+              ) : (
+                result.stepsText.length > 0 && (
+                  <>
+                    <h3 className="mt-8 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                      {t.solve.stepsHeading}
+                    </h3>
+                    <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-gray-700">
+                      {result.stepsText.map((step, index) => (
+                        <li key={index}>{step}</li>
+                      ))}
+                    </ol>
+                  </>
+                )
+              )}
+
+              <h2 className="mt-8 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                {t.solve.resultHeading}
+              </h2>
+              {result.resultLatex ? (
+                <div className="mt-2 overflow-x-auto rounded-lg border-2 border-violet-200 bg-violet-50 px-4 py-4 text-center text-xl text-violet-900">
+                  <MathRender latex={result.resultLatex} />
+                </div>
+              ) : (
+                <p className="mt-2 text-lg font-semibold text-violet-700">
+                  {result.values.join(", ")}
+                </p>
               )}
             </div>
           )}
