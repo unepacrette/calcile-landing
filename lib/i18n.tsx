@@ -156,6 +156,110 @@ export const translations = {
       logout: "Se déconnecter",
       profileLink: "Mon profil",
     },
+    footer: {
+      poweredByPrefix: "Propulsé par",
+      sympyLinkLabel: "SymPy",
+      licenseNote: "sous licence BSD 3-Clause",
+      licensesLinkLabel: "Voir notre page Licences",
+      aboutLinkLabel: "À propos",
+      termsLinkLabel: "Conditions d'utilisation",
+      privacyLinkLabel: "Confidentialité",
+    },
+    about: {
+      metaTitle: "À propos — Calcile",
+      metaDescription:
+        "Comment Calcile fonctionne : SymPy comme moteur de calcul, et ce qu'on ajoute par-dessus.",
+      heading: "À propos de Calcile",
+      intro:
+        "Calcile est né d'un constat simple : les outils de calcul symbolique existants (Mathematica, Maple, WolframAlpha) sont soit chers, soit avares en explications. On voulait un outil qui montre le raisonnement, pas juste le résultat.",
+      howItWorksHeading: "Comment ça marche",
+      howItWorksIntro:
+        "Calcile utilise SymPy (open-source) comme moteur de calcul symbolique. On ne réinvente pas la roue sur les maths elles-mêmes — SymPy est mature, testé par une large communauté, et fiable. On ajoute de la valeur par-dessus :",
+      valueAdds: [
+        {
+          title: "Une interface pensée pour apprendre",
+          description:
+            "Saisie en notation naturelle (\"x^2 + 3x + 2\"), résultats lisibles, historique de tes calculs — pas une console Python.",
+        },
+        {
+          title: "Des explications pédagogiques",
+          description:
+            "Chaque calcul renvoie les étapes de résolution, pas juste la réponse finale — pensé pour comprendre, pas seulement vérifier.",
+        },
+        {
+          title: "Des outils de correction pour les profs",
+          description:
+            "Automatiser la correction d'exercices, gagner plusieurs heures par semaine — un usage que SymPy seul ne couvre pas.",
+        },
+      ],
+      transparencyHeading: "Notre position sur l'open-source",
+      transparencyBody:
+        "On est transparents là-dessus : sans SymPy, Calcile n'existerait pas sous cette forme. C'est un projet open-source de grande qualité et on tenait à le dire clairement, avec le détail de nos dépendances et leurs licences, plutôt que de le passer sous silence.",
+      licensesLinkLabel: "Voir la page Licences",
+    },
+    licenses: {
+      metaTitle: "Licences — Calcile",
+      metaDescription:
+        "Les dépendances open-source de Calcile et leurs licences, à commencer par SymPy (BSD 3-Clause).",
+      heading: "Licences",
+      intro:
+        "Calcile s'appuie sur des bibliothèques open-source. Cette page liste nos dépendances et explique comment on les utilise.",
+      howWeUseHeading: "Comment on utilise SymPy",
+      howWeUseBody:
+        "SymPy (sympy.org) est notre moteur de calcul symbolique : résolution d'équations, dérivées, intégrales, simplification, et génération des étapes de résolution. On l'utilise comme bibliothèque, sans le modifier. Par-dessus, Calcile ajoute un parseur de notation naturelle, une interface pédagogique, l'authentification, l'historique des calculs et des outils de correction pour les enseignants — Calcile n'est pas qu'un wrapper autour de SymPy.",
+      sympyHeading: "SymPy — texte complet de la licence BSD 3-Clause",
+      dependenciesHeading: "Dépendances",
+      pythonHeading: "Backend (Python)",
+      npmHeading: "Frontend (npm)",
+      licenseColumn: "Licence",
+      packageColumn: "Paquet",
+      ownCodeHeading: "Notre propre code",
+      ownCodeBody:
+        "Le code source de Calcile (l'interface, l'API, la logique métier) reste propriétaire — tous droits réservés. Seules nos dépendances open-source gardent leurs licences respectives, listées ci-dessus dans leur intégralité.",
+    },
+    terms: {
+      metaTitle: "Conditions d'utilisation — Calcile",
+      metaDescription: "Conditions d'utilisation du service Calcile.",
+      heading: "Conditions d'utilisation",
+      lastUpdated: "Dernière mise à jour : 7 septembre 2026",
+      intro:
+        "En utilisant Calcile, tu acceptes les conditions suivantes. Ce document sera complété au fur et à mesure de l'évolution du service.",
+      serviceHeading: "Le service",
+      serviceBody:
+        "Calcile est une API et une interface de calcul symbolique (résolution d'équations, dérivées, intégrales) avec des explications pas à pas, actuellement en bêta fermée sur invitation.",
+      accuracyHeading: "Justesse des résultats",
+      accuracyBody:
+        "Calcile utilise SymPy (bibliothèque open-source, sympy.org) comme moteur de calcul. Comme tout logiciel, SymPy peut contenir des bugs ou des cas limites mal gérés. On ne peut donc pas garantir une exactitude à 100% des résultats et des étapes affichées. Vérifie les résultats importants, en particulier pour un usage académique noté ou professionnel.",
+      accountsHeading: "Comptes",
+      accountsBody:
+        "L'accès se fait sur invitation. Tu es responsable de la confidentialité de ton mot de passe et de l'activité sur ton compte.",
+      changesHeading: "Modifications",
+      changesBody:
+        "On peut faire évoluer ces conditions ; les changements importants seront communiqués par email.",
+      contactHeading: "Contact",
+      contactBody: "Une question ? Écris-nous à contact@calcile.fr.",
+    },
+    privacy: {
+      metaTitle: "Confidentialité — Calcile",
+      metaDescription: "Politique de confidentialité de Calcile.",
+      heading: "Politique de confidentialité",
+      lastUpdated: "Dernière mise à jour : 7 septembre 2026",
+      intro:
+        "Cette page explique quelles données Calcile collecte et comment elles sont utilisées.",
+      dataHeading: "Données collectées",
+      dataBody:
+        "On collecte ton email (pour la waitlist et ton compte), ton mot de passe (haché, jamais en clair), et l'historique de tes calculs (pour te permettre de les retrouver). On ne collecte pas plus que nécessaire au fonctionnement du service.",
+      useHeading: "Utilisation des données",
+      useBody:
+        "Tes données servent à faire fonctionner ton compte et le service (authentification, historique, emails transactionnels via Resend). On ne vend pas tes données et on ne les partage pas à des fins publicitaires.",
+      thirdPartyHeading: "Prestataires et logiciels tiers",
+      thirdPartyBody:
+        "Calcile utilise SymPy, une bibliothèque open-source (voir notre page Licences), qui s'exécute sur nos serveurs — aucune donnée n'est envoyée à SymPy ou à un tiers pour effectuer les calculs. Pour l'envoi d'emails transactionnels, on utilise Resend.",
+      rightsHeading: "Tes droits",
+      rightsBody:
+        "Tu peux demander l'accès, la correction ou la suppression de tes données à tout moment en écrivant à contact@calcile.fr.",
+      licensesLinkLabel: "Voir la page Licences",
+    },
   },
   en: {
     meta: {
@@ -309,6 +413,110 @@ export const translations = {
       error: "Something went wrong, try again in a moment.",
       logout: "Log out",
       profileLink: "My profile",
+    },
+    footer: {
+      poweredByPrefix: "Powered by",
+      sympyLinkLabel: "SymPy",
+      licenseNote: "licensed under BSD 3-Clause",
+      licensesLinkLabel: "See our Licenses page",
+      aboutLinkLabel: "About",
+      termsLinkLabel: "Terms of use",
+      privacyLinkLabel: "Privacy",
+    },
+    about: {
+      metaTitle: "About — Calcile",
+      metaDescription:
+        "How Calcile works: SymPy as the computation engine, and what we add on top.",
+      heading: "About Calcile",
+      intro:
+        "Calcile started from a simple observation: existing symbolic computation tools (Mathematica, Maple, WolframAlpha) are either expensive or stingy with explanations. We wanted a tool that shows the reasoning, not just the answer.",
+      howItWorksHeading: "How it works",
+      howItWorksIntro:
+        "Calcile uses SymPy (open-source) as the math computation engine. We're not reinventing the math itself — SymPy is mature, tested by a large community, and reliable. We add value on top:",
+      valueAdds: [
+        {
+          title: "A UI built for learning",
+          description:
+            "Natural-notation input (\"x^2 + 3x + 2\"), readable results, a history of your calculations — not a Python console.",
+        },
+        {
+          title: "Pedagogical explanations",
+          description:
+            "Every calculation returns the solving steps, not just the final answer — built to help you understand, not just check.",
+        },
+        {
+          title: "Grading tools for teachers",
+          description:
+            "Automate exercise grading and save hours a week — a use case SymPy alone doesn't cover.",
+        },
+      ],
+      transparencyHeading: "Where we stand on open source",
+      transparencyBody:
+        "We're upfront about this: without SymPy, Calcile wouldn't exist in this form. It's a high-quality open-source project and we wanted to say so clearly, with the full detail of our dependencies and their licenses, rather than staying quiet about it.",
+      licensesLinkLabel: "See the Licenses page",
+    },
+    licenses: {
+      metaTitle: "Licenses — Calcile",
+      metaDescription:
+        "Calcile's open-source dependencies and their licenses, starting with SymPy (BSD 3-Clause).",
+      heading: "Licenses",
+      intro:
+        "Calcile is built on open-source libraries. This page lists our dependencies and explains how we use them.",
+      howWeUseHeading: "How we use SymPy",
+      howWeUseBody:
+        "SymPy (sympy.org) is our symbolic computation engine: solving equations, derivatives, integrals, simplification, and generating the solving steps. We use it as a library, unmodified. On top of it, Calcile adds a natural-notation parser, a pedagogical UI, authentication, calculation history, and grading tools for teachers — Calcile is not just a wrapper around SymPy.",
+      sympyHeading: "SymPy — full BSD 3-Clause license text",
+      dependenciesHeading: "Dependencies",
+      pythonHeading: "Backend (Python)",
+      npmHeading: "Frontend (npm)",
+      licenseColumn: "License",
+      packageColumn: "Package",
+      ownCodeHeading: "Our own code",
+      ownCodeBody:
+        "Calcile's source code (the UI, the API, the business logic) remains proprietary — all rights reserved. Only our open-source dependencies keep their respective licenses, listed above in full.",
+    },
+    terms: {
+      metaTitle: "Terms of Use — Calcile",
+      metaDescription: "Terms of use for the Calcile service.",
+      heading: "Terms of Use",
+      lastUpdated: "Last updated: September 7, 2026",
+      intro:
+        "By using Calcile, you agree to the following terms. This document will be expanded as the service evolves.",
+      serviceHeading: "The service",
+      serviceBody:
+        "Calcile is a symbolic computation API and UI (solving equations, derivatives, integrals) with step-by-step explanations, currently in closed beta by invitation.",
+      accuracyHeading: "Accuracy of results",
+      accuracyBody:
+        "Calcile uses SymPy (an open-source library, sympy.org) as its computation engine. Like any software, SymPy can contain bugs or poorly-handled edge cases. We therefore cannot guarantee 100% accuracy of the results and steps shown. Verify important results yourself, especially for graded academic or professional use.",
+      accountsHeading: "Accounts",
+      accountsBody:
+        "Access is by invitation. You're responsible for keeping your password confidential and for activity on your account.",
+      changesHeading: "Changes",
+      changesBody:
+        "We may update these terms; significant changes will be communicated by email.",
+      contactHeading: "Contact",
+      contactBody: "Questions? Reach out at contact@calcile.fr.",
+    },
+    privacy: {
+      metaTitle: "Privacy — Calcile",
+      metaDescription: "Calcile's privacy policy.",
+      heading: "Privacy Policy",
+      lastUpdated: "Last updated: September 7, 2026",
+      intro:
+        "This page explains what data Calcile collects and how it's used.",
+      dataHeading: "Data we collect",
+      dataBody:
+        "We collect your email (for the waitlist and your account), your password (hashed, never stored in plain text), and your calculation history (so you can find your past work). We don't collect more than the service needs to run.",
+      useHeading: "How we use your data",
+      useBody:
+        "Your data is used to run your account and the service (authentication, history, transactional emails via Resend). We don't sell your data or share it for advertising purposes.",
+      thirdPartyHeading: "Third-party services and software",
+      thirdPartyBody:
+        "Calcile uses SymPy, an open-source library (see our Licenses page), which runs on our own servers — no data is sent to SymPy or a third party to perform calculations. For transactional emails, we use Resend.",
+      rightsHeading: "Your rights",
+      rightsBody:
+        "You can request access to, correction of, or deletion of your data at any time by writing to contact@calcile.fr.",
+      licensesLinkLabel: "See the Licenses page",
     },
   },
 } as const;
