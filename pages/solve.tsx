@@ -12,8 +12,16 @@ import {
   getStoredToken,
 } from "@/lib/api";
 
-type Operation = "solve" | "derivative" | "integral";
+type Operation =
+  | "solve"
+  | "derivative"
+  | "integral"
+  | "limit"
+  | "series"
+  | "inequality"
+  | "system";
 type Status = "idle" | "loading" | "error";
+type LimitDirection = "both" | "left" | "right";
 
 type StepApi = { description: string; latex: string };
 
@@ -39,6 +47,20 @@ type SolveApiResponse = {
 
 type CalcApiResponse = {
   result: string;
+  method: string;
+  input_latex: string;
+  result_latex: string;
+  steps: StepApi[];
+  steps_text: string[];
+  alternative_methods: AlternativeMethodApi[];
+};
+
+// /api/system-solve's shape: no single "result", a {var: value} solution
+// instead (rendered into the same result_latex/steps display as everything
+// else — see handleSubmit's "system" branch).
+type SystemApiResponse = {
+  variables: string[];
+  solution: Record<string, string>;
   method: string;
   input_latex: string;
   result_latex: string;
@@ -95,6 +117,11 @@ export default function Solve() {
   const [order, setOrder] = useState("");
   const [lowerBound, setLowerBound] = useState("");
   const [upperBound, setUpperBound] = useState("");
+  const [limitPoint, setLimitPoint] = useState("");
+  const [limitDirection, setLimitDirection] = useState<LimitDirection>("both");
+  const [seriesPoint, setSeriesPoint] = useState("0");
+  const [seriesOrder, setSeriesOrder] = useState("5");
+  const [systemEquations, setSystemEquations] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [result, setResult] = useState<Result | null>(null);
   // Indices of alternative methods currently expanded (collapsed by
@@ -148,7 +175,7 @@ export default function Solve() {
             ...(parsedOrder !== undefined ? { order: parsedOrder } : {}),
           }),
         });
-      } else {
+      } else if (operation === "integral") {
         const lower = lowerBound.trim() === "" ? undefined : Number(lowerBound);
         const upper = upperBound.trim() === "" ? undefined : Number(upperBound);
         // Only send bounds when both are filled in; a single bound is
@@ -163,6 +190,44 @@ export default function Solve() {
               ? { lower_bound: lower, upper_bound: upper }
               : {}),
           }),
+        });
+      } else if (operation === "limit") {
+        response = await fetch(`${API_URL}/api/limit`, {
+          method: "POST",
+          headers: authHeaders(token),
+          body: JSON.stringify({
+            expression: equation,
+            point: limitPoint,
+            direction: limitDirection,
+          }),
+        });
+      } else if (operation === "series") {
+        const parsedOrder = seriesOrder.trim() === "" ? undefined : Number(seriesOrder);
+        response = await fetch(`${API_URL}/api/series`, {
+          method: "POST",
+          headers: authHeaders(token),
+          body: JSON.stringify({
+            expression: equation,
+            ...(seriesPoint.trim() !== "" ? { point: seriesPoint } : {}),
+            ...(parsedOrder !== undefined ? { order: parsedOrder } : {}),
+          }),
+        });
+      } else if (operation === "inequality") {
+        response = await fetch(`${API_URL}/api/inequality`, {
+          method: "POST",
+          headers: authHeaders(token),
+          body: JSON.stringify({ inequality: equation }),
+        });
+      } else {
+        // system: one equation per non-empty line.
+        const equations = systemEquations
+          .split("\n")
+          .map((line) => line.trim())
+          .filter((line) => line.length > 0);
+        response = await fetch(`${API_URL}/api/system-solve`, {
+          method: "POST",
+          headers: authHeaders(token),
+          body: JSON.stringify({ equations }),
         });
       }
 
@@ -193,7 +258,25 @@ export default function Solve() {
             steps: alt.steps,
           })),
         });
+      } else if (operation === "system") {
+        const body = (await response.json()) as SystemApiResponse;
+        setResult({
+          values: Object.entries(body.solution).map(([name, value]) => `${name} = ${value}`),
+          method: body.method,
+          inputLatex: body.input_latex,
+          resultLatex: body.result_latex,
+          steps: body.steps ?? [],
+          stepsText: body.steps_text ?? [],
+          alternativeMethods: (body.alternative_methods ?? []).map((alt) => ({
+            method: alt.method,
+            inputLatex: alt.input_latex,
+            resultLatex: alt.result_latex,
+            steps: alt.steps,
+          })),
+        });
       } else {
+        // derivative, integral, limit, series, inequality: same
+        // {result, method, ...} shape.
         const body = (await response.json()) as CalcApiResponse;
         setResult({
           values: [body.result],
@@ -225,7 +308,18 @@ export default function Solve() {
     { key: "solve", label: t.solve.tabSolve },
     { key: "derivative", label: t.solve.tabDerivative },
     { key: "integral", label: t.solve.tabIntegral },
+    { key: "limit", label: t.solve.tabLimit },
+    { key: "series", label: t.solve.tabSeries },
+    { key: "inequality", label: t.solve.tabInequality },
+    { key: "system", label: t.solve.tabSystem },
   ];
+
+  const equationPlaceholder =
+    operation === "inequality"
+      ? t.solve.inequalityPlaceholder
+      : operation === "limit" || operation === "series"
+        ? t.solve.expressionPlaceholder
+        : t.solve.equationPlaceholder;
 
   return (
     <>
@@ -278,20 +372,42 @@ export default function Solve() {
           </div>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-4">
-            <div>
-              <label htmlFor="solve-equation" className="sr-only">
-                {t.solve.equationLabel}
-              </label>
-              <input
-                id="solve-equation"
-                type="text"
-                required
-                value={equation}
-                onChange={(event) => setEquation(event.target.value)}
-                placeholder={t.solve.equationPlaceholder}
-                className={inputClass}
-              />
-            </div>
+            {operation !== "system" && (
+              <div>
+                <label htmlFor="solve-equation" className="sr-only">
+                  {t.solve.equationLabel}
+                </label>
+                <input
+                  id="solve-equation"
+                  type="text"
+                  required
+                  value={equation}
+                  onChange={(event) => setEquation(event.target.value)}
+                  placeholder={equationPlaceholder}
+                  className={inputClass}
+                />
+              </div>
+            )}
+
+            {operation === "system" && (
+              <div>
+                <label
+                  htmlFor="solve-system-equations"
+                  className="mb-1 block text-sm font-medium text-gray-700"
+                >
+                  {t.solve.systemEquationsLabel}
+                </label>
+                <textarea
+                  id="solve-system-equations"
+                  required
+                  rows={3}
+                  value={systemEquations}
+                  onChange={(event) => setSystemEquations(event.target.value)}
+                  placeholder={t.solve.systemEquationsPlaceholder}
+                  className={inputClass}
+                />
+              </div>
+            )}
 
             {operation === "derivative" && (
               <div>
@@ -343,6 +459,88 @@ export default function Solve() {
                     type="number"
                     value={upperBound}
                     onChange={(event) => setUpperBound(event.target.value)}
+                    className={inputClass}
+                  />
+                </div>
+              </div>
+            )}
+
+            {operation === "limit" && (
+              <div className="flex gap-4">
+                <div className="flex-1">
+                  <label
+                    htmlFor="solve-limit-point"
+                    className="mb-1 block text-sm font-medium text-gray-700"
+                  >
+                    {t.solve.limitPointLabel}
+                  </label>
+                  <input
+                    id="solve-limit-point"
+                    type="text"
+                    required
+                    value={limitPoint}
+                    onChange={(event) => setLimitPoint(event.target.value)}
+                    placeholder="0"
+                    className={inputClass}
+                  />
+                </div>
+                <div className="flex-1">
+                  <label
+                    htmlFor="solve-limit-direction"
+                    className="mb-1 block text-sm font-medium text-gray-700"
+                  >
+                    {t.solve.limitDirectionLabel}
+                  </label>
+                  <select
+                    id="solve-limit-direction"
+                    value={limitDirection}
+                    onChange={(event) =>
+                      setLimitDirection(event.target.value as LimitDirection)
+                    }
+                    className={inputClass}
+                  >
+                    <option value="both">{t.solve.limitDirectionBoth}</option>
+                    <option value="left">{t.solve.limitDirectionLeft}</option>
+                    <option value="right">{t.solve.limitDirectionRight}</option>
+                  </select>
+                </div>
+              </div>
+            )}
+
+            {operation === "series" && (
+              <div className="flex gap-4">
+                <div className="flex-1">
+                  <label
+                    htmlFor="solve-series-point"
+                    className="mb-1 block text-sm font-medium text-gray-700"
+                  >
+                    {t.solve.seriesPointLabel}
+                  </label>
+                  <input
+                    id="solve-series-point"
+                    type="text"
+                    value={seriesPoint}
+                    onChange={(event) => setSeriesPoint(event.target.value)}
+                    placeholder="0"
+                    className={inputClass}
+                  />
+                </div>
+                <div className="flex-1">
+                  <label
+                    htmlFor="solve-series-order"
+                    className="mb-1 block text-sm font-medium text-gray-700"
+                  >
+                    {t.solve.seriesOrderLabel}
+                  </label>
+                  <input
+                    id="solve-series-order"
+                    type="number"
+                    min={1}
+                    max={10}
+                    step={1}
+                    value={seriesOrder}
+                    onChange={(event) => setSeriesOrder(event.target.value)}
+                    placeholder="5"
                     className={inputClass}
                   />
                 </div>
