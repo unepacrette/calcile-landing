@@ -19,11 +19,15 @@ type Operation =
   | "limit"
   | "series"
   | "inequality"
-  | "system";
+  | "system"
+  | "sum"
+  | "product";
 type Status = "idle" | "loading" | "error";
 type LimitDirection = "both" | "left" | "right";
 
 type StepApi = { description: string; latex: string };
+
+type GlossaryEntryApi = { symbol: string; name: string; definition: string };
 
 // No steps_text here: that legacy fallback only ever exists for the
 // primary method (see SolveApiResponse/CalcApiResponse) — the backend
@@ -43,6 +47,7 @@ type SolveApiResponse = {
   steps: StepApi[];
   steps_text: string[];
   alternative_methods: AlternativeMethodApi[];
+  glossary: GlossaryEntryApi[];
 };
 
 type CalcApiResponse = {
@@ -53,6 +58,7 @@ type CalcApiResponse = {
   steps: StepApi[];
   steps_text: string[];
   alternative_methods: AlternativeMethodApi[];
+  glossary: GlossaryEntryApi[];
 };
 
 // /api/system-solve's shape: no single "result", a {var: value} solution
@@ -67,6 +73,7 @@ type SystemApiResponse = {
   steps: StepApi[];
   steps_text: string[];
   alternative_methods: AlternativeMethodApi[];
+  glossary: GlossaryEntryApi[];
 };
 
 type AlternativeMethod = {
@@ -76,6 +83,8 @@ type AlternativeMethod = {
   steps: StepApi[];
 };
 
+type GlossaryEntry = { symbol: string; name: string; definition: string };
+
 type Result = {
   values: string[];
   method: string;
@@ -84,6 +93,7 @@ type Result = {
   steps: StepApi[];
   stepsText: string[];
   alternativeMethods: AlternativeMethod[];
+  glossary: GlossaryEntry[];
 };
 
 const inputClass =
@@ -122,6 +132,12 @@ export default function Solve() {
   const [seriesPoint, setSeriesPoint] = useState("0");
   const [seriesOrder, setSeriesOrder] = useState("5");
   const [systemEquations, setSystemEquations] = useState("");
+  // Shared between the "sum" and "product" tabs: mutually exclusive and
+  // structurally identical (expression + index variable + bounds), so one
+  // set of fields covers both — same pattern as the shared equation input.
+  const [sumProductVariable, setSumProductVariable] = useState("n");
+  const [sumProductLower, setSumProductLower] = useState("");
+  const [sumProductUpper, setSumProductUpper] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [result, setResult] = useState<Result | null>(null);
   // Indices of alternative methods currently expanded (collapsed by
@@ -218,6 +234,20 @@ export default function Solve() {
           headers: authHeaders(token),
           body: JSON.stringify({ inequality: equation }),
         });
+      } else if (operation === "sum" || operation === "product") {
+        response = await fetch(
+          `${API_URL}/api/${operation === "sum" ? "sum" : "product"}`,
+          {
+            method: "POST",
+            headers: authHeaders(token),
+            body: JSON.stringify({
+              expression: equation,
+              variable: sumProductVariable,
+              lower: sumProductLower,
+              upper: sumProductUpper,
+            }),
+          }
+        );
       } else {
         // system: one equation per non-empty line.
         const equations = systemEquations
@@ -257,6 +287,7 @@ export default function Solve() {
             resultLatex: alt.result_latex,
             steps: alt.steps,
           })),
+          glossary: body.glossary ?? [],
         });
       } else if (operation === "system") {
         const body = (await response.json()) as SystemApiResponse;
@@ -273,10 +304,11 @@ export default function Solve() {
             resultLatex: alt.result_latex,
             steps: alt.steps,
           })),
+          glossary: body.glossary ?? [],
         });
       } else {
-        // derivative, integral, limit, series, inequality: same
-        // {result, method, ...} shape.
+        // derivative, integral, limit, series, inequality, sum, product:
+        // same {result, method, ...} shape.
         const body = (await response.json()) as CalcApiResponse;
         setResult({
           values: [body.result],
@@ -291,6 +323,7 @@ export default function Solve() {
             resultLatex: alt.result_latex,
             steps: alt.steps,
           })),
+          glossary: body.glossary ?? [],
         });
       }
       setStatus("idle");
@@ -312,6 +345,8 @@ export default function Solve() {
     { key: "series", label: t.solve.tabSeries },
     { key: "inequality", label: t.solve.tabInequality },
     { key: "system", label: t.solve.tabSystem },
+    { key: "sum", label: t.solve.tabSum },
+    { key: "product", label: t.solve.tabProduct },
   ];
 
   const equationPlaceholder =
@@ -319,7 +354,9 @@ export default function Solve() {
       ? t.solve.inequalityPlaceholder
       : operation === "limit" || operation === "series"
         ? t.solve.expressionPlaceholder
-        : t.solve.equationPlaceholder;
+        : operation === "sum" || operation === "product"
+          ? t.solve.sumProductExpressionPlaceholder
+          : t.solve.equationPlaceholder;
 
   return (
     <>
@@ -547,6 +584,62 @@ export default function Solve() {
               </div>
             )}
 
+            {(operation === "sum" || operation === "product") && (
+              <div className="flex gap-4">
+                <div className="flex-1">
+                  <label
+                    htmlFor="solve-sum-product-variable"
+                    className="mb-1 block text-sm font-medium text-gray-700"
+                  >
+                    {t.solve.sumProductVariableLabel}
+                  </label>
+                  <input
+                    id="solve-sum-product-variable"
+                    type="text"
+                    required
+                    value={sumProductVariable}
+                    onChange={(event) => setSumProductVariable(event.target.value)}
+                    placeholder="n"
+                    className={inputClass}
+                  />
+                </div>
+                <div className="flex-1">
+                  <label
+                    htmlFor="solve-sum-product-lower"
+                    className="mb-1 block text-sm font-medium text-gray-700"
+                  >
+                    {t.solve.sumProductLowerLabel}
+                  </label>
+                  <input
+                    id="solve-sum-product-lower"
+                    type="text"
+                    required
+                    value={sumProductLower}
+                    onChange={(event) => setSumProductLower(event.target.value)}
+                    placeholder="1"
+                    className={inputClass}
+                  />
+                </div>
+                <div className="flex-1">
+                  <label
+                    htmlFor="solve-sum-product-upper"
+                    className="mb-1 block text-sm font-medium text-gray-700"
+                  >
+                    {t.solve.sumProductUpperLabel}
+                  </label>
+                  <input
+                    id="solve-sum-product-upper"
+                    type="text"
+                    required
+                    value={sumProductUpper}
+                    onChange={(event) => setSumProductUpper(event.target.value)}
+                    placeholder="oo"
+                    className={inputClass}
+                  />
+                </div>
+              </div>
+            )}
+
             <button
               type="submit"
               disabled={status === "loading"}
@@ -623,6 +716,24 @@ export default function Solve() {
                 <p className="mt-2 text-lg font-semibold text-violet-700">
                   {result.values.join(", ")}
                 </p>
+              )}
+
+              {result.glossary.length > 0 && (
+                <div className="mt-6 border-t border-gray-100 pt-4">
+                  <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                    {t.solve.glossaryHeading}
+                  </h3>
+                  <dl className="mt-2 space-y-1.5">
+                    {result.glossary.map((entry, index) => (
+                      <div key={index} className="text-xs text-gray-500">
+                        <dt className="inline font-medium text-gray-500">
+                          {entry.symbol}
+                        </dt>
+                        <dd className="inline"> — {entry.definition}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
               )}
 
               {result.alternativeMethods.length > 0 && (
