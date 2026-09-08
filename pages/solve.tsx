@@ -17,6 +17,16 @@ type Status = "idle" | "loading" | "error";
 
 type StepApi = { description: string; latex: string };
 
+// No steps_text here: that legacy fallback only ever exists for the
+// primary method (see SolveApiResponse/CalcApiResponse) — the backend
+// deliberately omits it on alternatives, so we don't invent it either.
+type AlternativeMethodApi = {
+  method: string;
+  input_latex: string;
+  result_latex: string;
+  steps: StepApi[];
+};
+
 type SolveApiResponse = {
   solution: string[];
   method: string;
@@ -24,6 +34,7 @@ type SolveApiResponse = {
   result_latex: string;
   steps: StepApi[];
   steps_text: string[];
+  alternative_methods: AlternativeMethodApi[];
 };
 
 type CalcApiResponse = {
@@ -33,6 +44,14 @@ type CalcApiResponse = {
   result_latex: string;
   steps: StepApi[];
   steps_text: string[];
+  alternative_methods: AlternativeMethodApi[];
+};
+
+type AlternativeMethod = {
+  method: string;
+  inputLatex: string;
+  resultLatex: string;
+  steps: StepApi[];
 };
 
 type Result = {
@@ -42,6 +61,7 @@ type Result = {
   resultLatex: string;
   steps: StepApi[];
   stepsText: string[];
+  alternativeMethods: AlternativeMethod[];
 };
 
 const inputClass =
@@ -77,6 +97,24 @@ export default function Solve() {
   const [upperBound, setUpperBound] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [result, setResult] = useState<Result | null>(null);
+  // Indices of alternative methods currently expanded (collapsed by
+  // default — showing every alternative's full steps at once would be
+  // visually overwhelming).
+  const [openAlternatives, setOpenAlternatives] = useState<Set<number>>(
+    new Set()
+  );
+
+  function toggleAlternative(index: number) {
+    setOpenAlternatives((current) => {
+      const next = new Set(current);
+      if (next.has(index)) {
+        next.delete(index);
+      } else {
+        next.add(index);
+      }
+      return next;
+    });
+  }
 
   function handleLogout() {
     clearStoredToken();
@@ -89,6 +127,7 @@ export default function Solve() {
 
     setStatus("loading");
     setResult(null);
+    setOpenAlternatives(new Set());
 
     try {
       let response: Response;
@@ -147,6 +186,12 @@ export default function Solve() {
           resultLatex: body.result_latex,
           steps: body.steps ?? [],
           stepsText: body.steps_text ?? [],
+          alternativeMethods: (body.alternative_methods ?? []).map((alt) => ({
+            method: alt.method,
+            inputLatex: alt.input_latex,
+            resultLatex: alt.result_latex,
+            steps: alt.steps,
+          })),
         });
       } else {
         const body = (await response.json()) as CalcApiResponse;
@@ -157,6 +202,12 @@ export default function Solve() {
           resultLatex: body.result_latex,
           steps: body.steps ?? [],
           stepsText: body.steps_text ?? [],
+          alternativeMethods: (body.alternative_methods ?? []).map((alt) => ({
+            method: alt.method,
+            inputLatex: alt.input_latex,
+            resultLatex: alt.result_latex,
+            steps: alt.steps,
+          })),
         });
       }
       setStatus("idle");
@@ -374,6 +425,71 @@ export default function Solve() {
                 <p className="mt-2 text-lg font-semibold text-violet-700">
                   {result.values.join(", ")}
                 </p>
+              )}
+
+              {result.alternativeMethods.length > 0 && (
+                <>
+                  <h3 className="mt-8 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    {t.solve.alternativeMethodsHeading}
+                  </h3>
+                  <div className="mt-3 space-y-2">
+                    {result.alternativeMethods.map((alt, index) => {
+                      const isOpen = openAlternatives.has(index);
+                      return (
+                        <div
+                          key={index}
+                          className="rounded-lg border border-gray-200"
+                        >
+                          <button
+                            type="button"
+                            onClick={() => toggleAlternative(index)}
+                            aria-expanded={isOpen}
+                            aria-label={
+                              isOpen
+                                ? t.solve.alternativeMethodsCollapse
+                                : t.solve.alternativeMethodsExpand
+                            }
+                            className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-semibold text-gray-800 hover:bg-gray-50"
+                          >
+                            <span>{alt.method}</span>
+                            <span
+                              aria-hidden="true"
+                              className={`text-gray-400 transition-transform ${
+                                isOpen ? "rotate-180" : ""
+                              }`}
+                            >
+                              ▾
+                            </span>
+                          </button>
+
+                          {isOpen && (
+                            <div className="border-t border-gray-200 px-4 py-4">
+                              <ol className="space-y-4">
+                                {alt.steps.map((step, stepIndex) => (
+                                  <li
+                                    key={stepIndex}
+                                    className="border-l-2 border-violet-200 pl-4"
+                                  >
+                                    <p className="text-sm text-gray-700">
+                                      {step.description}
+                                    </p>
+                                    <div className="mt-1 overflow-x-auto text-gray-900">
+                                      <MathRender latex={step.latex} />
+                                    </div>
+                                  </li>
+                                ))}
+                              </ol>
+
+                              <div className="mt-4 overflow-x-auto rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-center text-base text-gray-800">
+                                <MathRender latex={alt.resultLatex} />
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
               )}
             </div>
           )}
