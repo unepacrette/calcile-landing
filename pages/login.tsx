@@ -114,6 +114,15 @@ export default function Login() {
             </button>
           </form>
 
+          <p className="mt-4 text-center text-sm">
+            <Link
+              href="/reset-password"
+              className="font-semibold text-violet-700 hover:underline"
+            >
+              {t.auth.forgotPasswordLink}
+            </Link>
+          </p>
+
           <p className="mt-6 text-center text-sm text-gray-600">
             {t.auth.noAccountPrefix}{" "}
             <Link

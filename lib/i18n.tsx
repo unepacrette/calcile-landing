@@ -117,6 +117,7 @@ export const translations = {
       noAccountLinkLabel: "page d'accueil",
       noAccountSuffix: ", tu recevras un accès une fois validé.",
       genericError: "Une erreur est survenue, réessaie dans un instant.",
+      forgotPasswordLink: "Mot de passe oublié ?",
       profile: {
         heading: "Mon profil",
         currentPasswordLabel: "Mot de passe actuel",
@@ -134,6 +135,20 @@ export const translations = {
         invalidCurrentPassword: "Mot de passe actuel incorrect.",
         genericError: "Une erreur est survenue, réessaie dans un instant.",
         backToSolve: "Retour au solveur",
+      },
+      passwordReset: {
+        heading: "Mot de passe oublié",
+        requestSubtitle:
+          "Indique ton email, on t'envoie un lien de réinitialisation.",
+        requestSubmit: "Envoyer le lien",
+        requestSubmitLoading: "Envoi…",
+        requestSuccess: "Si ce compte existe, un email a été envoyé.",
+        confirmSubtitle: "Choisis un nouveau mot de passe.",
+        confirmSubmit: "Réinitialiser le mot de passe",
+        confirmSubmitLoading: "Réinitialisation…",
+        confirmSuccess: "Mot de passe réinitialisé. Tu peux te connecter.",
+        invalidOrExpiredToken: "Lien invalide ou expiré.",
+        backToLogin: "Retour à la connexion",
       },
     },
     solve: {
@@ -401,6 +416,7 @@ export const translations = {
       noAccountLinkLabel: "homepage",
       noAccountSuffix: ", you'll get access once it's granted.",
       genericError: "Something went wrong, try again in a moment.",
+      forgotPasswordLink: "Forgot your password?",
       profile: {
         heading: "My profile",
         currentPasswordLabel: "Current password",
@@ -418,6 +434,20 @@ export const translations = {
         invalidCurrentPassword: "Current password is incorrect.",
         genericError: "Something went wrong, try again in a moment.",
         backToSolve: "Back to solver",
+      },
+      passwordReset: {
+        heading: "Forgot password",
+        requestSubtitle:
+          "Enter your email, we'll send you a reset link.",
+        requestSubmit: "Send reset link",
+        requestSubmitLoading: "Sending…",
+        requestSuccess: "If that account exists, an email has been sent.",
+        confirmSubtitle: "Choose a new password.",
+        confirmSubmit: "Reset password",
+        confirmSubmitLoading: "Resetting…",
+        confirmSuccess: "Password reset. You can now log in.",
+        invalidOrExpiredToken: "Invalid or expired link.",
+        backToLogin: "Back to login",
       },
     },
     solve: {
