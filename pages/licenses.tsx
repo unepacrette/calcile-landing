@@ -34,6 +34,7 @@ DAMAGE.`;
 
 const PYTHON_DEPS: Array<[string, string]> = [
   ["sympy", "BSD"],
+  ["antlr4-python3-runtime", "BSD"],
   ["fastapi", "MIT"],
   ["starlette", "BSD"],
   ["uvicorn", "BSD-3-Clause"],
