@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -163,6 +163,28 @@ export default function Solve() {
     clearStoredToken();
     router.replace("/login");
   }
+
+  // Tab bar overflow (9 tools, doesn't fit on a narrow screen): the bar
+  // scrolls horizontally instead, with a left/right edge fade shown only
+  // while there's more to scroll in that direction — recomputed on mount,
+  // on window resize, and whenever the tab labels themselves change
+  // (language switch), since any of those can change scrollWidth.
+  const tabScrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollTabsLeft, setCanScrollTabsLeft] = useState(false);
+  const [canScrollTabsRight, setCanScrollTabsRight] = useState(false);
+
+  const updateTabScrollShadows = useCallback(() => {
+    const el = tabScrollRef.current;
+    if (!el) return;
+    setCanScrollTabsLeft(el.scrollLeft > 4);
+    setCanScrollTabsRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
+  }, []);
+
+  useEffect(() => {
+    updateTabScrollShadows();
+    window.addEventListener("resize", updateTabScrollShadows);
+    return () => window.removeEventListener("resize", updateTabScrollShadows);
+  }, [updateTabScrollShadows, t]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -382,30 +404,59 @@ export default function Solve() {
       </div>
 
       <main className="min-h-screen bg-gray-50 px-6 py-24">
-        <div className="mx-auto max-w-2xl">
-          <h1 className="text-center text-3xl font-bold text-gray-900">
+        <div className="mx-auto max-w-3xl">
+          <h1 className="text-center text-4xl font-bold tracking-tight text-gray-900">
             {t.solve.heading}
           </h1>
           <p className="mt-2 text-center text-sm text-gray-600">
             {t.solve.subtitle}
           </p>
 
-          <div className="mt-8 flex justify-center gap-2 rounded-full border border-gray-300 bg-white p-1 text-sm font-semibold shadow-sm">
-            {tabs.map((tab) => (
-              <button
-                key={tab.key}
-                type="button"
-                onClick={() => setOperation(tab.key)}
-                aria-pressed={operation === tab.key}
-                className={`flex-1 rounded-full px-4 py-2 transition ${
-                  operation === tab.key
-                    ? "bg-violet-600 text-white"
-                    : "text-gray-600 hover:bg-gray-50"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
+          <div className="relative mt-8">
+            <div
+              ref={tabScrollRef}
+              onScroll={updateTabScrollShadows}
+              className="flex gap-2 overflow-x-auto rounded-full border border-gray-300 bg-white p-1 text-sm font-semibold shadow-sm [&::-webkit-scrollbar]:hidden"
+              style={{ scrollbarWidth: "none" }}
+            >
+              {tabs.map((tab) => (
+                <button
+                  key={tab.key}
+                  type="button"
+                  onClick={(event) => {
+                    setOperation(tab.key);
+                    event.currentTarget.scrollIntoView({
+                      behavior: "smooth",
+                      inline: "nearest",
+                      block: "nearest",
+                    });
+                  }}
+                  aria-pressed={operation === tab.key}
+                  className={`shrink-0 whitespace-nowrap rounded-full px-4 py-2 transition ${
+                    operation === tab.key
+                      ? "bg-violet-600 text-white"
+                      : "text-gray-600 hover:bg-gray-50"
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+            {/* Edge fades: the only hint (besides scrolling itself) that
+                the 9-tab bar has more tools off-screen — only shown on the
+                side that actually has more to scroll to. */}
+            {canScrollTabsLeft && (
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-y-0 left-0 w-8 rounded-l-full bg-gradient-to-r from-white to-transparent"
+              />
+            )}
+            {canScrollTabsRight && (
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-y-0 right-0 w-8 rounded-r-full bg-gradient-to-l from-white to-transparent"
+              />
+            )}
           </div>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-4">
@@ -656,34 +707,34 @@ export default function Solve() {
           )}
 
           {result && (
-            <div className="mt-8 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+            <div className="mt-10 rounded-2xl border border-gray-200 bg-white p-6 shadow-md sm:p-8">
               {result.method && (
-                <span className="inline-block rounded-full bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">
+                <span className="inline-block rounded-full bg-violet-100 px-3 py-1.5 text-xs font-bold tracking-wide text-violet-700">
                   {t.solve.methodLabel} : {result.method}
                 </span>
               )}
 
               {result.inputLatex && (
-                <div className="mt-4 overflow-x-auto text-center text-gray-800">
+                <div className="mt-5 overflow-x-auto rounded-lg bg-gray-50 px-4 py-3 text-center text-base text-gray-700">
                   <MathRender latex={result.inputLatex} />
                 </div>
               )}
 
               {result.steps.length > 0 ? (
                 <>
-                  <h3 className="mt-8 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                  <h3 className="mt-10 text-xs font-bold uppercase tracking-widest text-gray-400">
                     {t.solve.stepsHeading}
                   </h3>
-                  <ol className="mt-3 space-y-4">
+                  <ol className="mt-4 space-y-5">
                     {result.steps.map((step, index) => (
                       <li
                         key={index}
-                        className="border-l-2 border-violet-200 pl-4"
+                        className="rounded-r-lg border-l-[3px] border-violet-300 bg-gray-50/60 py-2 pl-4 pr-3"
                       >
-                        <p className="text-sm text-gray-700">
+                        <p className="text-[13px] font-medium text-gray-600">
                           {step.description}
                         </p>
-                        <div className="mt-1 overflow-x-auto text-gray-900">
+                        <div className="mt-1.5 overflow-x-auto text-[15px] text-gray-900">
                           <MathRender latex={step.latex} />
                         </div>
                       </li>
@@ -693,7 +744,7 @@ export default function Solve() {
               ) : (
                 result.stepsText.length > 0 && (
                   <>
-                    <h3 className="mt-8 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    <h3 className="mt-10 text-xs font-bold uppercase tracking-widest text-gray-400">
                       {t.solve.stepsHeading}
                     </h3>
                     <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-gray-700">
@@ -705,21 +756,21 @@ export default function Solve() {
                 )
               )}
 
-              <h2 className="mt-8 text-xs font-semibold uppercase tracking-wide text-gray-500">
+              <h2 className="mt-10 text-sm font-bold uppercase tracking-widest text-violet-700">
                 {t.solve.resultHeading}
               </h2>
               {result.resultLatex ? (
-                <div className="mt-2 overflow-x-auto rounded-lg border-2 border-violet-200 bg-violet-50 px-4 py-4 text-center text-xl text-violet-900">
+                <div className="mt-3 overflow-x-auto rounded-2xl border border-violet-200 bg-gradient-to-br from-violet-50 to-white px-6 py-8 text-center text-2xl font-semibold text-violet-900 shadow-inner sm:text-3xl">
                   <MathRender latex={result.resultLatex} />
                 </div>
               ) : (
-                <p className="mt-2 text-lg font-semibold text-violet-700">
+                <p className="mt-3 text-2xl font-bold text-violet-800">
                   {result.values.join(", ")}
                 </p>
               )}
 
               {result.glossary.length > 0 && (
-                <div className="mt-6 border-t border-gray-100 pt-4">
+                <div className="mt-8 border-t border-gray-100 pt-5">
                   <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-400">
                     {t.solve.glossaryHeading}
                   </h3>
@@ -738,16 +789,16 @@ export default function Solve() {
 
               {result.alternativeMethods.length > 0 && (
                 <>
-                  <h3 className="mt-8 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                  <h3 className="mt-10 text-xs font-bold uppercase tracking-widest text-gray-400">
                     {t.solve.alternativeMethodsHeading}
                   </h3>
-                  <div className="mt-3 space-y-2">
+                  <div className="mt-4 space-y-2.5">
                     {result.alternativeMethods.map((alt, index) => {
                       const isOpen = openAlternatives.has(index);
                       return (
                         <div
                           key={index}
-                          className="rounded-lg border border-gray-200"
+                          className="overflow-hidden rounded-xl border border-gray-200"
                         >
                           <button
                             type="button"
@@ -758,7 +809,7 @@ export default function Solve() {
                                 ? t.solve.alternativeMethodsCollapse
                                 : t.solve.alternativeMethodsExpand
                             }
-                            className="flex w-full items-center justify-between px-4 py-3 text-left text-sm font-semibold text-gray-800 hover:bg-gray-50"
+                            className="flex w-full items-center justify-between px-4 py-3.5 text-left text-sm font-semibold text-gray-800 transition-colors hover:bg-gray-50"
                           >
                             <span>{alt.method}</span>
                             <span
@@ -773,23 +824,23 @@ export default function Solve() {
 
                           {isOpen && (
                             <div className="border-t border-gray-200 px-4 py-4">
-                              <ol className="space-y-4">
+                              <ol className="space-y-5">
                                 {alt.steps.map((step, stepIndex) => (
                                   <li
                                     key={stepIndex}
-                                    className="border-l-2 border-violet-200 pl-4"
+                                    className="rounded-r-lg border-l-[3px] border-violet-300 bg-gray-50/60 py-2 pl-4 pr-3"
                                   >
-                                    <p className="text-sm text-gray-700">
+                                    <p className="text-[13px] font-medium text-gray-600">
                                       {step.description}
                                     </p>
-                                    <div className="mt-1 overflow-x-auto text-gray-900">
+                                    <div className="mt-1.5 overflow-x-auto text-[15px] text-gray-900">
                                       <MathRender latex={step.latex} />
                                     </div>
                                   </li>
                                 ))}
                               </ol>
 
-                              <div className="mt-4 overflow-x-auto rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-center text-base text-gray-800">
+                              <div className="mt-4 overflow-x-auto rounded-xl border border-gray-200 bg-gray-50 px-5 py-4 text-center text-lg font-medium text-gray-800">
                                 <MathRender latex={alt.resultLatex} />
                               </div>
                             </div>
