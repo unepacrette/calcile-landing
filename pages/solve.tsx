@@ -21,9 +21,12 @@ type Operation =
   | "inequality"
   | "system"
   | "sum"
-  | "product";
+  | "product"
+  | "matrix";
 type Status = "idle" | "loading" | "error";
 type LimitDirection = "both" | "left" | "right";
+type MatrixSize = 2 | 3;
+type MatrixOperation = "determinant" | "inverse" | "eigenvalues";
 
 type StepApi = { description: string; latex: string };
 
@@ -76,6 +79,24 @@ type SystemApiResponse = {
   glossary: GlossaryEntryApi[];
 };
 
+// /api/matrix/{determinant,inverse,eigenvalues}'s shape: same
+// method/input_latex/result_latex/steps/... backbone as everything else,
+// plus two fields only one particular operation ever populates:
+// is_invertible (inverse only, null otherwise) and eigenvalues
+// (eigenvalues only, [] otherwise).
+type MatrixApiResponse = {
+  input: string[][];
+  method: string;
+  input_latex: string;
+  result_latex: string;
+  steps: StepApi[];
+  steps_text: string[];
+  alternative_methods: AlternativeMethodApi[];
+  glossary: GlossaryEntryApi[];
+  is_invertible: boolean | null;
+  eigenvalues: string[];
+};
+
 type AlternativeMethod = {
   method: string;
   inputLatex: string;
@@ -94,6 +115,9 @@ type Result = {
   stepsText: string[];
   alternativeMethods: AlternativeMethod[];
   glossary: GlossaryEntry[];
+  // Only set (true/false) for a matrix/inverse result; null everywhere
+  // else, including the other matrix operations.
+  isInvertible: boolean | null;
 };
 
 const inputClass =
@@ -138,6 +162,19 @@ export default function Solve() {
   const [sumProductVariable, setSumProductVariable] = useState("n");
   const [sumProductLower, setSumProductLower] = useState("");
   const [sumProductUpper, setSumProductUpper] = useState("");
+  // Matrix tab: cells are always kept as a full 3x3 grid (so switching
+  // 2x2 <-> 3x3 doesn't lose what was already typed in the shared
+  // top-left corner) — only the top-left `matrixSize` x `matrixSize`
+  // slice is rendered and sent.
+  const [matrixSize, setMatrixSize] = useState<MatrixSize>(2);
+  const [matrixOperation, setMatrixOperation] =
+    useState<MatrixOperation>("determinant");
+  const [matrixCells, setMatrixCells] = useState<string[][]>([
+    ["", "", ""],
+    ["", "", ""],
+    ["", "", ""],
+  ]);
+  const [matrixCellError, setMatrixCellError] = useState<string | null>(null);
   const [status, setStatus] = useState<Status>("idle");
   const [result, setResult] = useState<Result | null>(null);
   // Indices of alternative methods currently expanded (collapsed by
@@ -186,9 +223,24 @@ export default function Solve() {
     return () => window.removeEventListener("resize", updateTabScrollShadows);
   }, [updateTabScrollShadows, t]);
 
+  function currentMatrixCells(): string[][] {
+    return matrixCells.slice(0, matrixSize).map((row) => row.slice(0, matrixSize));
+  }
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!token) return;
+
+    if (operation === "matrix") {
+      const hasEmptyCell = currentMatrixCells().some((row) =>
+        row.some((cell) => cell.trim() === "")
+      );
+      if (hasEmptyCell) {
+        setMatrixCellError(t.solve.matrixEmptyCellError);
+        return;
+      }
+    }
+    setMatrixCellError(null);
 
     setStatus("loading");
     setResult(null);
@@ -270,6 +322,12 @@ export default function Solve() {
             }),
           }
         );
+      } else if (operation === "matrix") {
+        response = await fetch(`${API_URL}/api/matrix/${matrixOperation}`, {
+          method: "POST",
+          headers: authHeaders(token),
+          body: JSON.stringify({ matrix: currentMatrixCells() }),
+        });
       } else {
         // system: one equation per non-empty line.
         const equations = systemEquations
@@ -310,6 +368,7 @@ export default function Solve() {
             steps: alt.steps,
           })),
           glossary: body.glossary ?? [],
+          isInvertible: null,
         });
       } else if (operation === "system") {
         const body = (await response.json()) as SystemApiResponse;
@@ -327,6 +386,25 @@ export default function Solve() {
             steps: alt.steps,
           })),
           glossary: body.glossary ?? [],
+          isInvertible: null,
+        });
+      } else if (operation === "matrix") {
+        const body = (await response.json()) as MatrixApiResponse;
+        setResult({
+          values: [],
+          method: body.method,
+          inputLatex: body.input_latex,
+          resultLatex: body.result_latex,
+          steps: body.steps ?? [],
+          stepsText: body.steps_text ?? [],
+          alternativeMethods: (body.alternative_methods ?? []).map((alt) => ({
+            method: alt.method,
+            inputLatex: alt.input_latex,
+            resultLatex: alt.result_latex,
+            steps: alt.steps,
+          })),
+          glossary: body.glossary ?? [],
+          isInvertible: body.is_invertible,
         });
       } else {
         // derivative, integral, limit, series, inequality, sum, product:
@@ -346,6 +424,7 @@ export default function Solve() {
             steps: alt.steps,
           })),
           glossary: body.glossary ?? [],
+          isInvertible: null,
         });
       }
       setStatus("idle");
@@ -369,6 +448,7 @@ export default function Solve() {
     { key: "system", label: t.solve.tabSystem },
     { key: "sum", label: t.solve.tabSum },
     { key: "product", label: t.solve.tabProduct },
+    { key: "matrix", label: t.solve.tabMatrix },
   ];
 
   const equationPlaceholder =
@@ -460,7 +540,7 @@ export default function Solve() {
           </div>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-4">
-            {operation !== "system" && (
+            {operation !== "system" && operation !== "matrix" && (
               <div>
                 <label htmlFor="solve-equation" className="sr-only">
                   {t.solve.equationLabel}
@@ -691,6 +771,105 @@ export default function Solve() {
               </div>
             )}
 
+            {operation === "matrix" && (
+              <div className="space-y-4">
+                <div className="flex flex-wrap gap-4">
+                  <div>
+                    <p className="mb-1 text-sm font-medium text-gray-700">
+                      {t.solve.matrixSizeLabel}
+                    </p>
+                    <div className="inline-flex rounded-lg border border-gray-300 bg-white p-1 text-sm font-semibold shadow-sm">
+                      {([2, 3] as const).map((size) => (
+                        <button
+                          key={size}
+                          type="button"
+                          onClick={() => setMatrixSize(size)}
+                          aria-pressed={matrixSize === size}
+                          className={`rounded-md px-4 py-1.5 transition ${
+                            matrixSize === size
+                              ? "bg-violet-600 text-white"
+                              : "text-gray-600 hover:bg-gray-50"
+                          }`}
+                        >
+                          {size}×{size}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <p className="mb-1 text-sm font-medium text-gray-700">
+                      {t.solve.matrixOperationLabel}
+                    </p>
+                    <div className="inline-flex rounded-lg border border-gray-300 bg-white p-1 text-sm font-semibold shadow-sm">
+                      {(
+                        [
+                          ["determinant", t.solve.matrixOperationDeterminant],
+                          ["inverse", t.solve.matrixOperationInverse],
+                          ["eigenvalues", t.solve.matrixOperationEigenvalues],
+                        ] as const
+                      ).map(([op, label]) => (
+                        <button
+                          key={op}
+                          type="button"
+                          onClick={() => setMatrixOperation(op)}
+                          aria-pressed={matrixOperation === op}
+                          className={`rounded-md px-3 py-1.5 transition ${
+                            matrixOperation === op
+                              ? "bg-violet-600 text-white"
+                              : "text-gray-600 hover:bg-gray-50"
+                          }`}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="mb-1 text-sm font-medium text-gray-700">
+                    {t.solve.matrixCellsLabel}
+                  </p>
+                  <div
+                    className={`grid w-fit gap-2 ${
+                      matrixSize === 2 ? "grid-cols-2" : "grid-cols-3"
+                    }`}
+                  >
+                    {matrixCells.slice(0, matrixSize).map((row, rowIndex) =>
+                      row.slice(0, matrixSize).map((cell, colIndex) => (
+                        <input
+                          key={`${rowIndex}-${colIndex}`}
+                          type="text"
+                          required
+                          value={cell}
+                          onChange={(event) => {
+                            const value = event.target.value;
+                            setMatrixCells((current) =>
+                              current.map((r, ri) =>
+                                ri === rowIndex
+                                  ? r.map((c, ci) => (ci === colIndex ? value : c))
+                                  : r
+                              )
+                            );
+                            setMatrixCellError(null);
+                          }}
+                          placeholder={t.solve.matrixCellPlaceholder}
+                          aria-label={`${t.solve.matrixCellsLabel} (${rowIndex + 1}, ${colIndex + 1})`}
+                          className="h-14 w-14 rounded-lg border border-gray-300 text-center text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-300"
+                        />
+                      ))
+                    )}
+                  </div>
+                  {matrixCellError && (
+                    <p className="mt-2 text-sm font-medium text-red-600">
+                      {matrixCellError}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+
             <button
               type="submit"
               disabled={status === "loading"}
@@ -712,6 +891,12 @@ export default function Solve() {
                 <span className="inline-block rounded-full bg-violet-100 px-3 py-1.5 text-xs font-bold tracking-wide text-violet-700">
                   {t.solve.methodLabel} : {result.method}
                 </span>
+              )}
+
+              {result.isInvertible === false && (
+                <p className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-sm font-medium text-amber-800">
+                  {t.solve.matrixNotInvertibleNotice}
+                </p>
               )}
 
               {result.inputLatex && (
