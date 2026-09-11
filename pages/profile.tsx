@@ -65,7 +65,7 @@ function TierCheckoutCard({
   name,
   monthlyPrice,
   yearlyPrice,
-  loading,
+  disabled,
   onSubscribe,
   t,
 }: {
@@ -73,7 +73,10 @@ function TierCheckoutCard({
   name: string;
   monthlyPrice: string;
   yearlyPrice: string;
-  loading: boolean;
+  // True while a checkout request is in flight, or while the mandatory
+  // withdrawal-right consent checkbox hasn't been checked yet (see
+  // Profile()) — either way, subscribing isn't allowed right now.
+  disabled: boolean;
   onSubscribe: (tier: BillingTier, cycle: BillingCycle) => void;
   t: LanguageStrings;
 }) {
@@ -106,7 +109,7 @@ function TierCheckoutCard({
       </p>
       <button
         type="button"
-        disabled={loading}
+        disabled={disabled}
         onClick={() => onSubscribe(tier, cycle)}
         className="mt-3 w-full rounded-lg bg-violet-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-60"
       >
@@ -153,6 +156,12 @@ export default function Profile() {
   const [billingActionLoading, setBillingActionLoading] = useState(false);
   const [billingError, setBillingError] = useState<string | null>(null);
   const [checkoutNotice, setCheckoutNotice] = useState<"success" | "cancel" | null>(null);
+  // Required before Stripe Checkout can be opened for Student/Prof: an
+  // unchecked-by-default, explicit waiver of the 14-day withdrawal right
+  // (Code de la consommation, art. L221-28 13°) -- access is granted
+  // immediately on payment, so the right is only lost if the user
+  // expressly asks for immediate performance and expressly waives it.
+  const [withdrawalConsent, setWithdrawalConsent] = useState(false);
 
   useEffect(() => {
     if (!token) return;
@@ -202,7 +211,9 @@ export default function Profile() {
   }, [router.isReady, router.query.checkout]);
 
   async function handleSubscribe(tier: BillingTier, cycle: BillingCycle) {
-    if (!token) return;
+    // The "Subscribe" buttons are already disabled until this is
+    // checked -- this guard is just the non-bypassable backstop.
+    if (!token || !withdrawalConsent) return;
     setBillingError(null);
     setBillingActionLoading(true);
 
@@ -446,12 +457,41 @@ export default function Profile() {
 
                 {billingTier === "free" && (
                   <div className="mt-4 space-y-3">
+                    {/* Required before either "Subscribe" button below can
+                        be used: an explicit, unchecked-by-default waiver
+                        of the 14-day withdrawal right (Code de la
+                        consommation, art. L221-28 13°) -- access starts
+                        immediately on payment, so the right is only lost
+                        if the user expressly asks for that and expressly
+                        waives it. */}
+                    <div className="flex items-start gap-2 rounded-lg bg-gray-50 p-3">
+                      <input
+                        id="withdrawal-consent"
+                        type="checkbox"
+                        checked={withdrawalConsent}
+                        onChange={(event) => setWithdrawalConsent(event.target.checked)}
+                        className="mt-0.5 h-4 w-4 shrink-0 rounded border-gray-300 text-violet-600 focus:ring-violet-300"
+                      />
+                      <label
+                        htmlFor="withdrawal-consent"
+                        className="text-xs leading-relaxed text-gray-600"
+                      >
+                        {t.auth.profile.billing.withdrawalConsentLabel}{" "}
+                        <Link
+                          href="/terms"
+                          className="font-semibold text-violet-700 hover:underline"
+                        >
+                          {t.auth.profile.billing.withdrawalConsentTermsLink}
+                        </Link>
+                      </label>
+                    </div>
+
                     <TierCheckoutCard
                       tier="student"
                       name={t.auth.profile.billing.studentName}
                       monthlyPrice={t.auth.profile.billing.studentMonthlyPrice}
                       yearlyPrice={t.auth.profile.billing.studentYearlyPrice}
-                      loading={billingActionLoading}
+                      disabled={billingActionLoading || !withdrawalConsent}
                       onSubscribe={handleSubscribe}
                       t={t}
                     />
@@ -460,7 +500,7 @@ export default function Profile() {
                       name={t.auth.profile.billing.profName}
                       monthlyPrice={t.auth.profile.billing.profMonthlyPrice}
                       yearlyPrice={t.auth.profile.billing.profYearlyPrice}
-                      loading={billingActionLoading}
+                      disabled={billingActionLoading || !withdrawalConsent}
                       onSubscribe={handleSubscribe}
                       t={t}
                     />

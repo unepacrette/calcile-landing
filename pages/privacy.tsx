@@ -35,10 +35,24 @@ export default function Privacy() {
         </p>
 
         <h2 className="mt-10 text-lg font-bold text-gray-900">
+          {t.privacy.legalBasisHeading}
+        </h2>
+        <p className="mt-3 text-base leading-relaxed text-gray-700">
+          {t.privacy.legalBasisBody}
+        </p>
+
+        <h2 className="mt-10 text-lg font-bold text-gray-900">
           {t.privacy.useHeading}
         </h2>
         <p className="mt-3 text-base leading-relaxed text-gray-700">
           {t.privacy.useBody}
+        </p>
+
+        <h2 className="mt-10 text-lg font-bold text-gray-900">
+          {t.privacy.retentionHeading}
+        </h2>
+        <p className="mt-3 text-base leading-relaxed text-gray-700">
+          {t.privacy.retentionBody}
         </p>
 
         <h2 className="mt-10 text-lg font-bold text-gray-900">
@@ -49,13 +63,26 @@ export default function Privacy() {
         </p>
 
         <h2 className="mt-10 text-lg font-bold text-gray-900">
+          {t.privacy.cookiesHeading}
+        </h2>
+        <p className="mt-3 text-base leading-relaxed text-gray-700">
+          {t.privacy.cookiesBody}
+        </p>
+
+        <h2 className="mt-10 text-lg font-bold text-gray-900">
           {t.privacy.rightsHeading}
         </h2>
         <p className="mt-3 text-base leading-relaxed text-gray-700">
           {t.privacy.rightsBody}
         </p>
 
-        <p className="mt-10">
+        <p className="mt-10 space-x-6">
+          <Link
+            href="/mentions-legales"
+            className="text-sm font-semibold text-violet-700 hover:underline"
+          >
+            {t.privacy.legalLinkLabel} →
+          </Link>
           <Link
             href="/licenses"
             className="text-sm font-semibold text-violet-700 hover:underline"

@@ -18,6 +18,9 @@ export default function Footer() {
           <Link href="/privacy" className="hover:text-gray-700">
             {t.footer.privacyLinkLabel}
           </Link>
+          <Link href="/mentions-legales" className="hover:text-gray-700">
+            {t.footer.legalLinkLabel}
+          </Link>
           {/* Placeholders : à remplacer par les vrais comptes une fois créés */}
           <a href="#" className="hover:text-gray-700">
             Twitter

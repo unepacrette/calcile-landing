@@ -33,6 +33,27 @@ export default function Terms() {
         </p>
 
         <h2 className="mt-10 text-lg font-bold text-gray-900">
+          {t.terms.pricingHeading}
+        </h2>
+        <p className="mt-3 text-base leading-relaxed text-gray-700">
+          {t.terms.pricingBody}
+        </p>
+
+        <h2 className="mt-10 text-lg font-bold text-gray-900">
+          {t.terms.renewalHeading}
+        </h2>
+        <p className="mt-3 text-base leading-relaxed text-gray-700">
+          {t.terms.renewalBody}
+        </p>
+
+        <h2 className="mt-10 text-lg font-bold text-gray-900">
+          {t.terms.withdrawalHeading}
+        </h2>
+        <p className="mt-3 text-base leading-relaxed text-gray-700">
+          {t.terms.withdrawalBody}
+        </p>
+
+        <h2 className="mt-10 text-lg font-bold text-gray-900">
           {t.terms.accuracyHeading}
         </h2>
         <p className="mt-3 text-base leading-relaxed text-gray-700">
@@ -44,6 +65,13 @@ export default function Terms() {
         </h2>
         <p className="mt-3 text-base leading-relaxed text-gray-700">
           {t.terms.accountsBody}
+        </p>
+
+        <h2 className="mt-10 text-lg font-bold text-gray-900">
+          {t.terms.lawHeading}
+        </h2>
+        <p className="mt-3 text-base leading-relaxed text-gray-700">
+          {t.terms.lawBody}
         </p>
 
         <h2 className="mt-10 text-lg font-bold text-gray-900">
@@ -60,7 +88,13 @@ export default function Terms() {
           {t.terms.contactBody}
         </p>
 
-        <p className="mt-10">
+        <p className="mt-10 space-x-6">
+          <Link
+            href="/mentions-legales"
+            className="text-sm font-semibold text-violet-700 hover:underline"
+          >
+            {t.terms.legalLinkLabel} →
+          </Link>
           <Link
             href="/licenses"
             className="text-sm font-semibold text-violet-700 hover:underline"
