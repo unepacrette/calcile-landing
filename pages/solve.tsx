@@ -22,7 +22,8 @@ type Operation =
   | "system"
   | "sum"
   | "product"
-  | "matrix";
+  | "matrix"
+  | "plot";
 type Status = "idle" | "loading" | "error";
 type LimitDirection = "both" | "left" | "right";
 type MatrixSize = 2 | 3;
@@ -97,6 +98,22 @@ type MatrixApiResponse = {
   eigenvalues: string[];
 };
 
+// /api/plot's shape: no method/steps/alternative_methods/glossary at all
+// (a sampled curve has no pedagogical derivation to narrate) -- just the
+// labeled function and its sampled points, rendered as its own dedicated
+// view instead of going through the shared Result type below.
+type PlotPointApi = { x: number; y: number | null };
+
+type PlotApiResponse = {
+  input_latex: string;
+  variable: string;
+  lower: number;
+  upper: number;
+  points: PlotPointApi[];
+  y_min: number;
+  y_max: number;
+};
+
 type AlternativeMethod = {
   method: string;
   inputLatex: string;
@@ -122,6 +139,161 @@ type Result = {
 
 const inputClass =
   "w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-300";
+
+// A handful of evenly-spaced tick positions between min and max --
+// shared by both axes of PlotChart below.
+function evenlySpacedTicks(min: number, max: number, count: number): number[] {
+  if (!(max > min)) return [min];
+  const step = (max - min) / (count - 1);
+  return Array.from({ length: count }, (_, i) => min + i * step);
+}
+
+function formatTick(value: number): string {
+  const rounded = Math.round(value * 100) / 100;
+  return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(2);
+}
+
+// Inline SVG, no charting library (consistent with this repo only ever
+// adding a dependency when strictly necessary -- see antlr4-python3-
+// runtime's own commit message). A top-level component (not defined
+// inside Solve()) purely for readability; it holds no state of its own.
+function PlotChart({
+  points,
+  yMin,
+  yMax,
+  lower,
+  upper,
+  ariaLabel,
+}: {
+  points: { x: number; y: number | null }[];
+  yMin: number;
+  yMax: number;
+  lower: number;
+  upper: number;
+  ariaLabel: string;
+}) {
+  const width = 600;
+  const height = 340;
+  const padding = 28;
+
+  // Guards against dividing by zero for a degenerate range (a constant
+  // function, or a single-point/empty domain) -- falls back to a 1-unit
+  // span so the chart still renders instead of producing NaN coordinates.
+  const xRange = upper - lower || 1;
+  const yRange = yMax - yMin || 1;
+
+  function toSvgX(x: number): number {
+    return padding + ((x - lower) / xRange) * (width - 2 * padding);
+  }
+  function toSvgY(y: number): number {
+    // SVG y grows downward -- flip so a larger y sits higher on screen.
+    return height - padding - ((y - yMin) / yRange) * (height - 2 * padding);
+  }
+
+  // Break the curve into separate segments at every null point -- never
+  // a line drawn across a gap (asymptote, restricted domain, ...).
+  const segments: { x: number; y: number }[][] = [];
+  let current: { x: number; y: number }[] = [];
+  for (const point of points) {
+    if (point.y === null) {
+      if (current.length > 0) {
+        segments.push(current);
+        current = [];
+      }
+      continue;
+    }
+    current.push({ x: toSvgX(point.x), y: toSvgY(point.y) });
+  }
+  if (current.length > 0) segments.push(current);
+
+  const showXAxis = yMin <= 0 && yMax >= 0;
+  const showYAxis = lower <= 0 && upper >= 0;
+  const xTicks = evenlySpacedTicks(lower, upper, 5);
+  const yTicks = evenlySpacedTicks(yMin, yMax, 5);
+
+  return (
+    <svg
+      viewBox={`0 0 ${width} ${height}`}
+      className="h-auto w-full"
+      role="img"
+      aria-label={ariaLabel}
+    >
+      {xTicks.map((tickX) => (
+        <g key={`x-${tickX}`}>
+          <line
+            x1={toSvgX(tickX)}
+            y1={padding}
+            x2={toSvgX(tickX)}
+            y2={height - padding}
+            className="stroke-gray-100"
+            strokeWidth={1}
+          />
+          <text
+            x={toSvgX(tickX)}
+            y={height - padding + 14}
+            textAnchor="middle"
+            className="fill-gray-400 text-[9px]"
+          >
+            {formatTick(tickX)}
+          </text>
+        </g>
+      ))}
+      {yTicks.map((tickY) => (
+        <g key={`y-${tickY}`}>
+          <line
+            x1={padding}
+            y1={toSvgY(tickY)}
+            x2={width - padding}
+            y2={toSvgY(tickY)}
+            className="stroke-gray-100"
+            strokeWidth={1}
+          />
+          <text
+            x={padding - 6}
+            y={toSvgY(tickY) + 3}
+            textAnchor="end"
+            className="fill-gray-400 text-[9px]"
+          >
+            {formatTick(tickY)}
+          </text>
+        </g>
+      ))}
+
+      {showXAxis && (
+        <line
+          x1={padding}
+          y1={toSvgY(0)}
+          x2={width - padding}
+          y2={toSvgY(0)}
+          className="stroke-gray-400"
+          strokeWidth={1.5}
+        />
+      )}
+      {showYAxis && (
+        <line
+          x1={toSvgX(0)}
+          y1={padding}
+          x2={toSvgX(0)}
+          y2={height - padding}
+          className="stroke-gray-400"
+          strokeWidth={1.5}
+        />
+      )}
+
+      {segments.map((segment, index) => (
+        <polyline
+          key={index}
+          points={segment.map((p) => `${p.x},${p.y}`).join(" ")}
+          fill="none"
+          className="stroke-violet-600"
+          strokeWidth={2}
+          strokeLinejoin="round"
+          strokeLinecap="round"
+        />
+      ))}
+    </svg>
+  );
+}
 
 export default function Solve() {
   const { t } = useLanguage();
@@ -175,8 +347,16 @@ export default function Solve() {
     ["", "", ""],
   ]);
   const [matrixCellError, setMatrixCellError] = useState<string | null>(null);
+  // Plot tab: same flex lower/upper layout as the integral tab, but a
+  // separate pair of state variables -- these are always sent
+  // (pre-filled "-10"/"10"), unlike the integral's optional bounds, so
+  // sharing lowerBound/upperBound directly would change the integral
+  // tab's own default (empty/optional) behavior.
+  const [plotLower, setPlotLower] = useState("-10");
+  const [plotUpper, setPlotUpper] = useState("10");
   const [status, setStatus] = useState<Status>("idle");
   const [result, setResult] = useState<Result | null>(null);
+  const [plotResult, setPlotResult] = useState<PlotApiResponse | null>(null);
   // Indices of alternative methods currently expanded (collapsed by
   // default — showing every alternative's full steps at once would be
   // visually overwhelming).
@@ -244,6 +424,7 @@ export default function Solve() {
 
     setStatus("loading");
     setResult(null);
+    setPlotResult(null);
     setOpenAlternatives(new Set());
 
     try {
@@ -328,6 +509,16 @@ export default function Solve() {
           headers: authHeaders(token),
           body: JSON.stringify({ matrix: currentMatrixCells() }),
         });
+      } else if (operation === "plot") {
+        response = await fetch(`${API_URL}/api/plot`, {
+          method: "POST",
+          headers: authHeaders(token),
+          body: JSON.stringify({
+            expression: equation,
+            lower: Number(plotLower),
+            upper: Number(plotUpper),
+          }),
+        });
       } else {
         // system: one equation per non-empty line.
         const equations = systemEquations
@@ -406,6 +597,9 @@ export default function Solve() {
           glossary: body.glossary ?? [],
           isInvertible: body.is_invertible,
         });
+      } else if (operation === "plot") {
+        const body = (await response.json()) as PlotApiResponse;
+        setPlotResult(body);
       } else {
         // derivative, integral, limit, series, inequality, sum, product:
         // same {result, method, ...} shape.
@@ -449,12 +643,13 @@ export default function Solve() {
     { key: "sum", label: t.solve.tabSum },
     { key: "product", label: t.solve.tabProduct },
     { key: "matrix", label: t.solve.tabMatrix },
+    { key: "plot", label: t.solve.tabPlot },
   ];
 
   const equationPlaceholder =
     operation === "inequality"
       ? t.solve.inequalityPlaceholder
-      : operation === "limit" || operation === "series"
+      : operation === "limit" || operation === "series" || operation === "plot"
         ? t.solve.expressionPlaceholder
         : operation === "sum" || operation === "product"
           ? t.solve.sumProductExpressionPlaceholder
@@ -870,6 +1065,43 @@ export default function Solve() {
               </div>
             )}
 
+            {operation === "plot" && (
+              <div className="flex gap-4">
+                <div className="flex-1">
+                  <label
+                    htmlFor="solve-plot-lower"
+                    className="mb-1 block text-sm font-medium text-gray-700"
+                  >
+                    {t.solve.plotLowerBoundLabel}
+                  </label>
+                  <input
+                    id="solve-plot-lower"
+                    type="number"
+                    required
+                    value={plotLower}
+                    onChange={(event) => setPlotLower(event.target.value)}
+                    className={inputClass}
+                  />
+                </div>
+                <div className="flex-1">
+                  <label
+                    htmlFor="solve-plot-upper"
+                    className="mb-1 block text-sm font-medium text-gray-700"
+                  >
+                    {t.solve.plotUpperBoundLabel}
+                  </label>
+                  <input
+                    id="solve-plot-upper"
+                    type="number"
+                    required
+                    value={plotUpper}
+                    onChange={(event) => setPlotUpper(event.target.value)}
+                    className={inputClass}
+                  />
+                </div>
+              </div>
+            )}
+
             <button
               type="submit"
               disabled={status === "loading"}
@@ -885,8 +1117,29 @@ export default function Solve() {
             </p>
           )}
 
-          {result && (
+          {(result || plotResult) && (
             <div className="mt-10 rounded-2xl border border-gray-200 bg-white p-6 shadow-md sm:p-8">
+              {plotResult ? (
+                <>
+                  {plotResult.input_latex && (
+                    <div className="overflow-x-auto rounded-lg bg-gray-50 px-4 py-3 text-center text-base text-gray-700">
+                      <MathRender latex={plotResult.input_latex} />
+                    </div>
+                  )}
+                  <div className="mt-6">
+                    <PlotChart
+                      points={plotResult.points}
+                      yMin={plotResult.y_min}
+                      yMax={plotResult.y_max}
+                      lower={plotResult.lower}
+                      upper={plotResult.upper}
+                      ariaLabel={t.solve.plotChartAriaLabel}
+                    />
+                  </div>
+                </>
+              ) : (
+                result && (
+                  <>
               {result.method && (
                 <span className="inline-block rounded-full bg-violet-100 px-3 py-1.5 text-xs font-bold tracking-wide text-violet-700">
                   {t.solve.methodLabel} : {result.method}
@@ -1035,6 +1288,9 @@ export default function Solve() {
                     })}
                   </div>
                 </>
+              )}
+                  </>
+                )
               )}
             </div>
           )}
