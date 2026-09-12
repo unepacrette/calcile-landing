@@ -1105,7 +1105,7 @@ export default function Solve() {
             <button
               type="submit"
               disabled={status === "loading"}
-              className="w-full rounded-lg bg-violet-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-60"
+              className="w-full rounded-lg bg-violet-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition duration-150 hover:bg-violet-700 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100"
             >
               {status === "loading" ? t.solve.submitLoading : t.solve.submit}
             </button>
@@ -1158,6 +1158,29 @@ export default function Solve() {
                 </div>
               )}
 
+              {/* Answer before steps, always -- the one universal pattern
+                  across every competitor researched (WolframAlpha, Symbolab,
+                  Mathway, Photomath): lead with the result, steps
+                  below/after. COMPETITIVE_ANALYSIS.md's own "what NOT to
+                  change" list claimed this was already the case here, citing
+                  "resultLatex renders after steps" as proof -- but "renders
+                  after" in the JSX/DOM order means steps appeared ABOVE the
+                  answer on the page, the opposite of the stated principle.
+                  Verified directly and corrected: Result now renders first,
+                  Steps second. */}
+              <h2 className="mt-10 text-sm font-bold uppercase tracking-widest text-violet-700">
+                {t.solve.resultHeading}
+              </h2>
+              {result.resultLatex ? (
+                <div className="mt-3 overflow-x-auto rounded-2xl border border-violet-200 bg-gradient-to-br from-violet-50 to-white px-6 py-8 text-center text-2xl font-semibold text-violet-900 shadow-inner sm:text-3xl">
+                  <MathRender latex={result.resultLatex} />
+                </div>
+              ) : (
+                <p className="mt-3 text-2xl font-bold text-violet-800">
+                  {result.values.join(", ")}
+                </p>
+              )}
+
               {result.steps.length > 0 ? (
                 <>
                   <h3 className="mt-10 text-xs font-bold uppercase tracking-widest text-gray-400">
@@ -1192,19 +1215,6 @@ export default function Solve() {
                     </ol>
                   </>
                 )
-              )}
-
-              <h2 className="mt-10 text-sm font-bold uppercase tracking-widest text-violet-700">
-                {t.solve.resultHeading}
-              </h2>
-              {result.resultLatex ? (
-                <div className="mt-3 overflow-x-auto rounded-2xl border border-violet-200 bg-gradient-to-br from-violet-50 to-white px-6 py-8 text-center text-2xl font-semibold text-violet-900 shadow-inner sm:text-3xl">
-                  <MathRender latex={result.resultLatex} />
-                </div>
-              ) : (
-                <p className="mt-3 text-2xl font-bold text-violet-800">
-                  {result.values.join(", ")}
-                </p>
               )}
 
               {result.glossary.length > 0 && (
@@ -1247,12 +1257,12 @@ export default function Solve() {
                                 ? t.solve.alternativeMethodsCollapse
                                 : t.solve.alternativeMethodsExpand
                             }
-                            className="flex w-full items-center justify-between px-4 py-3.5 text-left text-sm font-semibold text-gray-800 transition-colors hover:bg-gray-50"
+                            className="flex w-full items-center justify-between px-4 py-3.5 text-left text-sm font-semibold text-gray-800 transition-colors duration-150 hover:bg-gray-50 active:scale-95"
                           >
                             <span>{alt.method}</span>
                             <span
                               aria-hidden="true"
-                              className={`text-gray-400 transition-transform ${
+                              className={`text-gray-400 transition-transform duration-200 ${
                                 isOpen ? "rotate-180" : ""
                               }`}
                             >
