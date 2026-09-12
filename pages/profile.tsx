@@ -93,7 +93,7 @@ function TierCheckoutCard({
               type="button"
               onClick={() => setCycle(option)}
               aria-pressed={cycle === option}
-              className={`rounded-md px-2.5 py-1 transition ${
+              className={`rounded-md px-2.5 py-1 transition duration-150 active:scale-95 ${
                 cycle === option
                   ? "bg-violet-600 text-white"
                   : "text-gray-600 hover:bg-gray-50"
@@ -111,7 +111,7 @@ function TierCheckoutCard({
         type="button"
         disabled={disabled}
         onClick={() => onSubscribe(tier, cycle)}
-        className="mt-3 w-full rounded-lg bg-violet-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-60"
+        className="mt-3 w-full rounded-lg bg-violet-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition duration-150 hover:bg-violet-700 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100"
       >
         {t.auth.profile.billing.subscribe}
       </button>
@@ -410,7 +410,7 @@ export default function Profile() {
             <button
               type="submit"
               disabled={status === "loading"}
-              className="w-full rounded-lg bg-violet-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-60"
+              className="w-full rounded-lg bg-violet-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition duration-150 hover:bg-violet-700 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100"
             >
               {status === "loading"
                 ? t.auth.profile.submitLoading
@@ -526,7 +526,7 @@ export default function Profile() {
                     type="button"
                     disabled={billingActionLoading}
                     onClick={handleManageSubscription}
-                    className="mt-4 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-900 shadow-sm transition hover:border-gray-400 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="mt-4 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-900 shadow-sm transition duration-150 hover:border-gray-400 hover:bg-gray-50 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100"
                   >
                     {t.auth.profile.billing.managePortal}
                   </button>
