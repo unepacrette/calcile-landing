@@ -1,10 +1,16 @@
-import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import Head from "next/head";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import MathRender from "@/components/MathRender";
 import { useLanguage } from "@/lib/i18n";
+
+// mathlive registers a <document>-touching custom element at import time
+// (confirmed not SSR-safe -- see MathInput.tsx's own comment) -- loaded
+// client-only, never during the server render.
+const MathInput = dynamic(() => import("@/components/MathInput"), { ssr: false });
 import {
   API_URL,
   authHeaders,
@@ -396,28 +402,6 @@ export default function Solve() {
     router.replace("/login");
   }
 
-  // Tab bar overflow (9 tools, doesn't fit on a narrow screen): the bar
-  // scrolls horizontally instead, with a left/right edge fade shown only
-  // while there's more to scroll in that direction — recomputed on mount,
-  // on window resize, and whenever the tab labels themselves change
-  // (language switch), since any of those can change scrollWidth.
-  const tabScrollRef = useRef<HTMLDivElement>(null);
-  const [canScrollTabsLeft, setCanScrollTabsLeft] = useState(false);
-  const [canScrollTabsRight, setCanScrollTabsRight] = useState(false);
-
-  const updateTabScrollShadows = useCallback(() => {
-    const el = tabScrollRef.current;
-    if (!el) return;
-    setCanScrollTabsLeft(el.scrollLeft > 4);
-    setCanScrollTabsRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 4);
-  }, []);
-
-  useEffect(() => {
-    updateTabScrollShadows();
-    window.addEventListener("resize", updateTabScrollShadows);
-    return () => window.removeEventListener("resize", updateTabScrollShadows);
-  }, [updateTabScrollShadows, t]);
-
   function currentMatrixCells(): string[][] {
     return matrixCells.slice(0, matrixSize).map((row) => row.slice(0, matrixSize));
   }
@@ -436,6 +420,18 @@ export default function Solve() {
       }
     }
     setMatrixCellError(null);
+
+    // MathInput (MathLive's <math-field>) is a form-associated custom
+    // element, but its participation in native HTML5 `required` validation
+    // isn't something to assume -- unlike a plain <input required>, which
+    // this field replaced. Checked explicitly instead of relying on it.
+    if (
+      operation !== "system" &&
+      operation !== "matrix" &&
+      equation.trim() === ""
+    ) {
+      return;
+    }
 
     setStatus("loading");
     setResult(null);
@@ -702,51 +698,29 @@ export default function Solve() {
             {t.solve.subtitle}
           </p>
 
-          <div className="relative mt-8">
-            <div
-              ref={tabScrollRef}
-              onScroll={updateTabScrollShadows}
-              className="flex gap-2 overflow-x-auto rounded-full border border-rule-strong bg-paper-raised p-1 text-sm font-semibold shadow-sm [&::-webkit-scrollbar]:hidden"
-              style={{ scrollbarWidth: "none" }}
-            >
-              {tabs.map((tab) => (
-                <button
-                  key={tab.key}
-                  type="button"
-                  onClick={(event) => {
-                    setOperation(tab.key);
-                    event.currentTarget.scrollIntoView({
-                      behavior: "smooth",
-                      inline: "nearest",
-                      block: "nearest",
-                    });
-                  }}
-                  aria-pressed={operation === tab.key}
-                  className={`shrink-0 whitespace-nowrap rounded-full px-4 py-2 transition ${
-                    operation === tab.key
-                      ? "bg-mark text-paper-raised"
-                      : "text-ink-soft hover:bg-paper"
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-            {/* Edge fades: the only hint (besides scrolling itself) that
-                the 9-tab bar has more tools off-screen — only shown on the
-                side that actually has more to scroll to. */}
-            {canScrollTabsLeft && (
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-y-0 left-0 w-8 rounded-l-full bg-gradient-to-r from-paper-raised to-transparent"
-              />
-            )}
-            {canScrollTabsRight && (
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-y-0 right-0 w-8 rounded-r-full bg-gradient-to-l from-paper-raised to-transparent"
-              />
-            )}
+          {/* All 11 tabs always visible, wrapped onto as many rows as the
+              viewport needs -- replaces an earlier hidden-scrollbar +
+              edge-fade pattern that relied on a 32px gradient (barely
+              visible against a dark background, confirmed directly from
+              a real screenshot) as the only hint that more tabs existed
+              off-screen. Wrapping has zero discoverability risk: nothing
+              is ever hidden, so there's nothing to discover. */}
+          <div className="mt-8 flex flex-wrap gap-2 rounded-2xl border border-rule-strong bg-paper-raised p-2 text-sm font-semibold shadow-sm">
+            {tabs.map((tab) => (
+              <button
+                key={tab.key}
+                type="button"
+                onClick={() => setOperation(tab.key)}
+                aria-pressed={operation === tab.key}
+                className={`rounded-full px-4 py-2 transition duration-150 active:scale-95 ${
+                  operation === tab.key
+                    ? "bg-mark text-paper-raised"
+                    : "text-ink-soft hover:bg-paper"
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
           </div>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-4">
@@ -755,15 +729,15 @@ export default function Solve() {
                 <label htmlFor="solve-equation" className="sr-only">
                   {t.solve.equationLabel}
                 </label>
-                <input
+                <MathInput
                   id="solve-equation"
-                  type="text"
-                  required
                   value={equation}
-                  onChange={(event) => setEquation(event.target.value)}
+                  onChange={setEquation}
                   placeholder={equationPlaceholder}
-                  className={inputClass}
                 />
+                {/* Real math symbols form as you type (fractions, exponents,
+                    roots) via MathLive -- typing "x^2" live-renders a
+                    superscript instead of showing raw "x^2" as flat text. */}
               </div>
             )}
 

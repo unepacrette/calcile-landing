@@ -56,6 +56,12 @@ const NPM_DEPS: Array<[string, string]> = [
   ["tailwindcss", "MIT"],
   ["eslint", "MIT"],
   ["eslint-config-next", "MIT"],
+  // Renders the LaTeX every calculation result already comes back as.
+  ["katex", "MIT"],
+  // Live WYSIWYG math input (MathLive's <math-field>) -- the equation
+  // field on /solve, real symbols forming as you type instead of a
+  // plain-text box.
+  ["mathlive", "MIT"],
 ];
 
 function DepTable({
