@@ -17,6 +17,10 @@ export const translations = {
       ctaDemo: "Réserver une démo",
       reassurance:
         "Gratuit et sans engagement — aucune carte bancaire requise pour rejoindre la liste d'attente.",
+      trustSignalPrefix: "Propulsé par",
+      trustSignalLinkLabel: "SymPy",
+      trustSignalSuffix:
+        ", utilisé dans plus de 30 000 dépôts et cité dans plus de 120 publications académiques par an.",
     },
     audience: {
       heading: "Pour qui ?",
@@ -412,6 +416,10 @@ export const translations = {
       ctaDemo: "Book a demo",
       reassurance:
         "Free, no commitment — no credit card required to join the waitlist.",
+      trustSignalPrefix: "Powered by",
+      trustSignalLinkLabel: "SymPy",
+      trustSignalSuffix:
+        ", used in 30,000+ repositories and cited in 120+ academic papers a year.",
     },
     audience: {
       heading: "Who is it for?",

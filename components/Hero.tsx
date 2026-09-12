@@ -31,6 +31,25 @@ export default function Hero() {
           </a>
         </div>
         <p className="mt-4 text-sm text-gray-500">{t.hero.reassurance}</p>
+        {/* Real, sourced fact about the underlying engine (sympy.org /
+            NumFOCUS-reported repo and citation counts) -- never a
+            fabricated Calcile-specific usage number. See
+            COMPETITIVE_ANALYSIS.md's trust-bar item: still pending real
+            Calcile numbers (users, equations solved) from Amaury; this
+            is a legitimate, verifiable trust signal in the meantime, not
+            a placeholder for those. */}
+        <p className="mt-2 text-xs text-gray-400">
+          {t.hero.trustSignalPrefix}{" "}
+          <a
+            href="https://www.sympy.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium underline decoration-gray-300 underline-offset-2 hover:text-gray-600"
+          >
+            {t.hero.trustSignalLinkLabel}
+          </a>
+          {t.hero.trustSignalSuffix}
+        </p>
       </div>
     </section>
   );
