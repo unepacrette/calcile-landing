@@ -21,16 +21,23 @@ export default function Home() {
         <meta name="description" content={t.meta.description} />
       </Head>
 
-      <div className="fixed right-4 top-4 z-50 flex items-center gap-3">
-        {/* Discreet entry point to the closed beta — not a primary CTA. */}
-        <Link
-          href="/login"
-          className="text-xs font-medium text-gray-500 transition duration-150 hover:text-gray-700 active:scale-95"
-        >
-          {t.auth.betaLink}
-        </Link>
-        <LanguageSwitcher />
-      </div>
+      <header className="border-b border-rule bg-paper">
+        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
+          <span className="font-display text-xl font-semibold text-ink">
+            calc<span className="italic text-mark">ile</span>
+          </span>
+          <div className="flex items-center gap-3">
+            {/* Discreet entry point to the closed beta — not a primary CTA. */}
+            <Link
+              href="/login"
+              className="text-xs font-medium text-ink-faint transition duration-150 hover:text-ink-soft active:scale-95"
+            >
+              {t.auth.betaLink}
+            </Link>
+            <LanguageSwitcher />
+          </div>
+        </div>
+      </header>
 
       <main>
         <Hero />

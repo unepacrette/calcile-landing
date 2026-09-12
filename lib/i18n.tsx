@@ -5,18 +5,22 @@ export type Lang = "fr" | "en";
 export const translations = {
   fr: {
     meta: {
-      title: "Calcile — Résous tes maths, comprends chaque étape",
+      title: "Calcile — Comprends chaque étape de tes calculs",
       description:
-        "L'API de calcul symbolique qui explique, pas juste qui répond. Comme WolframAlpha, mais avec les étapes détaillées et 80% moins cher.",
+        "Équations, dérivées, intégrales, systèmes, matrices — Calcile explique chaque étape avec un vrai calcul vérifié derrière, jamais une réponse inventée.",
     },
     hero: {
-      title: "Calcile — Résous tes maths, comprends chaque étape",
+      eyebrow: "Calcul symbolique, étape par étape",
+      title: "Un exercice qui bloque ?",
+      titleAccent: "La méthode, pas juste le résultat.",
       subtitle:
-        "L'API de calcul symbolique qui explique, pas juste qui répond. Comme WolframAlpha, mais avec les étapes détaillées et 80% moins cher.",
-      ctaWaitlist: "Rejoindre la waitlist",
+        "Équations, dérivées, intégrales, systèmes, matrices — Calcile explique chaque étape avec un vrai calcul vérifié derrière, jamais une réponse inventée.",
+      ctaWaitlist: "Rejoindre la liste d'attente",
       ctaDemo: "Réserver une démo",
-      reassurance:
-        "Gratuit et sans engagement — aucune carte bancaire requise pour rejoindre la liste d'attente.",
+      reassurance: "Gratuit, sans carte bancaire, sans engagement.",
+      demoTag: "Exemple",
+      demoInputLabel: "résoudre :",
+      demoKeyStepPrefix: "Étape clé",
       waitlistCountPrefix: "Rejoins les",
       waitlistCountSuffix: "premiers inscrits sur la liste d'attente.",
       trustSignalPrefix: "Propulsé par",
@@ -30,21 +34,21 @@ export const translations = {
         {
           title: "Étudiants",
           description:
-            "Vérifie tes réponses et comprends chaque étape de résolution — comme un prof particulier disponible 24/7.",
+            "Vérifie ta réponse et comprends la méthode — un prof particulier disponible à toute heure.",
           price: "4,90€/mois",
           annualNote: "ou 39€/an en annuel",
         },
         {
           title: "Profs",
           description:
-            "Automatise la correction d'exercices. Économise 3-4h par semaine.",
+            "Automatise la correction d'exercices. Économise 3 à 4h par semaine.",
           price: "50€/mois",
           annualNote: "ou 450€/an en annuel",
         },
         {
           title: "Labs/Universités",
           description:
-            "Alternative SaaS à Mathematica/Maple, API robuste, 80% moins cher.",
+            "API robuste et haute disponibilité, pensée pour s'intégrer à vos outils existants.",
           price: "Sur devis",
         },
       ],
@@ -52,14 +56,14 @@ export const translations = {
     howItWorks: {
       heading: "Comment ça marche",
       steps: [
-        "Entre ton équation ou expression",
-        "Calcile la résout avec SymPy (équations, dérivées, intégrales)",
-        "Tu reçois la réponse ET chaque étape de la résolution",
+        "Tape ton équation ou ton expression",
+        "Calcile la résout avec SymPy — équations, dérivées, intégrales, et plus",
+        "Tu obtiens la réponse ET chaque étape. Jamais l'une sans l'autre.",
       ],
     },
     pricing: {
       heading: "Tarifs",
-      cta: "Rejoindre la waitlist",
+      cta: "Rejoindre la liste d'attente",
       faqQuestion: "Faut-il payer pour rejoindre la liste d'attente ?",
       faqAnswer:
         "Non. L'inscription est gratuite et ne demande qu'un email — tu ne payes qu'au lancement, si tu choisis de t'abonner.",
@@ -82,7 +86,7 @@ export const translations = {
           description: "Pour automatiser la correction d'exercices.",
           features: [
             "Tout ce qui est inclus dans Student",
-            "Volume de calculs plus élevé",
+            "Pensé pour un usage intensif en classe",
             "Support prioritaire",
           ],
         },
@@ -92,7 +96,7 @@ export const translations = {
           description: "Pour les labs et universités.",
           features: [
             "API robuste, haute disponibilité",
-            "Alternative à Mathematica/Maple",
+            "Intégration à vos outils internes",
             "Accompagnement dédié",
           ],
         },
@@ -406,18 +410,22 @@ export const translations = {
   },
   en: {
     meta: {
-      title: "Calcile — Solve your math, understand every step",
+      title: "Calcile — Understand every step of your calculations",
       description:
-        "The symbolic computation API that explains, not just answers. Like WolframAlpha, but with full step-by-step breakdowns and 80% cheaper.",
+        "Equations, derivatives, integrals, systems, matrices — Calcile explains every step with a real, verified computation behind it, never a made-up answer.",
     },
     hero: {
-      title: "Calcile — Solve your math, understand every step",
+      eyebrow: "Symbolic computation, step by step",
+      title: "Stuck on a problem?",
+      titleAccent: "The method, not just the result.",
       subtitle:
-        "The symbolic computation API that explains, not just answers. Like WolframAlpha, but with full step-by-step breakdowns and 80% cheaper.",
+        "Equations, derivatives, integrals, systems, matrices — Calcile explains every step with a real, verified computation behind it, never a made-up answer.",
       ctaWaitlist: "Join the waitlist",
       ctaDemo: "Book a demo",
-      reassurance:
-        "Free, no commitment — no credit card required to join the waitlist.",
+      reassurance: "Free, no credit card, no commitment.",
+      demoTag: "Example",
+      demoInputLabel: "solve:",
+      demoKeyStepPrefix: "Key step",
       waitlistCountPrefix: "Join the",
       waitlistCountSuffix: "first people on the waitlist.",
       trustSignalPrefix: "Powered by",
@@ -431,21 +439,21 @@ export const translations = {
         {
           title: "Students",
           description:
-            "Check your answers and understand every step — like a personal tutor available 24/7.",
+            "Check your answer and understand the method — a personal tutor available any time.",
           price: "€4.90/month",
           annualNote: "or €39/year billed annually",
         },
         {
           title: "Professors",
           description:
-            "Automate exercise grading. Save 3-4 hours a week.",
+            "Automate exercise grading. Save 3 to 4 hours a week.",
           price: "€50/month",
           annualNote: "or €450/year billed annually",
         },
         {
           title: "Labs/Universities",
           description:
-            "SaaS alternative to Mathematica/Maple, robust API, 80% cheaper.",
+            "A robust, high-availability API built to integrate with your existing tools.",
           price: "Custom pricing",
         },
       ],
@@ -453,9 +461,9 @@ export const translations = {
     howItWorks: {
       heading: "How it works",
       steps: [
-        "Enter your equation or expression",
-        "Calcile solves it with SymPy (equations, derivatives, integrals)",
-        "You get the answer AND every step of the resolution",
+        "Type your equation or expression",
+        "Calcile solves it with SymPy — equations, derivatives, integrals, and more",
+        "You get the answer AND every step. Never one without the other.",
       ],
     },
     pricing: {
@@ -483,7 +491,7 @@ export const translations = {
           description: "Automate exercise grading.",
           features: [
             "Everything in Student",
-            "Higher calculation volume",
+            "Built for heavy classroom use",
             "Priority support",
           ],
         },
@@ -493,7 +501,7 @@ export const translations = {
           description: "For labs and universities.",
           features: [
             "Robust, high-availability API",
-            "Alternative to Mathematica/Maple",
+            "Integration with your internal tools",
             "Dedicated support",
           ],
         },

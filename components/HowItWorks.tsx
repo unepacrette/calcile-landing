@@ -4,18 +4,21 @@ export default function HowItWorks() {
   const { t } = useLanguage();
 
   return (
-    <section className="bg-gray-50">
+    <section className="border-t border-rule bg-paper-raised">
       <div className="mx-auto max-w-5xl px-6 py-20">
-        <h2 className="text-center text-3xl font-bold text-gray-900">
+        <h2 className="text-center font-display text-3xl font-semibold text-ink">
           {t.howItWorks.heading}
         </h2>
         <div className="mt-12 grid gap-8 sm:grid-cols-3">
           {t.howItWorks.steps.map((title, index) => (
-            <div key={title} className="flex flex-col items-center text-center">
-              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-violet-600 text-lg font-bold text-white">
-                {index + 1}
+            <div key={title} className="relative pl-10">
+              <span
+                aria-hidden
+                className="absolute left-0 top-0 font-display text-2xl font-medium italic text-mark"
+              >
+                {String(index + 1).padStart(2, "0")}
               </span>
-              <p className="mt-4 text-base text-gray-700">{title}</p>
+              <p className="text-[15px] text-ink-soft">{title}</p>
             </div>
           ))}
         </div>

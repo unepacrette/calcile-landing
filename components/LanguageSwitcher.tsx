@@ -4,13 +4,13 @@ export default function LanguageSwitcher() {
   const { lang, setLang } = useLanguage();
 
   return (
-    <div className="flex overflow-hidden rounded-full border border-gray-300/70 bg-white/70 text-xs font-semibold shadow-sm backdrop-blur-md">
+    <div className="flex overflow-hidden rounded-full border border-rule-strong/70 bg-paper-raised/70 font-mono text-xs backdrop-blur-md">
       <button
         type="button"
         onClick={() => setLang("fr")}
         aria-pressed={lang === "fr"}
         className={`px-3 py-1.5 transition duration-150 active:scale-95 ${
-          lang === "fr" ? "bg-violet-600 text-white" : "text-gray-600 hover:bg-gray-50"
+          lang === "fr" ? "bg-mark text-paper-raised" : "text-ink-soft hover:bg-paper"
         }`}
       >
         FR
@@ -20,7 +20,7 @@ export default function LanguageSwitcher() {
         onClick={() => setLang("en")}
         aria-pressed={lang === "en"}
         className={`px-3 py-1.5 transition duration-150 active:scale-95 ${
-          lang === "en" ? "bg-violet-600 text-white" : "text-gray-600 hover:bg-gray-50"
+          lang === "en" ? "bg-mark text-paper-raised" : "text-ink-soft hover:bg-paper"
         }`}
       >
         EN

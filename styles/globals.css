@@ -1,9 +1,51 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --accent: #6d28d9;
+/* Design tokens ("Encre & Preuve"): fountain-pen ink on cool paper, a
+   warm red-pen accent for what matters (mirrors is_key/highlighted_latex
+   in /solve -- the accent literally means "this is the important part"
+   everywhere it appears, not just decoration). Declared as real CSS
+   custom properties on :root (Tailwind v4 emits @theme tokens this way),
+   so the prefers-color-scheme block below can override them and every
+   bg-paper/text-ink/etc. utility picks up the new value automatically. */
+@theme {
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-sans: var(--font-source-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, "IBM Plex Mono", monospace;
+
+  --color-paper: #f4f5f0;
+  --color-paper-raised: #fbfcf9;
+  --color-ink: #1c2740;
+  --color-ink-soft: #5b6478;
+  --color-ink-faint: #8b93a3;
+  --color-mark: #b8442d;
+  --color-mark-soft: #f3e3dc;
+  --color-mark-strong: #9c3620;
+  --color-rule: #d6d8ca;
+  --color-rule-strong: #b9bcaa;
+  --color-check: #3f6b4a;
+  --color-check-soft: #e3ece4;
+}
+
+/* System dark mode only (no in-app toggle) -- redefines the same
+   tokens, never introduces new ones, so every utility class built on
+   them (bg-paper, text-ink, border-rule, ...) stays correct without
+   change. Chalkboard green-black rather than a generic near-black, to
+   stay in the same "real material" logic as the light palette. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-paper: #182420;
+    --color-paper-raised: #1f2d28;
+    --color-ink: #eee9dd;
+    --color-ink-soft: #b3bcae;
+    --color-ink-faint: #7c8a80;
+    --color-mark: #e2794f;
+    --color-mark-soft: #33261e;
+    --color-mark-strong: #f0916a;
+    --color-rule: #3a4a41;
+    --color-rule-strong: #4d5f54;
+    --color-check: #7fae8c;
+    --color-check-soft: #24352a;
+  }
 }
 
 html {
@@ -11,14 +53,7 @@ html {
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family:
-    system-ui,
-    -apple-system,
-    "Segoe UI",
-    Roboto,
-    Helvetica,
-    Arial,
-    sans-serif;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
 }

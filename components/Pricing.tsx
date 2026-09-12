@@ -8,37 +8,33 @@ export default function Pricing({ onSelectTier }: PricingProps) {
   const { t } = useLanguage();
 
   return (
-    <section className="bg-white">
+    <section className="border-t border-rule bg-paper">
       <div className="mx-auto max-w-5xl px-6 py-20">
-        <h2 className="text-center text-3xl font-bold text-gray-900">
+        <h2 className="text-center font-display text-3xl font-semibold text-ink">
           {t.pricing.heading}
         </h2>
-        <div className="mt-12 grid gap-8 sm:grid-cols-3">
+        <div className="mt-12 grid gap-4 sm:grid-cols-3">
           {t.pricing.tiers.map((tier, index) => (
             <div
               key={tier.name}
-              className={`flex flex-col rounded-xl border p-6 ${
-                index === 1
-                  ? "border-violet-600 bg-violet-50 shadow-md"
-                  : "border-gray-200 bg-gray-50"
+              className={`flex flex-col rounded-xl border bg-paper-raised p-6 ${
+                index === 1 ? "border-mark shadow-[0_0_0_1px_var(--color-mark)]" : "border-rule"
               }`}
             >
-              <h3 className="text-lg font-semibold text-gray-900">
+              <h3 className="font-display text-lg font-semibold text-ink">
                 {tier.name}
               </h3>
-              <p className="mt-1 text-2xl font-bold text-violet-700">
-                {tier.price}
-              </p>
+              <p className="mt-1 font-mono text-2xl text-ink">{tier.price}</p>
               {"annualNote" in tier && tier.annualNote && (
-                <p className="mt-1 text-xs font-medium text-violet-600">
+                <p className="mt-1 text-xs font-medium text-ink-faint">
                   {tier.annualNote}
                 </p>
               )}
-              <p className="mt-3 text-sm text-gray-600">{tier.description}</p>
-              <ul className="mt-4 flex-1 space-y-2 text-sm text-gray-700">
+              <p className="mt-3 text-sm text-ink-soft">{tier.description}</p>
+              <ul className="mt-4 flex-1 space-y-2 text-sm text-ink">
                 {tier.features.map((feature) => (
                   <li key={feature} className="flex gap-2">
-                    <span aria-hidden className="text-violet-600">
+                    <span aria-hidden className="font-semibold text-check">
                       ✓
                     </span>
                     <span>{feature}</span>
@@ -50,8 +46,8 @@ export default function Pricing({ onSelectTier }: PricingProps) {
                 onClick={() => onSelectTier(tier.name)}
                 className={`mt-6 rounded-lg px-4 py-2.5 text-center text-sm font-semibold transition duration-150 active:scale-95 ${
                   index === 1
-                    ? "bg-violet-600 text-white hover:bg-violet-700"
-                    : "border border-gray-300 bg-white text-gray-900 hover:border-gray-400 hover:bg-gray-100"
+                    ? "bg-mark text-paper-raised hover:bg-mark-strong"
+                    : "border border-rule-strong text-ink hover:border-ink-soft"
                 }`}
               >
                 {t.pricing.cta}
@@ -59,8 +55,8 @@ export default function Pricing({ onSelectTier }: PricingProps) {
             </div>
           ))}
         </div>
-        <p className="mx-auto mt-8 max-w-md text-center text-sm text-gray-500">
-          <span className="font-medium text-gray-700">{t.pricing.faqQuestion}</span>{" "}
+        <p className="mx-auto mt-8 max-w-md text-center text-sm text-ink-soft">
+          <span className="font-medium text-ink">{t.pricing.faqQuestion}</span>{" "}
           {t.pricing.faqAnswer}
         </p>
       </div>
