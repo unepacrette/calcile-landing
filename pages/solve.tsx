@@ -704,13 +704,13 @@ export default function Solve() {
             {t.solve.subtitle}
           </p>
 
-          {/* A symbol grid (WolframAlpha/Symbolab-style) instead of a row
-              of French words: each chip shows the operation's own math
-              notation, with the full name kept as title/aria-label so a
-              bare glyph like "∫" is never the only cue. All 11 operations
-              always shown flat -- every button always fully visible,
-              nothing hidden behind a category filter. */}
-          <div className="mt-8 grid grid-cols-4 gap-2 rounded-2xl border border-rule-strong bg-paper-raised p-2 shadow-sm sm:grid-cols-6">
+          {/* A thin toolbar strip, WolframAlpha's own "Math Input" bar
+              style -- small, tightly-packed, understated buttons (not the
+              earlier big colorful tile grid, dropped per direct feedback)
+              in the app's own palette. The full name stays as title/
+              aria-label, since a bare glyph like "∫" is never the only
+              cue for what's selected -- also shown in the caption below. */}
+          <div className="mt-6 flex flex-wrap justify-center gap-1 rounded-xl border border-rule bg-paper-raised p-1.5">
             {tabs.map((tab) => (
               <button
                 key={tab.key}
@@ -719,17 +719,17 @@ export default function Solve() {
                 aria-pressed={operation === tab.key}
                 aria-label={tab.label}
                 title={tab.label}
-                className={`flex aspect-square flex-col items-center justify-center rounded-xl font-display text-lg transition duration-150 active:scale-95 ${
+                className={`flex h-9 min-w-9 items-center justify-center rounded-md px-2 font-display text-sm transition duration-150 active:scale-95 ${
                   operation === tab.key
-                    ? "bg-mark text-paper-raised"
-                    : "bg-paper text-ink-soft hover:bg-mark-soft hover:text-mark-strong"
+                    ? "bg-mark-soft text-mark-strong"
+                    : "text-ink-soft hover:bg-paper"
                 }`}
               >
                 {tab.glyph}
               </button>
             ))}
           </div>
-          <p className="mt-2 text-center text-xs text-ink-faint">
+          <p className="mt-1.5 text-center text-xs text-ink-faint">
             {tabs.find((tab) => tab.key === operation)?.label}
           </p>
 
