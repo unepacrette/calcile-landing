@@ -29,7 +29,13 @@ type LimitDirection = "both" | "left" | "right";
 type MatrixSize = 2 | 3;
 type MatrixOperation = "determinant" | "inverse" | "eigenvalues";
 
-type StepApi = { description: string; latex: string };
+// is_key marks the step where the actual solving technique is chosen/
+// applied (see calcile-api's solver.sympy_engine.Step docstring) --
+// always present (defaults to false server-side, never omitted), used
+// here for the two-tone step hierarchy (COMPETITIVE_ANALYSIS.md, adapted
+// from Symbolab): a key step is visually distinguished from routine
+// setup/wrap-up steps around it.
+type StepApi = { description: string; latex: string; is_key: boolean };
 
 type GlossaryEntryApi = { symbol: string; name: string; definition: string };
 
@@ -1190,10 +1196,19 @@ export default function Solve() {
                     {result.steps.map((step, index) => (
                       <li
                         key={index}
-                        className="rounded-r-lg border-l-[3px] border-violet-300 bg-gray-50/60 py-2 pl-4 pr-3"
+                        className={
+                          step.is_key
+                            ? "rounded-r-lg border-l-[3px] border-violet-600 bg-violet-50/80 py-2 pl-4 pr-3"
+                            : "rounded-r-lg border-l-[3px] border-violet-300 bg-gray-50/60 py-2 pl-4 pr-3"
+                        }
                       >
-                        <p className="text-[13px] font-medium text-gray-600">
+                        <p className="flex items-center gap-2 text-[13px] font-medium text-gray-600">
                           {step.description}
+                          {step.is_key && (
+                            <span className="rounded-full bg-violet-600 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+                              {t.solve.keyStepLabel}
+                            </span>
+                          )}
                         </p>
                         <div className="mt-1.5 overflow-x-auto text-[15px] text-gray-900">
                           <MathRender latex={step.latex} />
@@ -1276,10 +1291,19 @@ export default function Solve() {
                                 {alt.steps.map((step, stepIndex) => (
                                   <li
                                     key={stepIndex}
-                                    className="rounded-r-lg border-l-[3px] border-violet-300 bg-gray-50/60 py-2 pl-4 pr-3"
+                                    className={
+                                      step.is_key
+                                        ? "rounded-r-lg border-l-[3px] border-violet-600 bg-violet-50/80 py-2 pl-4 pr-3"
+                                        : "rounded-r-lg border-l-[3px] border-violet-300 bg-gray-50/60 py-2 pl-4 pr-3"
+                                    }
                                   >
-                                    <p className="text-[13px] font-medium text-gray-600">
+                                    <p className="flex items-center gap-2 text-[13px] font-medium text-gray-600">
                                       {step.description}
+                                      {step.is_key && (
+                                        <span className="rounded-full bg-violet-600 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+                                          {t.solve.keyStepLabel}
+                                        </span>
+                                      )}
                                     </p>
                                     <div className="mt-1.5 overflow-x-auto text-[15px] text-gray-900">
                                       <MathRender latex={step.latex} />
