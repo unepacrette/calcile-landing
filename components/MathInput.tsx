@@ -56,9 +56,13 @@ export default function MathInput({ id, value, onChange, placeholder }: MathInpu
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    el.mathVirtualKeyboardPolicy = "auto";
+    el.mathVirtualKeyboardPolicy = "manual";
     el.smartFence = true;
     el.smartSuperscript = true;
+    // No built-in context menu button -- this is a plain equation field,
+    // not a full editor; the "≡ Menu" chrome it shows by default wasn't
+    // asked for and isn't useful here.
+    el.menuItems = [];
     if (placeholder) el.placeholder = placeholder;
   }, [placeholder]);
 

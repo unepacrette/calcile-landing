@@ -30,6 +30,9 @@ type Operation =
   | "product"
   | "matrix"
   | "plot";
+// Groups the 11 operations by math domain instead of one flat row of
+// tabs -- pick a domain first, then the specific tool within it.
+type Category = "algebra" | "analysis" | "graph";
 type Status = "idle" | "loading" | "error";
 type LimitDirection = "both" | "left" | "right";
 type MatrixSize = 2 | 3;
@@ -340,6 +343,7 @@ export default function Solve() {
   }, [router]);
 
   const [operation, setOperation] = useState<Operation>("solve");
+  const [category, setCategory] = useState<Category>("algebra");
   const [equation, setEquation] = useState("");
   const [order, setOrder] = useState("");
   const [lowerBound, setLowerBound] = useState("");
@@ -643,19 +647,31 @@ export default function Solve() {
     return null;
   }
 
-  const tabs: { key: Operation; label: string }[] = [
-    { key: "solve", label: t.solve.tabSolve },
-    { key: "derivative", label: t.solve.tabDerivative },
-    { key: "integral", label: t.solve.tabIntegral },
-    { key: "limit", label: t.solve.tabLimit },
-    { key: "series", label: t.solve.tabSeries },
-    { key: "inequality", label: t.solve.tabInequality },
-    { key: "system", label: t.solve.tabSystem },
-    { key: "sum", label: t.solve.tabSum },
-    { key: "product", label: t.solve.tabProduct },
-    { key: "matrix", label: t.solve.tabMatrix },
-    { key: "plot", label: t.solve.tabPlot },
+  const tabs: { key: Operation; label: string; category: Category }[] = [
+    { key: "solve", label: t.solve.tabSolve, category: "algebra" },
+    { key: "system", label: t.solve.tabSystem, category: "algebra" },
+    { key: "inequality", label: t.solve.tabInequality, category: "algebra" },
+    { key: "matrix", label: t.solve.tabMatrix, category: "algebra" },
+    { key: "derivative", label: t.solve.tabDerivative, category: "analysis" },
+    { key: "integral", label: t.solve.tabIntegral, category: "analysis" },
+    { key: "limit", label: t.solve.tabLimit, category: "analysis" },
+    { key: "series", label: t.solve.tabSeries, category: "analysis" },
+    { key: "sum", label: t.solve.tabSum, category: "analysis" },
+    { key: "product", label: t.solve.tabProduct, category: "analysis" },
+    { key: "plot", label: t.solve.tabPlot, category: "graph" },
   ];
+  const categories: { key: Category; label: string }[] = [
+    { key: "algebra", label: t.solve.categoryAlgebra },
+    { key: "analysis", label: t.solve.categoryAnalysis },
+    { key: "graph", label: t.solve.categoryGraph },
+  ];
+  const visibleTabs = tabs.filter((tab) => tab.category === category);
+
+  function handleSelectCategory(next: Category) {
+    setCategory(next);
+    const firstInCategory = tabs.find((tab) => tab.category === next);
+    if (firstInCategory) setOperation(firstInCategory.key);
+  }
 
   const equationPlaceholder =
     operation === "inequality"
@@ -698,15 +714,31 @@ export default function Solve() {
             {t.solve.subtitle}
           </p>
 
-          {/* All 11 tabs always visible, wrapped onto as many rows as the
-              viewport needs -- replaces an earlier hidden-scrollbar +
-              edge-fade pattern that relied on a 32px gradient (barely
-              visible against a dark background, confirmed directly from
-              a real screenshot) as the only hint that more tabs existed
-              off-screen. Wrapping has zero discoverability risk: nothing
-              is ever hidden, so there's nothing to discover. */}
-          <div className="mt-8 flex flex-wrap gap-2 rounded-2xl border border-rule-strong bg-paper-raised p-2 text-sm font-semibold shadow-sm">
-            {tabs.map((tab) => (
+          {/* Two tiers: pick a math domain first (algebra/analysis/graph),
+              then the specific tool within it -- replaces one flat
+              11-item row (which used a hidden-scrollbar + a barely-visible
+              edge fade as its only overflow hint, confirmed broken from a
+              real screenshot). Every button on both tiers is always fully
+              visible; nothing is ever hidden. */}
+          <div className="mt-8 flex flex-wrap gap-2">
+            {categories.map((cat) => (
+              <button
+                key={cat.key}
+                type="button"
+                onClick={() => handleSelectCategory(cat.key)}
+                aria-pressed={category === cat.key}
+                className={`rounded-full px-5 py-2 text-sm font-semibold transition duration-150 active:scale-95 ${
+                  category === cat.key
+                    ? "bg-ink text-paper-raised"
+                    : "border border-rule-strong bg-paper-raised text-ink-soft hover:bg-paper"
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+          <div className="mt-3 flex flex-wrap gap-2 rounded-2xl border border-rule-strong bg-paper-raised p-2 text-sm font-semibold shadow-sm">
+            {visibleTabs.map((tab) => (
               <button
                 key={tab.key}
                 type="button"
