@@ -15,6 +15,8 @@ export const translations = {
         "L'API de calcul symbolique qui explique, pas juste qui répond. Comme WolframAlpha, mais avec les étapes détaillées et 80% moins cher.",
       ctaWaitlist: "Rejoindre la waitlist",
       ctaDemo: "Réserver une démo",
+      reassurance:
+        "Gratuit et sans engagement — aucune carte bancaire requise pour rejoindre la liste d'attente.",
     },
     audience: {
       heading: "Pour qui ?",
@@ -52,6 +54,9 @@ export const translations = {
     pricing: {
       heading: "Tarifs",
       cta: "Rejoindre la waitlist",
+      faqQuestion: "Faut-il payer pour rejoindre la liste d'attente ?",
+      faqAnswer:
+        "Non. L'inscription est gratuite et ne demande qu'un email — tu ne payes qu'au lancement, si tu choisis de t'abonner.",
       tiers: [
         {
           name: "Student",
@@ -404,6 +409,8 @@ export const translations = {
         "The symbolic computation API that explains, not just answers. Like WolframAlpha, but with full step-by-step breakdowns and 80% cheaper.",
       ctaWaitlist: "Join the waitlist",
       ctaDemo: "Book a demo",
+      reassurance:
+        "Free, no commitment — no credit card required to join the waitlist.",
     },
     audience: {
       heading: "Who is it for?",
@@ -441,6 +448,9 @@ export const translations = {
     pricing: {
       heading: "Pricing",
       cta: "Join the waitlist",
+      faqQuestion: "Do I have to pay to join the waitlist?",
+      faqAnswer:
+        "No. Signing up is free and only takes an email — you only pay at launch, if you choose to subscribe.",
       tiers: [
         {
           name: "Student",

@@ -96,7 +96,7 @@ export default function WaitlistForm({
           <button
             type="submit"
             disabled={status === "loading"}
-            className="rounded-lg bg-gray-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-black disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-lg bg-gray-900 px-6 py-3 text-sm font-semibold text-white transition duration-150 hover:bg-black active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100"
           >
             {status === "loading" ? t.waitlist.submitLoading : t.waitlist.submit}
           </button>

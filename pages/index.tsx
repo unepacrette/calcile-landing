@@ -25,7 +25,7 @@ export default function Home() {
         {/* Discreet entry point to the closed beta — not a primary CTA. */}
         <Link
           href="/login"
-          className="text-xs font-medium text-gray-500 hover:text-gray-700"
+          className="text-xs font-medium text-gray-500 transition duration-150 hover:text-gray-700 active:scale-95"
         >
           {t.auth.betaLink}
         </Link>
