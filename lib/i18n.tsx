@@ -17,6 +17,8 @@ export const translations = {
       ctaDemo: "Réserver une démo",
       reassurance:
         "Gratuit et sans engagement — aucune carte bancaire requise pour rejoindre la liste d'attente.",
+      waitlistCountPrefix: "Rejoins les",
+      waitlistCountSuffix: "premiers inscrits sur la liste d'attente.",
       trustSignalPrefix: "Propulsé par",
       trustSignalLinkLabel: "SymPy",
       trustSignalSuffix:
@@ -416,6 +418,8 @@ export const translations = {
       ctaDemo: "Book a demo",
       reassurance:
         "Free, no commitment — no credit card required to join the waitlist.",
+      waitlistCountPrefix: "Join the",
+      waitlistCountSuffix: "first people on the waitlist.",
       trustSignalPrefix: "Powered by",
       trustSignalLinkLabel: "SymPy",
       trustSignalSuffix:
