@@ -32,7 +32,6 @@ type Operation =
   | "plot";
 type Status = "idle" | "loading" | "error";
 type LimitDirection = "both" | "left" | "right";
-type MatrixSize = 2 | 3;
 type MatrixOperation = "determinant" | "inverse" | "eigenvalues";
 
 // is_key marks the step where the actual solving technique is chosen/
@@ -160,6 +159,110 @@ type Result = {
 
 const inputClass =
   "w-full rounded-lg border border-rule-strong px-4 py-3 text-ink shadow-sm focus:outline-none focus:ring-2 focus:ring-mark";
+
+// --- one-bar auto-detection ----------------------------------------------
+//
+// No operation picker (removed per explicit request: "il n'y a aucune
+// catégorie, oublie cela" / "une barre... qui fait tout ce que je veux
+// comme calcul, peu importe ce que je mets dedans"). What gets computed
+// is inferred from the LaTeX MathLive produces, using each operation's
+// own unambiguous LaTeX marker -- \frac{d}{dx} for a derivative, \int for
+// an integral, \lim for a limit, \sum/\prod, <,>,\le,\ge for an
+// inequality, a matrix environment, or several equations separated by
+// ";" for a system. Falls back to "solve" (handles a bare equation or
+// expression) when nothing more specific matches. Verified directly
+// against one real example per operation before wiring this in, not
+// assumed to work from the regexes alone.
+//
+// Known, deliberate gap: series and plot both need information (a
+// Taylor order, or plot bounds) that no LaTeX marker distinguishes from
+// a bare expression -- they're not reachable from this single bar today.
+// Matrix detection always computes the determinant (there's no marker
+// in a bare matrix for "I want the inverse instead"); inverse and
+// eigenvalues are the same known gap.
+function detectOperation(latex: string): Operation {
+  const s = latex.replace(/\s+/g, "");
+  if (!s) return "solve";
+  if (/\\begin\{[pbv]?matrix\}/.test(s)) return "matrix";
+  if (/;/.test(s) && (s.match(/=/g) ?? []).length >= 2) return "system";
+  if (/\\lim/.test(s)) return "limit";
+  if (/\\sum/.test(s)) return "sum";
+  if (/\\prod/.test(s)) return "product";
+  if (/\\int/.test(s)) return "integral";
+  if (/\\frac\{d(\^\d+)?\}\{d[a-zA-Z](\^\d+)?\}/.test(s)) return "derivative";
+  if (/<|>|\\le\b|\\ge\b|\\leq\b|\\geq\b/.test(s)) return "inequality";
+  return "solve";
+}
+
+// Strips a matching outer (...) or \left(...\right) pair -- but only
+// when it truly wraps the whole string (never a partial match, which
+// would silently drop a real closing paren from the middle of the
+// expression).
+function stripOuterParens(raw: string): string {
+  let s = raw.trim();
+  s = s.replace(/^\\left\(/, "(").replace(/\\right\)$/, ")");
+  if (s.startsWith("(") && s.endsWith(")")) {
+    let depth = 0;
+    for (let i = 0; i < s.length; i++) {
+      if (s[i] === "(") depth++;
+      else if (s[i] === ")") {
+        depth--;
+        if (depth === 0 && i !== s.length - 1) return s;
+      }
+    }
+    return s.slice(1, -1);
+  }
+  return s;
+}
+
+function extractDerivative(s: string): { expression: string; order: number } {
+  const m = s.match(/^\\frac\{d(\^(\d+))?\}\{d[a-zA-Z](\^(\d+))?\}(.*)$/);
+  if (!m) return { expression: s, order: 1 };
+  return { expression: stripOuterParens(m[5]), order: m[2] ? parseInt(m[2], 10) : 1 };
+}
+
+function extractIntegral(
+  s: string
+): { expression: string; lower: string | null; upper: string | null } {
+  const withDx = s.match(
+    /^\\int(_\{?([^{}]*)\}?)?(\^\{?([^{}]*)\}?)?(.*?)\\?,?\s*d[a-zA-Z]$/
+  );
+  const m =
+    withDx ??
+    s.match(/^\\int(_\{?([^{}]*)\}?)?(\^\{?([^{}]*)\}?)?(.*)$/);
+  if (!m) return { expression: s, lower: null, upper: null };
+  const body = withDx ? m[5] : m[5].replace(/\\?,?\s*d[a-zA-Z]$/, "");
+  return { expression: stripOuterParens(body), lower: m[2] || null, upper: m[4] || null };
+}
+
+function extractLimit(s: string): { variable: string; point: string; expression: string } {
+  const m = s.match(/^\\lim_\{([a-zA-Z]+)\\to([^}]*)\}(.*)$/);
+  if (!m) return { variable: "x", point: "0", expression: s };
+  return { variable: m[1], point: m[2], expression: stripOuterParens(m[3]) };
+}
+
+function extractSumProduct(
+  s: string,
+  command: "sum" | "prod"
+): { variable: string; lower: string; upper: string; expression: string } {
+  const re = new RegExp(`^\\\\${command}_\\{([a-zA-Z]+)=([^}]*)\\}\\^\\{([^}]*)\\}(.*)$`);
+  const m = s.match(re);
+  if (!m) return { variable: "n", lower: "1", upper: "10", expression: s };
+  return { variable: m[1], lower: m[2], upper: m[3], expression: stripOuterParens(m[4]) };
+}
+
+function extractSystem(s: string): string[] {
+  return s
+    .split(";")
+    .map((eq) => eq.trim())
+    .filter(Boolean);
+}
+
+function extractMatrix(s: string): string[][] | null {
+  const m = s.match(/\\begin\{[pbv]?matrix\}(.*)\\end\{[pbv]?matrix\}/);
+  if (!m) return null;
+  return m[1].split("\\\\").map((row) => row.split("&").map((cell) => cell.trim()));
+}
 
 // A handful of evenly-spaced tick positions between min and max --
 // shared by both axes of PlotChart below.
@@ -341,13 +444,21 @@ export default function Solve() {
 
   const [operation, setOperation] = useState<Operation>("solve");
   const [equation, setEquation] = useState("");
-  const [order, setOrder] = useState("");
+  // The inner expression once an operator wrapper (\frac{d}{dx}, \int,
+  // \lim, \sum, \prod) has been stripped off -- what actually gets sent
+  // to the API for those operations, never the full typed notation (the
+  // backend applies its own derivative/integral/etc. to a bare
+  // expression; sending it the operator notation too would double the
+  // operation up). Equal to `equation` itself for solve/inequality.
+  const [derivedExpression, setDerivedExpression] = useState("");
+  const [order, setOrder] = useState("1");
   const [lowerBound, setLowerBound] = useState("");
   const [upperBound, setUpperBound] = useState("");
-  const [limitPoint, setLimitPoint] = useState("");
-  const [limitDirection, setLimitDirection] = useState<LimitDirection>("both");
-  const [seriesPoint, setSeriesPoint] = useState("0");
-  const [seriesOrder, setSeriesOrder] = useState("5");
+  const [limitPoint, setLimitPoint] = useState("0");
+  // No UI for this anymore (no operation picker at all) -- "both" is the
+  // only value ever used, kept as a variable only because handleSubmit's
+  // existing /api/limit request body already names it.
+  const limitDirection: LimitDirection = "both";
   const [systemEquations, setSystemEquations] = useState("");
   // Shared between the "sum" and "product" tabs: mutually exclusive and
   // structurally identical (expression + index variable + bounds), so one
@@ -355,26 +466,11 @@ export default function Solve() {
   const [sumProductVariable, setSumProductVariable] = useState("n");
   const [sumProductLower, setSumProductLower] = useState("");
   const [sumProductUpper, setSumProductUpper] = useState("");
-  // Matrix tab: cells are always kept as a full 3x3 grid (so switching
-  // 2x2 <-> 3x3 doesn't lose what was already typed in the shared
-  // top-left corner) — only the top-left `matrixSize` x `matrixSize`
-  // slice is rendered and sent.
-  const [matrixSize, setMatrixSize] = useState<MatrixSize>(2);
-  const [matrixOperation, setMatrixOperation] =
-    useState<MatrixOperation>("determinant");
-  const [matrixCells, setMatrixCells] = useState<string[][]>([
-    ["", "", ""],
-    ["", "", ""],
-    ["", "", ""],
-  ]);
-  const [matrixCellError, setMatrixCellError] = useState<string | null>(null);
-  // Plot tab: same flex lower/upper layout as the integral tab, but a
-  // separate pair of state variables -- these are always sent
-  // (pre-filled "-10"/"10"), unlike the integral's optional bounds, so
-  // sharing lowerBound/upperBound directly would change the integral
-  // tab's own default (empty/optional) behavior.
-  const [plotLower, setPlotLower] = useState("-10");
-  const [plotUpper, setPlotUpper] = useState("10");
+  // No operation picker means no UI to choose inverse/eigenvalues either
+  // -- a bare matrix always computes its determinant (see detectOperation's
+  // own comment on this being a known, deliberate gap).
+  const matrixOperation: MatrixOperation = "determinant";
+  const [matrixCells, setMatrixCells] = useState<string[][] | null>(null);
   const [status, setStatus] = useState<Status>("idle");
   const [result, setResult] = useState<Result | null>(null);
   const [plotResult, setPlotResult] = useState<PlotApiResponse | null>(null);
@@ -402,34 +498,77 @@ export default function Solve() {
     router.replace("/login");
   }
 
+  // Runs the one-bar auto-detection (see detectOperation & friends above)
+  // every time the field's content changes, and populates the exact same
+  // state handleSubmit already reads for each operation -- handleSubmit
+  // itself is untouched, this only automates what used to be set by hand
+  // via the removed per-operation fields.
+  useEffect(() => {
+    const detected = detectOperation(equation);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setOperation(detected);
+    switch (detected) {
+      case "derivative": {
+        const { expression, order: detectedOrder } = extractDerivative(equation);
+        setDerivedExpression(expression);
+        setOrder(String(detectedOrder));
+        break;
+      }
+      case "integral": {
+        const { expression, lower, upper } = extractIntegral(equation);
+        setDerivedExpression(expression);
+        setLowerBound(lower ?? "");
+        setUpperBound(upper ?? "");
+        break;
+      }
+      case "limit": {
+        const { point, expression } = extractLimit(equation);
+        setDerivedExpression(expression);
+        setLimitPoint(point);
+        break;
+      }
+      case "sum":
+      case "product": {
+        const { variable, lower, upper, expression } = extractSumProduct(
+          equation,
+          detected === "sum" ? "sum" : "prod"
+        );
+        setDerivedExpression(expression);
+        setSumProductVariable(variable);
+        setSumProductLower(lower);
+        setSumProductUpper(upper);
+        break;
+      }
+      case "system":
+        setSystemEquations(extractSystem(equation).join("\n"));
+        break;
+      case "matrix":
+        setMatrixCells(extractMatrix(equation));
+        break;
+      default:
+        setDerivedExpression(equation);
+    }
+  }, [equation]);
+
   function currentMatrixCells(): string[][] {
-    return matrixCells.slice(0, matrixSize).map((row) => row.slice(0, matrixSize));
+    return matrixCells ?? [];
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!token) return;
 
-    if (operation === "matrix") {
-      const hasEmptyCell = currentMatrixCells().some((row) =>
-        row.some((cell) => cell.trim() === "")
-      );
-      if (hasEmptyCell) {
-        setMatrixCellError(t.solve.matrixEmptyCellError);
-        return;
-      }
-    }
-    setMatrixCellError(null);
-
     // MathInput (MathLive's <math-field>) is a form-associated custom
     // element, but its participation in native HTML5 `required` validation
     // isn't something to assume -- unlike a plain <input required>, which
     // this field replaced. Checked explicitly instead of relying on it.
-    if (
-      operation !== "system" &&
-      operation !== "matrix" &&
-      equation.trim() === ""
-    ) {
+    if (equation.trim() === "") {
+      return;
+    }
+    if (operation === "matrix" && matrixCells === null) {
+      // Detected a matrix environment but couldn't parse cells out of it
+      // (malformed LaTeX) -- never send a guessed/empty matrix.
+      setStatus("error");
       return;
     }
 
@@ -453,7 +592,7 @@ export default function Solve() {
           method: "POST",
           headers: authHeaders(token),
           body: JSON.stringify({
-            equation,
+            equation: derivedExpression,
             ...(parsedOrder !== undefined ? { order: parsedOrder } : {}),
           }),
         });
@@ -467,7 +606,7 @@ export default function Solve() {
           method: "POST",
           headers: authHeaders(token),
           body: JSON.stringify({
-            equation,
+            equation: derivedExpression,
             ...(bothProvided
               ? { lower_bound: lower, upper_bound: upper }
               : {}),
@@ -478,20 +617,9 @@ export default function Solve() {
           method: "POST",
           headers: authHeaders(token),
           body: JSON.stringify({
-            expression: equation,
+            expression: derivedExpression,
             point: limitPoint,
             direction: limitDirection,
-          }),
-        });
-      } else if (operation === "series") {
-        const parsedOrder = seriesOrder.trim() === "" ? undefined : Number(seriesOrder);
-        response = await fetch(`${API_URL}/api/series`, {
-          method: "POST",
-          headers: authHeaders(token),
-          body: JSON.stringify({
-            expression: equation,
-            ...(seriesPoint.trim() !== "" ? { point: seriesPoint } : {}),
-            ...(parsedOrder !== undefined ? { order: parsedOrder } : {}),
           }),
         });
       } else if (operation === "inequality") {
@@ -507,7 +635,7 @@ export default function Solve() {
             method: "POST",
             headers: authHeaders(token),
             body: JSON.stringify({
-              expression: equation,
+              expression: derivedExpression,
               variable: sumProductVariable,
               lower: sumProductLower,
               upper: sumProductUpper,
@@ -519,16 +647,6 @@ export default function Solve() {
           method: "POST",
           headers: authHeaders(token),
           body: JSON.stringify({ matrix: currentMatrixCells() }),
-        });
-      } else if (operation === "plot") {
-        response = await fetch(`${API_URL}/api/plot`, {
-          method: "POST",
-          headers: authHeaders(token),
-          body: JSON.stringify({
-            expression: equation,
-            lower: Number(plotLower),
-            upper: Number(plotUpper),
-          }),
         });
       } else {
         // system: one equation per non-empty line.
@@ -704,402 +822,38 @@ export default function Solve() {
             {t.solve.subtitle}
           </p>
 
-          {/* A thin toolbar strip, WolframAlpha's own "Math Input" bar
-              style -- small, tightly-packed, understated buttons (not the
-              earlier big colorful tile grid, dropped per direct feedback)
-              in the app's own palette. The full name stays as title/
-              aria-label, since a bare glyph like "∫" is never the only
-              cue for what's selected -- also shown in the caption below. */}
-          <div className="mt-6 flex flex-wrap justify-center gap-1 rounded-xl border border-rule bg-paper-raised p-1.5">
-            {tabs.map((tab) => (
-              <button
-                key={tab.key}
-                type="button"
-                onClick={() => setOperation(tab.key)}
-                aria-pressed={operation === tab.key}
-                aria-label={tab.label}
-                title={tab.label}
-                className={`flex h-9 min-w-9 items-center justify-center rounded-md px-2 font-display text-sm transition duration-150 active:scale-95 ${
-                  operation === tab.key
-                    ? "bg-mark-soft text-mark-strong"
-                    : "text-ink-soft hover:bg-paper"
-                }`}
-              >
-                {tab.glyph}
-              </button>
-            ))}
-          </div>
-          <p className="mt-1.5 text-center text-xs text-ink-faint">
+          {/* No operation picker at all, per explicit request ("il n'y a
+              aucune catégorie, oublie cela") -- one bar, and what gets
+              computed is detected from what's typed (see
+              detectOperation below). This line is the only feedback for
+              which mode that resolved to, so it's never a total mystery
+              -- but it's a caption, not a control; nothing to click. */}
+          <p className="mt-6 text-center text-xs font-medium uppercase tracking-wide text-ink-faint">
             {tabs.find((tab) => tab.key === operation)?.label}
           </p>
 
-          <form onSubmit={handleSubmit} className="mt-8 space-y-4">
-            {operation !== "system" && operation !== "matrix" && (
-              <div>
-                <label htmlFor="solve-equation" className="sr-only">
-                  {t.solve.equationLabel}
-                </label>
-                <MathInput
-                  id="solve-equation"
-                  value={equation}
-                  onChange={setEquation}
-                  placeholder={equationPlaceholder}
-                />
-                {/* Real math symbols form as you type (fractions, exponents,
-                    roots) via MathLive -- typing "x^2" live-renders a
-                    superscript instead of showing raw "x^2" as flat text. */}
-              </div>
-            )}
-
-            {operation === "system" && (
-              <div>
-                <label
-                  htmlFor="solve-system-equations"
-                  className="mb-1 block text-sm font-medium text-ink-soft"
-                >
-                  {t.solve.systemEquationsLabel}
-                </label>
-                <textarea
-                  id="solve-system-equations"
-                  required
-                  rows={3}
-                  value={systemEquations}
-                  onChange={(event) => setSystemEquations(event.target.value)}
-                  placeholder={t.solve.systemEquationsPlaceholder}
-                  className={inputClass}
-                />
-              </div>
-            )}
-
-            {operation === "derivative" && (
-              <div>
-                <label
-                  htmlFor="solve-order"
-                  className="mb-1 block text-sm font-medium text-ink-soft"
-                >
-                  {t.solve.orderLabel}
-                </label>
-                <input
-                  id="solve-order"
-                  type="number"
-                  min={1}
-                  step={1}
-                  value={order}
-                  onChange={(event) => setOrder(event.target.value)}
-                  placeholder="1"
-                  className={inputClass}
-                />
-              </div>
-            )}
-
-            {operation === "integral" && (
-              <div className="flex gap-4">
-                <div className="flex-1">
-                  <label
-                    htmlFor="solve-lower-bound"
-                    className="mb-1 block text-sm font-medium text-ink-soft"
-                  >
-                    {t.solve.lowerBoundLabel}
-                  </label>
-                  <input
-                    id="solve-lower-bound"
-                    type="number"
-                    value={lowerBound}
-                    onChange={(event) => setLowerBound(event.target.value)}
-                    className={inputClass}
-                  />
-                </div>
-                <div className="flex-1">
-                  <label
-                    htmlFor="solve-upper-bound"
-                    className="mb-1 block text-sm font-medium text-ink-soft"
-                  >
-                    {t.solve.upperBoundLabel}
-                  </label>
-                  <input
-                    id="solve-upper-bound"
-                    type="number"
-                    value={upperBound}
-                    onChange={(event) => setUpperBound(event.target.value)}
-                    className={inputClass}
-                  />
-                </div>
-              </div>
-            )}
-
-            {operation === "limit" && (
-              <div className="flex gap-4">
-                <div className="flex-1">
-                  <label
-                    htmlFor="solve-limit-point"
-                    className="mb-1 block text-sm font-medium text-ink-soft"
-                  >
-                    {t.solve.limitPointLabel}
-                  </label>
-                  <input
-                    id="solve-limit-point"
-                    type="text"
-                    required
-                    value={limitPoint}
-                    onChange={(event) => setLimitPoint(event.target.value)}
-                    placeholder="0"
-                    className={inputClass}
-                  />
-                </div>
-                <div className="flex-1">
-                  <label
-                    htmlFor="solve-limit-direction"
-                    className="mb-1 block text-sm font-medium text-ink-soft"
-                  >
-                    {t.solve.limitDirectionLabel}
-                  </label>
-                  <select
-                    id="solve-limit-direction"
-                    value={limitDirection}
-                    onChange={(event) =>
-                      setLimitDirection(event.target.value as LimitDirection)
-                    }
-                    className={inputClass}
-                  >
-                    <option value="both">{t.solve.limitDirectionBoth}</option>
-                    <option value="left">{t.solve.limitDirectionLeft}</option>
-                    <option value="right">{t.solve.limitDirectionRight}</option>
-                  </select>
-                </div>
-              </div>
-            )}
-
-            {operation === "series" && (
-              <div className="flex gap-4">
-                <div className="flex-1">
-                  <label
-                    htmlFor="solve-series-point"
-                    className="mb-1 block text-sm font-medium text-ink-soft"
-                  >
-                    {t.solve.seriesPointLabel}
-                  </label>
-                  <input
-                    id="solve-series-point"
-                    type="text"
-                    value={seriesPoint}
-                    onChange={(event) => setSeriesPoint(event.target.value)}
-                    placeholder="0"
-                    className={inputClass}
-                  />
-                </div>
-                <div className="flex-1">
-                  <label
-                    htmlFor="solve-series-order"
-                    className="mb-1 block text-sm font-medium text-ink-soft"
-                  >
-                    {t.solve.seriesOrderLabel}
-                  </label>
-                  <input
-                    id="solve-series-order"
-                    type="number"
-                    min={1}
-                    max={10}
-                    step={1}
-                    value={seriesOrder}
-                    onChange={(event) => setSeriesOrder(event.target.value)}
-                    placeholder="5"
-                    className={inputClass}
-                  />
-                </div>
-              </div>
-            )}
-
-            {(operation === "sum" || operation === "product") && (
-              <div className="flex gap-4">
-                <div className="flex-1">
-                  <label
-                    htmlFor="solve-sum-product-variable"
-                    className="mb-1 block text-sm font-medium text-ink-soft"
-                  >
-                    {t.solve.sumProductVariableLabel}
-                  </label>
-                  <input
-                    id="solve-sum-product-variable"
-                    type="text"
-                    required
-                    value={sumProductVariable}
-                    onChange={(event) => setSumProductVariable(event.target.value)}
-                    placeholder="n"
-                    className={inputClass}
-                  />
-                </div>
-                <div className="flex-1">
-                  <label
-                    htmlFor="solve-sum-product-lower"
-                    className="mb-1 block text-sm font-medium text-ink-soft"
-                  >
-                    {t.solve.sumProductLowerLabel}
-                  </label>
-                  <input
-                    id="solve-sum-product-lower"
-                    type="text"
-                    required
-                    value={sumProductLower}
-                    onChange={(event) => setSumProductLower(event.target.value)}
-                    placeholder="1"
-                    className={inputClass}
-                  />
-                </div>
-                <div className="flex-1">
-                  <label
-                    htmlFor="solve-sum-product-upper"
-                    className="mb-1 block text-sm font-medium text-ink-soft"
-                  >
-                    {t.solve.sumProductUpperLabel}
-                  </label>
-                  <input
-                    id="solve-sum-product-upper"
-                    type="text"
-                    required
-                    value={sumProductUpper}
-                    onChange={(event) => setSumProductUpper(event.target.value)}
-                    placeholder="oo"
-                    className={inputClass}
-                  />
-                </div>
-              </div>
-            )}
-
-            {operation === "matrix" && (
-              <div className="space-y-4">
-                <div className="flex flex-wrap gap-4">
-                  <div>
-                    <p className="mb-1 text-sm font-medium text-ink-soft">
-                      {t.solve.matrixSizeLabel}
-                    </p>
-                    <div className="inline-flex rounded-lg border border-rule-strong bg-paper-raised p-1 text-sm font-semibold shadow-sm">
-                      {([2, 3] as const).map((size) => (
-                        <button
-                          key={size}
-                          type="button"
-                          onClick={() => setMatrixSize(size)}
-                          aria-pressed={matrixSize === size}
-                          className={`rounded-md px-4 py-1.5 transition ${
-                            matrixSize === size
-                              ? "bg-mark text-paper-raised"
-                              : "text-ink-soft hover:bg-paper"
-                          }`}
-                        >
-                          {size}×{size}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <p className="mb-1 text-sm font-medium text-ink-soft">
-                      {t.solve.matrixOperationLabel}
-                    </p>
-                    <div className="inline-flex rounded-lg border border-rule-strong bg-paper-raised p-1 text-sm font-semibold shadow-sm">
-                      {(
-                        [
-                          ["determinant", t.solve.matrixOperationDeterminant],
-                          ["inverse", t.solve.matrixOperationInverse],
-                          ["eigenvalues", t.solve.matrixOperationEigenvalues],
-                        ] as const
-                      ).map(([op, label]) => (
-                        <button
-                          key={op}
-                          type="button"
-                          onClick={() => setMatrixOperation(op)}
-                          aria-pressed={matrixOperation === op}
-                          className={`rounded-md px-3 py-1.5 transition ${
-                            matrixOperation === op
-                              ? "bg-mark text-paper-raised"
-                              : "text-ink-soft hover:bg-paper"
-                          }`}
-                        >
-                          {label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <p className="mb-1 text-sm font-medium text-ink-soft">
-                    {t.solve.matrixCellsLabel}
-                  </p>
-                  <div
-                    className={`grid w-fit gap-2 ${
-                      matrixSize === 2 ? "grid-cols-2" : "grid-cols-3"
-                    }`}
-                  >
-                    {matrixCells.slice(0, matrixSize).map((row, rowIndex) =>
-                      row.slice(0, matrixSize).map((cell, colIndex) => (
-                        <input
-                          key={`${rowIndex}-${colIndex}`}
-                          type="text"
-                          required
-                          value={cell}
-                          onChange={(event) => {
-                            const value = event.target.value;
-                            setMatrixCells((current) =>
-                              current.map((r, ri) =>
-                                ri === rowIndex
-                                  ? r.map((c, ci) => (ci === colIndex ? value : c))
-                                  : r
-                              )
-                            );
-                            setMatrixCellError(null);
-                          }}
-                          placeholder={t.solve.matrixCellPlaceholder}
-                          aria-label={`${t.solve.matrixCellsLabel} (${rowIndex + 1}, ${colIndex + 1})`}
-                          className="h-14 w-14 rounded-lg border border-rule-strong text-center text-ink shadow-sm focus:outline-none focus:ring-2 focus:ring-mark"
-                        />
-                      ))
-                    )}
-                  </div>
-                  {matrixCellError && (
-                    <p className="mt-2 text-sm font-medium text-mark-strong">
-                      {matrixCellError}
-                    </p>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {operation === "plot" && (
-              <div className="flex gap-4">
-                <div className="flex-1">
-                  <label
-                    htmlFor="solve-plot-lower"
-                    className="mb-1 block text-sm font-medium text-ink-soft"
-                  >
-                    {t.solve.plotLowerBoundLabel}
-                  </label>
-                  <input
-                    id="solve-plot-lower"
-                    type="number"
-                    required
-                    value={plotLower}
-                    onChange={(event) => setPlotLower(event.target.value)}
-                    className={inputClass}
-                  />
-                </div>
-                <div className="flex-1">
-                  <label
-                    htmlFor="solve-plot-upper"
-                    className="mb-1 block text-sm font-medium text-ink-soft"
-                  >
-                    {t.solve.plotUpperBoundLabel}
-                  </label>
-                  <input
-                    id="solve-plot-upper"
-                    type="number"
-                    required
-                    value={plotUpper}
-                    onChange={(event) => setPlotUpper(event.target.value)}
-                    className={inputClass}
-                  />
-                </div>
-              </div>
-            )}
+          <form onSubmit={handleSubmit} className="mt-2 space-y-4">
+            <div>
+              <label htmlFor="solve-equation" className="sr-only">
+                {t.solve.equationLabel}
+              </label>
+              <MathInput
+                id="solve-equation"
+                value={equation}
+                onChange={setEquation}
+                placeholder={equationPlaceholder}
+              />
+              {/* Real math symbols form as you type (fractions, exponents,
+                  roots) via MathLive -- typing "x^2" live-renders a
+                  superscript instead of showing raw "x^2" as flat text.
+                  One bar, no operation picker: what gets computed is
+                  detected from what's typed (see detectOperation) --
+                  an equation solves, \frac{d}{dx}(...) differentiates,
+                  \int...dx integrates, \lim_{x\to a} takes a limit,
+                  \sum/\prod sums or multiplies, <,> solves an inequality,
+                  a matrix environment computes a determinant, and
+                  multiple equations separated by ";" solve as a system. */}
+            </div>
 
             <button
               type="submit"
