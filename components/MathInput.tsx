@@ -33,6 +33,24 @@ type MathInputProps = {
 
 type QuickSymbol = { glyph: string; latex: string; label: string };
 
+const MATRIX_SIZE_MIN = 1;
+const MATRIX_SIZE_MAX = 6;
+
+function clampMatrixSize(n: number): number {
+  if (Number.isNaN(n)) return MATRIX_SIZE_MIN;
+  return Math.min(MATRIX_SIZE_MAX, Math.max(MATRIX_SIZE_MIN, Math.round(n)));
+}
+
+// Builds a \begin{pmatrix}...\end{pmatrix} of any rows x cols, each cell
+// its own placeholder -- the fixed-size 2x2 button this replaces
+// couldn't produce anything else ("ne pas être limité à une matrice de
+// taille 2x2").
+function buildMatrixLatex(rows: number, cols: number): string {
+  const row = Array(cols).fill("#0").join("&");
+  const body = Array(rows).fill(row).join("\\\\");
+  return `\\begin{pmatrix}${body}\\end{pmatrix}`;
+}
+
 // Grouped, not tabbed: every group renders at once (nothing to pick
 // between, no calculation category to choose -- this is purely a set of
 // typing shortcuts for the one bar above). Deliberately broad: the bar
@@ -59,9 +77,14 @@ const SYMBOL_GROUPS: { title: string; items: QuickSymbol[] }[] = [
       { glyph: "cos", latex: "\\cos(#0)", label: "Cosinus" },
       { glyph: "tan", latex: "\\tan(#0)", label: "Tangente" },
       { glyph: "cot", latex: "\\cot(#0)", label: "Cotangente" },
+      { glyph: "sec", latex: "\\sec(#0)", label: "Sécante" },
+      { glyph: "csc", latex: "\\csc(#0)", label: "Cosécante" },
       { glyph: "asin", latex: "\\arcsin(#0)", label: "Arc sinus" },
       { glyph: "acos", latex: "\\arccos(#0)", label: "Arc cosinus" },
       { glyph: "atan", latex: "\\arctan(#0)", label: "Arc tangente" },
+      { glyph: "sinh", latex: "\\sinh(#0)", label: "Sinus hyperbolique" },
+      { glyph: "cosh", latex: "\\cosh(#0)", label: "Cosinus hyperbolique" },
+      { glyph: "tanh", latex: "\\tanh(#0)", label: "Tangente hyperbolique" },
       { glyph: "ln", latex: "\\ln(#0)", label: "Logarithme népérien" },
       { glyph: "log", latex: "\\log(#0)", label: "Logarithme décimal" },
       { glyph: "logᵦ", latex: "\\log_{#0}(#0)", label: "Logarithme en base b" },
@@ -84,6 +107,9 @@ const SYMBOL_GROUPS: { title: string; items: QuickSymbol[] }[] = [
       { glyph: "Π", latex: "\\prod_{n=#0}^{#0}#0", label: "Produit" },
       { glyph: "lim", latex: "\\lim_{x\\to#0}#0", label: "Limite" },
       { glyph: "∇", latex: "\\nabla#0", label: "Gradient" },
+      { glyph: "∇·", latex: "\\nabla\\cdot#0", label: "Divergence" },
+      { glyph: "∇×", latex: "\\nabla\\times#0", label: "Rotationnel" },
+      { glyph: "∇²", latex: "\\nabla^{2}#0", label: "Laplacien" },
     ],
   },
   {
@@ -142,14 +168,28 @@ const SYMBOL_GROUPS: { title: string; items: QuickSymbol[] }[] = [
     ],
   },
   {
+    title: "Ensembles numériques",
+    items: [
+      { glyph: "ℝ", latex: "\\mathbb{R}", label: "Nombres réels" },
+      { glyph: "ℕ", latex: "\\mathbb{N}", label: "Nombres entiers naturels" },
+      { glyph: "ℤ", latex: "\\mathbb{Z}", label: "Nombres entiers relatifs" },
+      { glyph: "ℚ", latex: "\\mathbb{Q}", label: "Nombres rationnels" },
+      { glyph: "ℂ", latex: "\\mathbb{C}", label: "Nombres complexes" },
+    ],
+  },
+  {
+    // The matrix-size picker (any rows x cols, not just a fixed 2x2) is
+    // rendered before these -- see the "Matrices & vecteurs" special
+    // case below.
     title: "Matrices & vecteurs",
     items: [
-      { glyph: "[::]", latex: "\\begin{pmatrix}#0&#0\\\\#0&#0\\end{pmatrix}", label: "Matrice 2×2" },
       { glyph: "v⃗", latex: "\\vec{#0}", label: "Vecteur" },
       { glyph: "det", latex: "\\det\\left(#0\\right)", label: "Déterminant" },
       { glyph: "Aᵀ", latex: "^{T}", label: "Transposée" },
       { glyph: "A⁻¹", latex: "^{-1}", label: "Inverse" },
       { glyph: "‖x‖", latex: "\\left\\|#0\\right\\|", label: "Norme" },
+      { glyph: "u·v", latex: "#0\\cdot#0", label: "Produit scalaire" },
+      { glyph: "u×v", latex: "#0\\times#0", label: "Produit vectoriel" },
     ],
   },
   {
@@ -157,10 +197,12 @@ const SYMBOL_GROUPS: { title: string; items: QuickSymbol[] }[] = [
     items: [
       { glyph: "n!", latex: "#0!", label: "Factorielle" },
       { glyph: "Cₙₖ", latex: "\\binom{#0}{#0}", label: "Coefficient binomial" },
+      { glyph: "Pₙₖ", latex: "P(#0,#0)", label: "Permutation" },
       { glyph: "i", latex: "i", label: "Unité imaginaire" },
       { glyph: "z̄", latex: "\\overline{#0}", label: "Conjugué" },
       { glyph: "Re", latex: "\\Re(#0)", label: "Partie réelle" },
       { glyph: "Im", latex: "\\Im(#0)", label: "Partie imaginaire" },
+      { glyph: "arg", latex: "\\arg(#0)", label: "Argument (complexe)" },
     ],
   },
   {
@@ -178,6 +220,9 @@ const SYMBOL_GROUPS: { title: string; items: QuickSymbol[] }[] = [
 export default function MathInput({ id, value, onChange, placeholder }: MathInputProps) {
   const ref = useRef<MathfieldElement>(null);
   const [focused, setFocused] = useState(false);
+  const [matrixPickerOpen, setMatrixPickerOpen] = useState(false);
+  const [matrixRows, setMatrixRows] = useState(2);
+  const [matrixCols, setMatrixCols] = useState(2);
 
   // One-time setup. mathVirtualKeyboardPolicy "manual" means MathLive's
   // own full virtual keyboard panel never shows itself automatically --
@@ -264,7 +309,95 @@ export default function MathInput({ id, value, onChange, placeholder }: MathInpu
             >
               {group.title}
             </span>
-            <div role="toolbar" aria-label={group.title} style={{ display: "flex", flexWrap: "wrap", gap: "0.375rem" }}>
+            <div role="toolbar" aria-label={group.title} style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.375rem" }}>
+              {group.title === "Matrices & vecteurs" && (
+                <div style={{ position: "relative" }}>
+                  <button
+                    type="button"
+                    title="Matrice (taille au choix)"
+                    aria-label="Matrice (taille au choix)"
+                    aria-expanded={matrixPickerOpen}
+                    onClick={() => setMatrixPickerOpen((open) => !open)}
+                    className="flex h-10 items-center justify-center gap-1.5 rounded-lg px-3 text-sm font-medium text-ink-soft transition duration-150 hover:bg-rule active:scale-95 focus:outline-none focus:ring-2 focus:ring-mark"
+                  >
+                    <span aria-hidden="true">⊞</span> Matrice
+                  </button>
+                  {matrixPickerOpen && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "calc(100% + 0.375rem)",
+                        left: 0,
+                        zIndex: 10,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                        borderRadius: "0.5rem",
+                        border: "1px solid var(--color-rule-strong)",
+                        background: "var(--color-paper-raised)",
+                        padding: "0.625rem 0.75rem",
+                        boxShadow: "0 4px 16px 0 rgb(0 0 0 / 0.12)",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      <label style={{ fontSize: "0.75rem", color: "var(--color-ink-soft)" }}>
+                        Lignes
+                        <input
+                          type="number"
+                          min={MATRIX_SIZE_MIN}
+                          max={MATRIX_SIZE_MAX}
+                          value={matrixRows}
+                          onChange={(e) => setMatrixRows(clampMatrixSize(Number(e.target.value)))}
+                          style={{
+                            marginLeft: "0.375rem",
+                            width: "3rem",
+                            borderRadius: "0.375rem",
+                            border: "1px solid var(--color-rule-strong)",
+                            background: "var(--color-paper)",
+                            color: "var(--color-ink)",
+                            padding: "0.25rem 0.375rem",
+                            textAlign: "center",
+                          }}
+                        />
+                      </label>
+                      <span aria-hidden="true" style={{ color: "var(--color-ink-faint)" }}>×</span>
+                      <label style={{ fontSize: "0.75rem", color: "var(--color-ink-soft)" }}>
+                        Colonnes
+                        <input
+                          type="number"
+                          min={MATRIX_SIZE_MIN}
+                          max={MATRIX_SIZE_MAX}
+                          value={matrixCols}
+                          onChange={(e) => setMatrixCols(clampMatrixSize(Number(e.target.value)))}
+                          style={{
+                            marginLeft: "0.375rem",
+                            width: "3rem",
+                            borderRadius: "0.375rem",
+                            border: "1px solid var(--color-rule-strong)",
+                            background: "var(--color-paper)",
+                            color: "var(--color-ink)",
+                            padding: "0.25rem 0.375rem",
+                            textAlign: "center",
+                          }}
+                        />
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          ref.current?.focus();
+                          ref.current?.insert(buildMatrixLatex(matrixRows, matrixCols), {
+                            insertionMode: "insertAfter",
+                          });
+                          setMatrixPickerOpen(false);
+                        }}
+                        className="rounded-md bg-mark px-3 py-1.5 text-sm font-semibold text-paper-raised transition duration-150 hover:bg-mark-strong active:scale-95 focus:outline-none focus:ring-2 focus:ring-mark"
+                      >
+                        Insérer
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
               {group.items.map((symbol) => (
                 <button
                   key={symbol.glyph}
