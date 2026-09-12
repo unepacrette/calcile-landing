@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { MathfieldElement } from "mathlive";
 
 // Registers the <math-field> custom element -- this module must only ever
@@ -31,50 +31,111 @@ type MathInputProps = {
   placeholder?: string;
 };
 
-// Live, WYSIWYG math input (WolframAlpha/Symbolab-style: real fractions,
-// exponents, and roots forming as you type) instead of a plain-text field
-// showing raw "x^2 + 3x + 2 = 0". Backed by MathLive's <math-field>
-// (MIT-licensed, the standard tool for this -- there's no reasonable way
-// to build this from scratch, unlike most of this codebase's "no new
-// dependency without necessity" additions).
-//
-// Emits LaTeX on every input, which calcile-api's parser already
-// auto-detects and routes through sympy.parsing.latex.parse_latex
-// (_looks_like_latex, verified in that repo) -- no backend change needed,
-// and a value like a bare "x" or "2" that contains no LaTeX-special
-// character still round-trips through the plain-text grammar exactly as
-// before.
-// A small set of insertable templates for the quick-symbol row above the
-// field -- "#0" is MathLive's own placeholder token (highlighted,
-// tab-through-able) so e.g. the √ button doesn't just type a bare "\sqrt"
-// with nothing to fill in. Deliberately not MathLive's own full virtual
-// keyboard panel (removed: "enlève le clavier, c'est moche") -- a thin,
-// app-styled row instead, in the same spirit as WolframAlpha's own
-// symbol strip but small.
-const QUICK_SYMBOLS: { glyph: string; latex: string; label: string }[] = [
-  { glyph: "√", latex: "\\sqrt{#0}", label: "Racine carrée" },
-  { glyph: "∫", latex: "\\int #0\\,dx", label: "Intégrale" },
-  { glyph: "Σ", latex: "\\sum_{n=1}^{10}#0", label: "Somme" },
-  { glyph: "Π", latex: "\\prod_{n=1}^{10}#0", label: "Produit" },
-  { glyph: "lim", latex: "\\lim_{x\\to0}#0", label: "Limite" },
-  { glyph: "d/dx", latex: "\\frac{d}{dx}#0", label: "Dérivée" },
-  { glyph: "π", latex: "\\pi", label: "Pi" },
-  { glyph: "≤", latex: "\\le", label: "Inférieur ou égal" },
-  { glyph: "≥", latex: "\\ge", label: "Supérieur ou égal" },
-  { glyph: "∞", latex: "\\infty", label: "Infini" },
+type QuickSymbol = { glyph: string; latex: string; label: string };
+
+// Grouped, not tabbed: every group renders at once (nothing to pick
+// between, no calculation category to choose -- this is purely a set of
+// typing shortcuts for the one bar above). Deliberately broad: the bar
+// itself already computes whatever LaTeX it's given, so as more
+// calculation types get added server-side the input for them is already
+// here -- no picker to extend later. "#0" is MathLive's own placeholder
+// token (highlighted, tab-through-able).
+const SYMBOL_GROUPS: { title: string; items: QuickSymbol[] }[] = [
+  {
+    title: "Puissances & racines",
+    items: [
+      { glyph: "xⁿ", latex: "^{#0}", label: "Puissance" },
+      { glyph: "xₙ", latex: "_{#0}", label: "Indice" },
+      { glyph: "√", latex: "\\sqrt{#0}", label: "Racine carrée" },
+      { glyph: "ⁿ√", latex: "\\sqrt[#0]{#0}", label: "Racine n-ième" },
+      { glyph: "a/b", latex: "\\frac{#0}{#0}", label: "Fraction" },
+      { glyph: "|x|", latex: "\\left|#0\\right|", label: "Valeur absolue" },
+    ],
+  },
+  {
+    title: "Analyse",
+    items: [
+      { glyph: "d/dx", latex: "\\frac{d}{dx}#0", label: "Dérivée" },
+      { glyph: "∂/∂x", latex: "\\frac{\\partial}{\\partial x}#0", label: "Dérivée partielle" },
+      { glyph: "∫", latex: "\\int #0\\,dx", label: "Intégrale" },
+      { glyph: "∫ᵃᵇ", latex: "\\int_{#0}^{#0}#0\\,dx", label: "Intégrale définie" },
+      { glyph: "Σ", latex: "\\sum_{n=#0}^{#0}#0", label: "Somme" },
+      { glyph: "Π", latex: "\\prod_{n=#0}^{#0}#0", label: "Produit" },
+      { glyph: "lim", latex: "\\lim_{x\\to#0}#0", label: "Limite" },
+      { glyph: "∇", latex: "\\nabla#0", label: "Gradient" },
+    ],
+  },
+  {
+    title: "Relations",
+    items: [
+      { glyph: "≠", latex: "\\neq", label: "Différent" },
+      { glyph: "≤", latex: "\\le", label: "Inférieur ou égal" },
+      { glyph: "≥", latex: "\\ge", label: "Supérieur ou égal" },
+      { glyph: "≈", latex: "\\approx", label: "Environ égal" },
+      { glyph: "±", latex: "\\pm", label: "Plus ou moins" },
+      { glyph: "→", latex: "\\to", label: "Tend vers" },
+      { glyph: "⇒", latex: "\\Rightarrow", label: "Implique" },
+      { glyph: "⇔", latex: "\\Leftrightarrow", label: "Équivaut à" },
+    ],
+  },
+  {
+    title: "Grec",
+    items: [
+      { glyph: "π", latex: "\\pi", label: "Pi" },
+      { glyph: "θ", latex: "\\theta", label: "Thêta" },
+      { glyph: "α", latex: "\\alpha", label: "Alpha" },
+      { glyph: "β", latex: "\\beta", label: "Bêta" },
+      { glyph: "γ", latex: "\\gamma", label: "Gamma" },
+      { glyph: "δ", latex: "\\delta", label: "Delta" },
+      { glyph: "λ", latex: "\\lambda", label: "Lambda" },
+      { glyph: "μ", latex: "\\mu", label: "Mu" },
+      { glyph: "σ", latex: "\\sigma", label: "Sigma" },
+      { glyph: "φ", latex: "\\varphi", label: "Phi" },
+      { glyph: "ω", latex: "\\omega", label: "Oméga" },
+    ],
+  },
+  {
+    title: "Ensembles & logique",
+    items: [
+      { glyph: "∈", latex: "\\in", label: "Appartient à" },
+      { glyph: "∉", latex: "\\notin", label: "N'appartient pas à" },
+      { glyph: "⊂", latex: "\\subset", label: "Inclus dans" },
+      { glyph: "⊆", latex: "\\subseteq", label: "Inclus ou égal" },
+      { glyph: "∪", latex: "\\cup", label: "Union" },
+      { glyph: "∩", latex: "\\cap", label: "Intersection" },
+      { glyph: "∅", latex: "\\emptyset", label: "Ensemble vide" },
+      { glyph: "∀", latex: "\\forall", label: "Pour tout" },
+      { glyph: "∃", latex: "\\exists", label: "Il existe" },
+      { glyph: "¬", latex: "\\neg", label: "Non" },
+      { glyph: "∧", latex: "\\wedge", label: "Et" },
+      { glyph: "∨", latex: "\\vee", label: "Ou" },
+    ],
+  },
+  {
+    title: "Matrices, vecteurs & divers",
+    items: [
+      { glyph: "[::]", latex: "\\begin{pmatrix}#0&#0\\\\#0&#0\\end{pmatrix}", label: "Matrice 2×2" },
+      { glyph: "v⃗", latex: "\\vec{#0}", label: "Vecteur" },
+      { glyph: "det", latex: "\\det\\left(#0\\right)", label: "Déterminant" },
+      { glyph: "∞", latex: "\\infty", label: "Infini" },
+      { glyph: "°", latex: "^{\\circ}", label: "Degré" },
+      { glyph: "%", latex: "\\%", label: "Pourcent" },
+    ],
+  },
 ];
 
 export default function MathInput({ id, value, onChange, placeholder }: MathInputProps) {
   const ref = useRef<MathfieldElement>(null);
+  const [focused, setFocused] = useState(false);
 
   // One-time setup. mathVirtualKeyboardPolicy "manual" means MathLive's
   // own full virtual keyboard panel never shows itself automatically --
   // removed per explicit feedback ("enlève le clavier, c'est moche") in
-  // favor of the small QUICK_SYMBOLS row below instead. Auto-sized
-  // fences (parentheses grow with their content) and the app's own
-  // accent color for the caret/selection round out the setup -- set
-  // imperatively rather than as JSX attributes, since MathfieldElement's
-  // own properties aren't part of React's built-in HTMLAttributes typing.
+  // favor of the SYMBOL_GROUPS row below instead. Auto-sized fences
+  // (parentheses grow with their content) and the app's own accent color
+  // for the caret/selection round out the setup -- set imperatively
+  // rather than as JSX attributes, since MathfieldElement's own
+  // properties aren't part of React's built-in HTMLAttributes typing.
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
@@ -101,42 +162,6 @@ export default function MathInput({ id, value, onChange, placeholder }: MathInpu
 
   return (
     <div>
-      <div
-        role="toolbar"
-        aria-label="Symboles LaTeX"
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "0.25rem",
-          marginBottom: "0.375rem",
-        }}
-      >
-        {QUICK_SYMBOLS.map((symbol) => (
-          <button
-            key={symbol.glyph}
-            type="button"
-            title={symbol.label}
-            aria-label={symbol.label}
-            onClick={() => {
-              ref.current?.focus();
-              ref.current?.insert(symbol.latex, { insertionMode: "insertAfter" });
-            }}
-            style={{
-              height: "1.75rem",
-              minWidth: "1.75rem",
-              padding: "0 0.4rem",
-              borderRadius: "0.375rem",
-              border: "none",
-              background: "var(--color-paper)",
-              color: "var(--color-ink-soft)",
-              fontSize: "0.8rem",
-              cursor: "pointer",
-            }}
-          >
-            {symbol.glyph}
-          </button>
-        ))}
-      </div>
       <math-field
         ref={ref}
         id={id}
@@ -144,15 +169,27 @@ export default function MathInput({ id, value, onChange, placeholder }: MathInpu
           const target = event.target as MathfieldElement;
           onChange(target.getValue("latex"));
         }}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
         style={{
           display: "block",
           width: "100%",
-          borderRadius: "0.5rem",
-          border: "1px solid var(--color-rule-strong)",
+          borderRadius: "0.75rem",
+          border: focused ? "2px solid var(--color-mark)" : "2px solid var(--color-rule-strong)",
           background: "var(--color-paper-raised)",
-          padding: "0.75rem 1rem",
-          fontSize: "1.05rem",
-          boxShadow: "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+          // A single central bar (WolframAlpha-style) reads as *the*
+          // control on the page only if it's unmistakably legible --
+          // explicit high-contrast ink color (not left to inheritance)
+          // plus generous size, instead of the small, easy-to-miss field
+          // this replaced ("on ne voit pas bien ce qui est écrit").
+          color: "var(--color-ink)",
+          padding: "1.1rem 1.35rem",
+          fontSize: "1.5rem",
+          minHeight: "3.5rem",
+          boxShadow: focused
+            ? "0 2px 12px 0 rgb(0 0 0 / 0.10)"
+            : "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+          transition: "border-color 120ms ease, box-shadow 120ms ease",
           // MathLive's own documented theming hooks -- matches the app's
           // ink/mark tokens instead of MathLive's default blue caret.
           ["--caret-color" as string]: "var(--color-mark)",
@@ -160,6 +197,52 @@ export default function MathInput({ id, value, onChange, placeholder }: MathInpu
           ["--placeholder-color" as string]: "var(--color-ink-faint)",
         }}
       />
+      <div style={{ marginTop: "0.625rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+        {SYMBOL_GROUPS.map((group) => (
+          <div key={group.title} style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.375rem" }}>
+            <span
+              style={{
+                fontSize: "0.65rem",
+                fontWeight: 600,
+                textTransform: "uppercase",
+                letterSpacing: "0.06em",
+                color: "var(--color-ink-faint)",
+                marginRight: "0.125rem",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {group.title}
+            </span>
+            <div role="toolbar" aria-label={group.title} style={{ display: "flex", flexWrap: "wrap", gap: "0.25rem" }}>
+              {group.items.map((symbol) => (
+                <button
+                  key={symbol.glyph}
+                  type="button"
+                  title={symbol.label}
+                  aria-label={symbol.label}
+                  onClick={() => {
+                    ref.current?.focus();
+                    ref.current?.insert(symbol.latex, { insertionMode: "insertAfter" });
+                  }}
+                  style={{
+                    height: "1.75rem",
+                    minWidth: "1.75rem",
+                    padding: "0 0.4rem",
+                    borderRadius: "0.375rem",
+                    border: "none",
+                    background: "var(--color-paper)",
+                    color: "var(--color-ink-soft)",
+                    fontSize: "0.8rem",
+                    cursor: "pointer",
+                  }}
+                >
+                  {symbol.glyph}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
