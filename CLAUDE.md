@@ -98,6 +98,7 @@ to every batch without exception.
 | market-analyst | Before any redesign visual work starts -- researches competitors/conversion patterns and produces COMPETITIVE_ANALYSIS.md. Must run and be reviewed before frontend-ui touches any visual code as part of the redesign. |
 | frontend-ui | Adding/changing a page, component, or /solve tab, or any visible string (needs an i18n key). For the redesign specifically, only after market-analyst's document exists and has been reviewed. |
 | devops-release | An env var shared with calcile-api is involved, or you need to confirm what's actually deployed (Vercel/Railway) rather than assume it. |
+| security-auditor | Checking for dependency vulnerabilities or leaks (secrets in the client bundle, unsafe HTML injection) before a release, after adding a dependency, or on request -- report-only, never fixes code itself. |
 
 For any new task, check first whether one of these agents matches its scope and let
 Claude Code route to it automatically (or invoke it explicitly with @agent-name if the
