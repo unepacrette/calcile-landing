@@ -34,8 +34,17 @@ type MatrixOperation = "determinant" | "inverse" | "eigenvalues";
 // always present (defaults to false server-side, never omitted), used
 // here for the two-tone step hierarchy (COMPETITIVE_ANALYSIS.md, adapted
 // from Symbolab): a key step is visually distinguished from routine
-// setup/wrap-up steps around it.
-type StepApi = { description: string; latex: string; is_key: boolean };
+// setup/wrap-up steps around it. highlighted_latex is the same LaTeX
+// with the sub-expression that changed from the previous step already
+// wrapped in \textcolor{...}{...} by the backend (a real token-level
+// diff, never guessed here) -- render it in place of `latex` whenever
+// it's non-null, never re-derive a diff client-side.
+type StepApi = {
+  description: string;
+  latex: string;
+  is_key: boolean;
+  highlighted_latex: string | null;
+};
 
 type GlossaryEntryApi = { symbol: string; name: string; definition: string };
 
@@ -1211,7 +1220,7 @@ export default function Solve() {
                           )}
                         </p>
                         <div className="mt-1.5 overflow-x-auto text-[15px] text-gray-900">
-                          <MathRender latex={step.latex} />
+                          <MathRender latex={step.highlighted_latex ?? step.latex} />
                         </div>
                       </li>
                     ))}
@@ -1306,7 +1315,7 @@ export default function Solve() {
                                       )}
                                     </p>
                                     <div className="mt-1.5 overflow-x-auto text-[15px] text-gray-900">
-                                      <MathRender latex={step.latex} />
+                                      <MathRender latex={step.highlighted_latex ?? step.latex} />
                                     </div>
                                   </li>
                                 ))}
