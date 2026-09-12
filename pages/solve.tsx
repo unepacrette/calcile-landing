@@ -30,9 +30,6 @@ type Operation =
   | "product"
   | "matrix"
   | "plot";
-// Groups the 11 operations by math domain instead of one flat row of
-// tabs -- pick a domain first, then the specific tool within it.
-type Category = "algebra" | "analysis" | "graph";
 type Status = "idle" | "loading" | "error";
 type LimitDirection = "both" | "left" | "right";
 type MatrixSize = 2 | 3;
@@ -343,7 +340,6 @@ export default function Solve() {
   }, [router]);
 
   const [operation, setOperation] = useState<Operation>("solve");
-  const [category, setCategory] = useState<Category>("algebra");
   const [equation, setEquation] = useState("");
   const [order, setOrder] = useState("");
   const [lowerBound, setLowerBound] = useState("");
@@ -651,32 +647,21 @@ export default function Solve() {
   // WolframAlpha/Symbolab-style symbol grid instead of a row of French
   // words) -- `label` stays as the accessible name (aria-label/title),
   // never dropped, since a bare glyph like "∫" isn't self-explanatory on
-  // its own.
-  const tabs: { key: Operation; label: string; category: Category; glyph: string }[] = [
-    { key: "solve", label: t.solve.tabSolve, category: "algebra", glyph: "x=" },
-    { key: "system", label: t.solve.tabSystem, category: "algebra", glyph: "{=}" },
-    { key: "inequality", label: t.solve.tabInequality, category: "algebra", glyph: "<" },
-    { key: "matrix", label: t.solve.tabMatrix, category: "algebra", glyph: "[A]" },
-    { key: "derivative", label: t.solve.tabDerivative, category: "analysis", glyph: "d/dx" },
-    { key: "integral", label: t.solve.tabIntegral, category: "analysis", glyph: "∫" },
-    { key: "limit", label: t.solve.tabLimit, category: "analysis", glyph: "lim" },
-    { key: "series", label: t.solve.tabSeries, category: "analysis", glyph: "Tₙ" },
-    { key: "sum", label: t.solve.tabSum, category: "analysis", glyph: "Σ" },
-    { key: "product", label: t.solve.tabProduct, category: "analysis", glyph: "Π" },
-    { key: "plot", label: t.solve.tabPlot, category: "graph", glyph: "f(x)" },
+  // its own. No category grouping -- all 11 always shown flat, per
+  // explicit "oublie les catégories".
+  const tabs: { key: Operation; label: string; glyph: string }[] = [
+    { key: "solve", label: t.solve.tabSolve, glyph: "x=" },
+    { key: "system", label: t.solve.tabSystem, glyph: "{=}" },
+    { key: "inequality", label: t.solve.tabInequality, glyph: "<" },
+    { key: "matrix", label: t.solve.tabMatrix, glyph: "[A]" },
+    { key: "derivative", label: t.solve.tabDerivative, glyph: "d/dx" },
+    { key: "integral", label: t.solve.tabIntegral, glyph: "∫" },
+    { key: "limit", label: t.solve.tabLimit, glyph: "lim" },
+    { key: "series", label: t.solve.tabSeries, glyph: "Tₙ" },
+    { key: "sum", label: t.solve.tabSum, glyph: "Σ" },
+    { key: "product", label: t.solve.tabProduct, glyph: "Π" },
+    { key: "plot", label: t.solve.tabPlot, glyph: "f(x)" },
   ];
-  const categories: { key: Category; label: string }[] = [
-    { key: "algebra", label: t.solve.categoryAlgebra },
-    { key: "analysis", label: t.solve.categoryAnalysis },
-    { key: "graph", label: t.solve.categoryGraph },
-  ];
-  const visibleTabs = tabs.filter((tab) => tab.category === category);
-
-  function handleSelectCategory(next: Category) {
-    setCategory(next);
-    const firstInCategory = tabs.find((tab) => tab.category === next);
-    if (firstInCategory) setOperation(firstInCategory.key);
-  }
 
   const equationPlaceholder =
     operation === "inequality"
@@ -719,35 +704,14 @@ export default function Solve() {
             {t.solve.subtitle}
           </p>
 
-          {/* Two tiers: pick a math domain first (algebra/analysis/graph),
-              then the specific tool within it -- replaces one flat
-              11-item row (which used a hidden-scrollbar + a barely-visible
-              edge fade as its only overflow hint, confirmed broken from a
-              real screenshot). Every button on both tiers is always fully
-              visible; nothing is ever hidden. */}
-          <div className="mt-8 flex flex-wrap gap-2">
-            {categories.map((cat) => (
-              <button
-                key={cat.key}
-                type="button"
-                onClick={() => handleSelectCategory(cat.key)}
-                aria-pressed={category === cat.key}
-                className={`rounded-full px-5 py-2 text-sm font-semibold transition duration-150 active:scale-95 ${
-                  category === cat.key
-                    ? "bg-ink text-paper-raised"
-                    : "border border-rule-strong bg-paper-raised text-ink-soft hover:bg-paper"
-                }`}
-              >
-                {cat.label}
-              </button>
-            ))}
-          </div>
           {/* A symbol grid (WolframAlpha/Symbolab-style) instead of a row
               of French words: each chip shows the operation's own math
               notation, with the full name kept as title/aria-label so a
-              bare glyph like "∫" is never the only cue. */}
-          <div className="mt-3 grid grid-cols-4 gap-2 rounded-2xl border border-rule-strong bg-paper-raised p-2 shadow-sm sm:grid-cols-6">
-            {visibleTabs.map((tab) => (
+              bare glyph like "∫" is never the only cue. All 11 operations
+              always shown flat -- every button always fully visible,
+              nothing hidden behind a category filter. */}
+          <div className="mt-8 grid grid-cols-4 gap-2 rounded-2xl border border-rule-strong bg-paper-raised p-2 shadow-sm sm:grid-cols-6">
+            {tabs.map((tab) => (
               <button
                 key={tab.key}
                 type="button"

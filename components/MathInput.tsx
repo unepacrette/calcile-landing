@@ -47,10 +47,14 @@ type MathInputProps = {
 export default function MathInput({ id, value, onChange, placeholder }: MathInputProps) {
   const ref = useRef<MathfieldElement>(null);
 
-  // One-time setup: virtual keyboard only on touch devices (never forced
-  // open on desktop), auto-sized fences (parentheses grow with their
-  // content, like a real math renderer), and the app's own accent color
-  // for the caret/selection instead of MathLive's default blue -- set
+  // One-time setup: the virtual keyboard (every symbol layer MathLive
+  // ships -- numeric, symbols, Greek, functions -- is there by default,
+  // nothing restricted) shown permanently rather than only on focus/touch,
+  // per explicit request: "que le clavier soit visible par défaut" /
+  // "tous les symboles de LaTeX, absolument tous". "manual" policy means
+  // *we* control visibility instead of MathLive auto-hiding it on blur.
+  // Auto-sized fences (parentheses grow with their content) and the app's
+  // own accent color for the caret/selection round out the setup -- set
   // imperatively rather than as JSX attributes, since MathfieldElement's
   // own properties aren't part of React's built-in HTMLAttributes typing.
   useEffect(() => {
@@ -65,6 +69,15 @@ export default function MathInput({ id, value, onChange, placeholder }: MathInpu
     el.menuItems = [];
     if (placeholder) el.placeholder = placeholder;
   }, [placeholder]);
+
+  // Shown once on mount, hidden on unmount -- the keyboard is a single
+  // global panel (window.mathVirtualKeyboard, appended to document.body),
+  // not scoped to this one field, so this must run once, not on every
+  // placeholder change, or leave it open when navigating away from /solve.
+  useEffect(() => {
+    window.mathVirtualKeyboard?.show({ animate: false });
+    return () => window.mathVirtualKeyboard?.hide({ animate: false });
+  }, []);
 
   // Keep the field in sync with the controlled `value` prop -- only
   // pushed when it actually differs from the field's own current content
