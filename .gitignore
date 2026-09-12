@@ -32,3 +32,7 @@ yarn-error.log*
 # hand-written project memory (subagent docs, conventions) on top of that
 # stub and should be tracked; only AGENTS.md is truly regenerated per-clone.
 AGENTS.md
+
+# --- graphify (regenerated build cache; graph.json/html/report ARE tracked) ---
+graphify-out/cache/
+graphify-out/.rebuild.lock

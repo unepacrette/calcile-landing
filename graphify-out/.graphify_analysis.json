@@ -1,0 +1,383 @@
+{
+  "communities": {
+    "0": [
+      "components_audiencesection",
+      "components_audiencesection_audiencesection",
+      "components_footer",
+      "components_footer_footer",
+      "components_hero",
+      "components_hero_hero",
+      "components_howitworks",
+      "components_howitworks_howitworks",
+      "components_languageswitcher",
+      "components_languageswitcher_languageswitcher",
+      "components_pricing",
+      "components_pricing_pricing",
+      "components_pricing_pricingprops",
+      "lib_i18n",
+      "lib_i18n_lang",
+      "lib_i18n_languagecontext",
+      "lib_i18n_languagecontextvalue",
+      "lib_i18n_translations",
+      "lib_i18n_uselanguage",
+      "pages_about",
+      "pages_about_about",
+      "pages_index",
+      "pages_index_home",
+      "pages_licenses",
+      "pages_licenses_deptable",
+      "pages_licenses_licenses",
+      "pages_licenses_npm_deps",
+      "pages_licenses_python_deps",
+      "pages_mentions_legales",
+      "pages_mentions_legales_mentionslegales",
+      "pages_privacy",
+      "pages_privacy_privacy",
+      "pages_terms",
+      "pages_terms_terms"
+    ],
+    "1": [
+      "components_mathrender",
+      "components_mathrender_mathrender",
+      "pages_solve",
+      "pages_solve_alternativemethod",
+      "pages_solve_alternativemethodapi",
+      "pages_solve_calcapiresponse",
+      "pages_solve_evenlyspacedticks",
+      "pages_solve_formattick",
+      "pages_solve_glossaryentry",
+      "pages_solve_glossaryentryapi",
+      "pages_solve_limitdirection",
+      "pages_solve_matrixapiresponse",
+      "pages_solve_matrixoperation",
+      "pages_solve_matrixsize",
+      "pages_solve_operation",
+      "pages_solve_plotapiresponse",
+      "pages_solve_plotchart",
+      "pages_solve_plotchart_tosvgx",
+      "pages_solve_plotchart_tosvgy",
+      "pages_solve_plotpointapi",
+      "pages_solve_result",
+      "pages_solve_solveapiresponse",
+      "pages_solve_status",
+      "pages_solve_stepapi",
+      "pages_solve_systemapiresponse",
+      "ref_katex",
+      "ref_react"
+    ],
+    "2": [
+      "eslint_config",
+      "eslint_config_eslintconfig",
+      "package",
+      "package_dependencies",
+      "package_dependencies_katex",
+      "package_dependencies_next",
+      "package_dependencies_react",
+      "package_dependencies_react_dom",
+      "package_name",
+      "package_private",
+      "package_scripts",
+      "package_scripts_build",
+      "package_scripts_check_licenses",
+      "package_scripts_dev",
+      "package_scripts_lint",
+      "package_scripts_start",
+      "package_version",
+      "ref_eslint",
+      "ref_eslint_config_next",
+      "ref_react_dom",
+      "ref_tailwindcss",
+      "ref_tailwindcss_postcss",
+      "ref_types_node",
+      "ref_types_react",
+      "ref_types_react_dom",
+      "ref_typescript"
+    ],
+    "3": [
+      "lib_api",
+      "lib_api_api_url",
+      "lib_api_auth_token_key",
+      "lib_api_authheaders",
+      "lib_api_clearstoredtoken",
+      "lib_api_getstoredtoken",
+      "pages_profile",
+      "pages_profile_billingcycle",
+      "pages_profile_billingstatusapiresponse",
+      "pages_profile_billingtier",
+      "pages_profile_languagestrings",
+      "pages_profile_profile",
+      "pages_profile_profile_handlemanagesubscription",
+      "pages_profile_profile_handlesubmit",
+      "pages_profile_profile_handlesubscribe",
+      "pages_profile_profile_loadbillingstatus",
+      "pages_profile_status",
+      "pages_profile_statusdisplayname",
+      "pages_profile_tiercheckoutcard",
+      "pages_profile_tierdisplayname",
+      "pages_solve_solve",
+      "pages_solve_solve_currentmatrixcells",
+      "pages_solve_solve_handlelogout",
+      "pages_solve_solve_handlesubmit",
+      "pages_solve_solve_togglealternative"
+    ],
+    "4": [
+      "tsconfig",
+      "tsconfig_compileroptions",
+      "tsconfig_compileroptions_allowjs",
+      "tsconfig_compileroptions_esmoduleinterop",
+      "tsconfig_compileroptions_incremental",
+      "tsconfig_compileroptions_isolatedmodules",
+      "tsconfig_compileroptions_jsx",
+      "tsconfig_compileroptions_lib",
+      "tsconfig_compileroptions_module",
+      "tsconfig_compileroptions_moduleresolution",
+      "tsconfig_compileroptions_noemit",
+      "tsconfig_compileroptions_paths",
+      "tsconfig_compileroptions_plugins",
+      "tsconfig_compileroptions_resolvejsonmodule",
+      "tsconfig_compileroptions_skiplibcheck",
+      "tsconfig_compileroptions_strict",
+      "tsconfig_compileroptions_target",
+      "tsconfig_exclude",
+      "tsconfig_include"
+    ],
+    "5": [
+      "docref_rfc_5322",
+      "next_config",
+      "next_config_nextconfig",
+      "pages_api_waitlist",
+      "pages_api_waitlist_basicauthheader",
+      "pages_api_waitlist_handler",
+      "pages_api_waitlist_mailchimpconfig",
+      "pages_api_waitlist_mailchimperrorbody",
+      "pages_api_waitlist_tagsubscriberbytier",
+      "pages_api_waitlist_tier_tag_map",
+      "pages_api_waitlist_waitlistresponse",
+      "ref_next"
+    ],
+    "6": [
+      "package_devdependencies",
+      "package_devdependencies_eslint",
+      "package_devdependencies_eslint_config_next",
+      "package_devdependencies_tailwindcss",
+      "package_devdependencies_tailwindcss_postcss",
+      "package_devdependencies_types_node",
+      "package_devdependencies_types_react",
+      "package_devdependencies_types_react_dom",
+      "package_devdependencies_typescript"
+    ],
+    "7": [
+      "components_waitlistform",
+      "components_waitlistform_status",
+      "components_waitlistform_waitlistapiresponse",
+      "components_waitlistform_waitlistform",
+      "components_waitlistform_waitlistform_handlecleartier",
+      "components_waitlistform_waitlistform_handlesubmit",
+      "components_waitlistform_waitlistformprops"
+    ],
+    "8": [
+      "pages_reset_password",
+      "pages_reset_password_confirmform",
+      "pages_reset_password_confirmform_handlesubmit",
+      "pages_reset_password_requestform",
+      "pages_reset_password_requestform_handlesubmit",
+      "pages_reset_password_resetpassword",
+      "pages_reset_password_status"
+    ],
+    "9": [
+      "lib_api_setstoredtoken",
+      "pages_login",
+      "pages_login_login",
+      "pages_login_login_handlesubmit",
+      "pages_login_loginsuccess",
+      "pages_login_status"
+    ],
+    "10": [
+      "lib_i18n_languageprovider",
+      "lib_i18n_languageprovider_setlang",
+      "pages_app",
+      "pages_app_app"
+    ],
+    "11": [
+      "scripts_check_licenses",
+      "scripts_check_licenses_main",
+      "scripts_check_licenses_root",
+      "scripts_check_licenses_walk"
+    ],
+    "12": [
+      "next_env_d",
+      "next_env_d_rationale_6"
+    ],
+    "13": [
+      "pages_document",
+      "pages_document_document"
+    ],
+    "14": [
+      "postcss_config",
+      "postcss_config_config"
+    ]
+  },
+  "cohesion": {
+    "0": 0.1586452762923351,
+    "1": 0.08547008547008547,
+    "2": 0.07692307692307693,
+    "3": 0.14,
+    "4": 0.10526315789473684,
+    "5": 0.21212121212121213,
+    "6": 0.2222222222222222,
+    "7": 0.2857142857142857,
+    "8": 0.2857142857142857,
+    "9": 0.4,
+    "10": 0.5,
+    "11": 0.8333333333333334,
+    "12": 1.0,
+    "13": 1.0,
+    "14": 1.0
+  },
+  "gods": [
+    {
+      "id": "lib_i18n_uselanguage",
+      "label": "useLanguage()",
+      "degree": 37
+    },
+    {
+      "id": "tsconfig_compileroptions",
+      "label": "compilerOptions",
+      "degree": 16
+    },
+    {
+      "id": "components_languageswitcher_languageswitcher",
+      "label": "LanguageSwitcher()",
+      "degree": 13
+    },
+    {
+      "id": "pages_profile_profile",
+      "label": "Profile()",
+      "degree": 9
+    },
+    {
+      "id": "ref_react",
+      "label": "react",
+      "degree": 9
+    },
+    {
+      "id": "components_footer_footer",
+      "label": "Footer()",
+      "degree": 8
+    },
+    {
+      "id": "lib_api_authheaders",
+      "label": "authHeaders()",
+      "degree": 8
+    },
+    {
+      "id": "lib_api_clearstoredtoken",
+      "label": "clearStoredToken()",
+      "degree": 8
+    },
+    {
+      "id": "pages_solve_solve",
+      "label": "Solve()",
+      "degree": 7
+    },
+    {
+      "id": "package_scripts",
+      "label": "scripts",
+      "degree": 6
+    }
+  ],
+  "surprises": [
+    {
+      "source": "LanguageSwitcher()",
+      "target": "setLang()",
+      "source_files": [
+        "components/LanguageSwitcher.tsx",
+        "lib/i18n.tsx"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; bridges separate communities; peripheral node `setLang()` unexpectedly reaches hub `LanguageSwitcher()`"
+    },
+    {
+      "source": "ResetPassword()",
+      "target": "useLanguage()",
+      "source_files": [
+        "pages/reset-password.tsx",
+        "lib/i18n.tsx"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; bridges separate communities; peripheral node `ResetPassword()` unexpectedly reaches hub `useLanguage()`"
+    },
+    {
+      "source": "WaitlistForm()",
+      "target": "useLanguage()",
+      "source_files": [
+        "components/WaitlistForm.tsx",
+        "lib/i18n.tsx"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; bridges separate communities"
+    },
+    {
+      "source": "About()",
+      "target": "useLanguage()",
+      "source_files": [
+        "pages/about.tsx",
+        "lib/i18n.tsx"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; peripheral node `About()` unexpectedly reaches hub `useLanguage()`"
+    },
+    {
+      "source": "Home()",
+      "target": "useLanguage()",
+      "source_files": [
+        "pages/index.tsx",
+        "lib/i18n.tsx"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "connects across different repos/directories; peripheral node `Home()` unexpectedly reaches hub `useLanguage()`"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `react` connect `Community 1` to `Community 0`, `Community 2`, `Community 3`, `Community 7`, `Community 8`, `Community 9`?",
+      "why": "High betweenness centrality (0.307) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `useLanguage()` connect `Community 0` to `Community 1`, `Community 3`, `Community 7`, `Community 8`, `Community 9`?",
+      "why": "High betweenness centrality (0.154) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `next` connect `Community 5` to `Community 2`?",
+      "why": "High betweenness centrality (0.095) - this node is a cross-community bridge."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `PricingProps`, `Lang`, `LanguageContextValue` to the rest of the system?",
+      "why": "90 weakly-connected nodes found - possible documentation gaps or missing edges."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 1` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.08547008547008547 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 2` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.07692307692307693 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 3` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.14 - nodes in this community are weakly interconnected."
+    }
+  ]
+}
