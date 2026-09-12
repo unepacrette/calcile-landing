@@ -67,3 +67,20 @@ body {
 math-field::part(menu-toggle) {
   display: none;
 }
+
+/* apple-design (.claude/skills/apple-design/SKILL.md), §14: reduced
+   motion means gentler feedback, not none. The app's press/hover
+   feedback (active:scale-95 + transition, used on every button) and its
+   hover-state color changes are all short and non-vestibular already --
+   this just makes them instant instead of animated for anyone who's
+   asked for less motion, rather than leaving the request unanswered. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

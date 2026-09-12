@@ -224,17 +224,10 @@ export default function MathInput({ id, value, onChange, placeholder }: MathInpu
                     ref.current?.focus();
                     ref.current?.insert(symbol.latex, { insertionMode: "insertAfter" });
                   }}
-                  style={{
-                    height: "2.5rem",
-                    minWidth: "2.5rem",
-                    padding: "0 0.6rem",
-                    borderRadius: "0.5rem",
-                    border: "none",
-                    background: "var(--color-paper)",
-                    color: "var(--color-ink-soft)",
-                    fontSize: "1.1rem",
-                    cursor: "pointer",
-                  }}
+                  // Same press/hover feedback convention as every other
+                  // button in the app (apple-design: feedback belongs on
+                  // press, not only on release) -- this row had none.
+                  className="flex h-10 min-w-10 cursor-pointer items-center justify-center rounded-lg text-lg text-ink-soft transition duration-150 hover:bg-rule active:scale-95 focus:outline-none focus:ring-2 focus:ring-mark"
                 >
                   {symbol.glyph}
                 </button>
