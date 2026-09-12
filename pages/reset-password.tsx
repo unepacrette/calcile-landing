@@ -9,7 +9,7 @@ import { API_URL } from "@/lib/api";
 type Status = "idle" | "loading";
 
 const inputClass =
-  "w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-300";
+  "w-full rounded-lg border border-rule-strong px-4 py-3 text-ink shadow-sm focus:outline-none focus:ring-2 focus:ring-mark";
 
 // Stage 1: no ?token= in the URL -- ask for the account email and request
 // a reset link (always a generic outcome, see api.routes.password_reset_request).
@@ -75,12 +75,12 @@ function RequestForm() {
         />
       </div>
 
-      {error && <p className="text-sm font-medium text-red-600">{error}</p>}
+      {error && <p className="text-sm font-medium text-mark-strong">{error}</p>}
 
       <button
         type="submit"
         disabled={status === "loading"}
-        className="w-full rounded-lg bg-violet-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition duration-150 hover:bg-violet-700 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100"
+        className="w-full rounded-lg bg-mark px-6 py-3 text-sm font-semibold text-paper-raised shadow-sm transition duration-150 hover:bg-mark-strong active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100"
       >
         {status === "loading"
           ? t.auth.passwordReset.requestSubmitLoading
@@ -153,7 +153,7 @@ function ConfirmForm({ token }: { token: string }) {
       <div>
         <label
           htmlFor="reset-confirm-new-password"
-          className="mb-1 block text-sm font-medium text-gray-700"
+          className="mb-1 block text-sm font-medium text-ink-soft"
         >
           {t.auth.profile.newPasswordLabel}
         </label>
@@ -170,7 +170,7 @@ function ConfirmForm({ token }: { token: string }) {
       <div>
         <label
           htmlFor="reset-confirm-confirm-password"
-          className="mb-1 block text-sm font-medium text-gray-700"
+          className="mb-1 block text-sm font-medium text-ink-soft"
         >
           {t.auth.profile.confirmPasswordLabel}
         </label>
@@ -185,12 +185,12 @@ function ConfirmForm({ token }: { token: string }) {
         />
       </div>
 
-      {error && <p className="text-sm font-medium text-red-600">{error}</p>}
+      {error && <p className="text-sm font-medium text-mark-strong">{error}</p>}
 
       <button
         type="submit"
         disabled={status === "loading"}
-        className="w-full rounded-lg bg-violet-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition duration-150 hover:bg-violet-700 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100"
+        className="w-full rounded-lg bg-mark px-6 py-3 text-sm font-semibold text-paper-raised shadow-sm transition duration-150 hover:bg-mark-strong active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100"
       >
         {status === "loading"
           ? t.auth.passwordReset.confirmSubmitLoading
@@ -216,12 +216,12 @@ export default function ResetPassword() {
         <LanguageSwitcher />
       </div>
 
-      <main className="flex min-h-screen items-center justify-center bg-gray-50 px-6 py-24">
+      <main className="flex min-h-screen items-center justify-center bg-paper px-6 py-24">
         <div className="w-full max-w-sm">
-          <h1 className="text-center text-2xl font-bold text-gray-900">
+          <h1 className="text-center text-2xl font-display font-semibold text-ink">
             {t.auth.passwordReset.heading}
           </h1>
-          <p className="mt-2 text-center text-sm text-gray-600">
+          <p className="mt-2 text-center text-sm text-ink-soft">
             {token
               ? t.auth.passwordReset.confirmSubtitle
               : t.auth.passwordReset.requestSubtitle}
@@ -229,10 +229,10 @@ export default function ResetPassword() {
 
           {token ? <ConfirmForm token={token} /> : <RequestForm />}
 
-          <p className="mt-6 text-center text-sm text-gray-600">
+          <p className="mt-6 text-center text-sm text-ink-soft">
             <Link
               href="/login"
-              className="font-semibold text-violet-700 hover:underline"
+              className="font-semibold text-mark-strong hover:underline"
             >
               {t.auth.passwordReset.backToLogin}
             </Link>

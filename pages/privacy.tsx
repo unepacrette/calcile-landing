@@ -19,73 +19,73 @@ export default function Privacy() {
       </div>
 
       <main className="mx-auto max-w-3xl px-6 py-24">
-        <h1 className="text-3xl font-bold text-gray-900">
+        <h1 className="text-3xl font-display font-semibold text-ink">
           {t.privacy.heading}
         </h1>
-        <p className="mt-2 text-sm text-gray-500">{t.privacy.lastUpdated}</p>
-        <p className="mt-6 text-base leading-relaxed text-gray-700">
+        <p className="mt-2 text-sm text-ink-faint">{t.privacy.lastUpdated}</p>
+        <p className="mt-6 text-base leading-relaxed text-ink-soft">
           {t.privacy.intro}
         </p>
 
-        <h2 className="mt-10 text-lg font-bold text-gray-900">
+        <h2 className="mt-10 text-lg font-display font-semibold text-ink">
           {t.privacy.dataHeading}
         </h2>
-        <p className="mt-3 text-base leading-relaxed text-gray-700">
+        <p className="mt-3 text-base leading-relaxed text-ink-soft">
           {t.privacy.dataBody}
         </p>
 
-        <h2 className="mt-10 text-lg font-bold text-gray-900">
+        <h2 className="mt-10 text-lg font-display font-semibold text-ink">
           {t.privacy.legalBasisHeading}
         </h2>
-        <p className="mt-3 text-base leading-relaxed text-gray-700">
+        <p className="mt-3 text-base leading-relaxed text-ink-soft">
           {t.privacy.legalBasisBody}
         </p>
 
-        <h2 className="mt-10 text-lg font-bold text-gray-900">
+        <h2 className="mt-10 text-lg font-display font-semibold text-ink">
           {t.privacy.useHeading}
         </h2>
-        <p className="mt-3 text-base leading-relaxed text-gray-700">
+        <p className="mt-3 text-base leading-relaxed text-ink-soft">
           {t.privacy.useBody}
         </p>
 
-        <h2 className="mt-10 text-lg font-bold text-gray-900">
+        <h2 className="mt-10 text-lg font-display font-semibold text-ink">
           {t.privacy.retentionHeading}
         </h2>
-        <p className="mt-3 text-base leading-relaxed text-gray-700">
+        <p className="mt-3 text-base leading-relaxed text-ink-soft">
           {t.privacy.retentionBody}
         </p>
 
-        <h2 className="mt-10 text-lg font-bold text-gray-900">
+        <h2 className="mt-10 text-lg font-display font-semibold text-ink">
           {t.privacy.thirdPartyHeading}
         </h2>
-        <p className="mt-3 text-base leading-relaxed text-gray-700">
+        <p className="mt-3 text-base leading-relaxed text-ink-soft">
           {t.privacy.thirdPartyBody}
         </p>
 
-        <h2 className="mt-10 text-lg font-bold text-gray-900">
+        <h2 className="mt-10 text-lg font-display font-semibold text-ink">
           {t.privacy.cookiesHeading}
         </h2>
-        <p className="mt-3 text-base leading-relaxed text-gray-700">
+        <p className="mt-3 text-base leading-relaxed text-ink-soft">
           {t.privacy.cookiesBody}
         </p>
 
-        <h2 className="mt-10 text-lg font-bold text-gray-900">
+        <h2 className="mt-10 text-lg font-display font-semibold text-ink">
           {t.privacy.rightsHeading}
         </h2>
-        <p className="mt-3 text-base leading-relaxed text-gray-700">
+        <p className="mt-3 text-base leading-relaxed text-ink-soft">
           {t.privacy.rightsBody}
         </p>
 
         <p className="mt-10 space-x-6">
           <Link
             href="/mentions-legales"
-            className="text-sm font-semibold text-violet-700 hover:underline"
+            className="text-sm font-semibold text-mark-strong hover:underline"
           >
             {t.privacy.legalLinkLabel} →
           </Link>
           <Link
             href="/licenses"
-            className="text-sm font-semibold text-violet-700 hover:underline"
+            className="text-sm font-semibold text-mark-strong hover:underline"
           >
             {t.privacy.licensesLinkLabel} →
           </Link>

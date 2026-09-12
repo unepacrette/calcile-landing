@@ -153,7 +153,7 @@ type Result = {
 };
 
 const inputClass =
-  "w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-300";
+  "w-full rounded-lg border border-rule-strong px-4 py-3 text-ink shadow-sm focus:outline-none focus:ring-2 focus:ring-mark";
 
 // A handful of evenly-spaced tick positions between min and max --
 // shared by both axes of PlotChart below.
@@ -240,14 +240,14 @@ function PlotChart({
             y1={padding}
             x2={toSvgX(tickX)}
             y2={height - padding}
-            className="stroke-gray-100"
+            className="stroke-rule"
             strokeWidth={1}
           />
           <text
             x={toSvgX(tickX)}
             y={height - padding + 14}
             textAnchor="middle"
-            className="fill-gray-400 text-[9px]"
+            className="fill-ink-faint text-[9px]"
           >
             {formatTick(tickX)}
           </text>
@@ -260,14 +260,14 @@ function PlotChart({
             y1={toSvgY(tickY)}
             x2={width - padding}
             y2={toSvgY(tickY)}
-            className="stroke-gray-100"
+            className="stroke-rule"
             strokeWidth={1}
           />
           <text
             x={padding - 6}
             y={toSvgY(tickY) + 3}
             textAnchor="end"
-            className="fill-gray-400 text-[9px]"
+            className="fill-ink-faint text-[9px]"
           >
             {formatTick(tickY)}
           </text>
@@ -280,7 +280,7 @@ function PlotChart({
           y1={toSvgY(0)}
           x2={width - padding}
           y2={toSvgY(0)}
-          className="stroke-gray-400"
+          className="stroke-ink-faint"
           strokeWidth={1.5}
         />
       )}
@@ -290,7 +290,7 @@ function PlotChart({
           y1={padding}
           x2={toSvgX(0)}
           y2={height - padding}
-          className="stroke-gray-400"
+          className="stroke-ink-faint"
           strokeWidth={1.5}
         />
       )}
@@ -300,7 +300,7 @@ function PlotChart({
           key={index}
           points={segment.map((p) => `${p.x},${p.y}`).join(" ")}
           fill="none"
-          className="stroke-violet-600"
+          className="stroke-mark"
           strokeWidth={2}
           strokeLinejoin="round"
           strokeLinecap="round"
@@ -679,26 +679,26 @@ export default function Solve() {
       <div className="fixed right-4 top-4 z-50 flex items-center gap-3">
         <Link
           href="/profile"
-          className="text-xs font-medium text-gray-500 hover:text-gray-700"
+          className="text-xs font-medium text-ink-faint hover:text-ink-soft"
         >
           {t.solve.profileLink}
         </Link>
         <button
           type="button"
           onClick={handleLogout}
-          className="text-xs font-medium text-gray-500 hover:text-gray-700"
+          className="text-xs font-medium text-ink-faint hover:text-ink-soft"
         >
           {t.solve.logout}
         </button>
         <LanguageSwitcher />
       </div>
 
-      <main className="min-h-screen bg-gray-50 px-6 py-24">
+      <main className="min-h-screen bg-paper px-6 py-24">
         <div className="mx-auto max-w-3xl">
-          <h1 className="text-center text-4xl font-bold tracking-tight text-gray-900">
+          <h1 className="text-center text-4xl font-display font-semibold tracking-tight text-ink">
             {t.solve.heading}
           </h1>
-          <p className="mt-2 text-center text-sm text-gray-600">
+          <p className="mt-2 text-center text-sm text-ink-soft">
             {t.solve.subtitle}
           </p>
 
@@ -706,7 +706,7 @@ export default function Solve() {
             <div
               ref={tabScrollRef}
               onScroll={updateTabScrollShadows}
-              className="flex gap-2 overflow-x-auto rounded-full border border-gray-300 bg-white p-1 text-sm font-semibold shadow-sm [&::-webkit-scrollbar]:hidden"
+              className="flex gap-2 overflow-x-auto rounded-full border border-rule-strong bg-paper-raised p-1 text-sm font-semibold shadow-sm [&::-webkit-scrollbar]:hidden"
               style={{ scrollbarWidth: "none" }}
             >
               {tabs.map((tab) => (
@@ -724,8 +724,8 @@ export default function Solve() {
                   aria-pressed={operation === tab.key}
                   className={`shrink-0 whitespace-nowrap rounded-full px-4 py-2 transition ${
                     operation === tab.key
-                      ? "bg-violet-600 text-white"
-                      : "text-gray-600 hover:bg-gray-50"
+                      ? "bg-mark text-paper-raised"
+                      : "text-ink-soft hover:bg-paper"
                   }`}
                 >
                   {tab.label}
@@ -738,13 +738,13 @@ export default function Solve() {
             {canScrollTabsLeft && (
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-y-0 left-0 w-8 rounded-l-full bg-gradient-to-r from-white to-transparent"
+                className="pointer-events-none absolute inset-y-0 left-0 w-8 rounded-l-full bg-gradient-to-r from-paper-raised to-transparent"
               />
             )}
             {canScrollTabsRight && (
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute inset-y-0 right-0 w-8 rounded-r-full bg-gradient-to-l from-white to-transparent"
+                className="pointer-events-none absolute inset-y-0 right-0 w-8 rounded-r-full bg-gradient-to-l from-paper-raised to-transparent"
               />
             )}
           </div>
@@ -771,7 +771,7 @@ export default function Solve() {
               <div>
                 <label
                   htmlFor="solve-system-equations"
-                  className="mb-1 block text-sm font-medium text-gray-700"
+                  className="mb-1 block text-sm font-medium text-ink-soft"
                 >
                   {t.solve.systemEquationsLabel}
                 </label>
@@ -791,7 +791,7 @@ export default function Solve() {
               <div>
                 <label
                   htmlFor="solve-order"
-                  className="mb-1 block text-sm font-medium text-gray-700"
+                  className="mb-1 block text-sm font-medium text-ink-soft"
                 >
                   {t.solve.orderLabel}
                 </label>
@@ -813,7 +813,7 @@ export default function Solve() {
                 <div className="flex-1">
                   <label
                     htmlFor="solve-lower-bound"
-                    className="mb-1 block text-sm font-medium text-gray-700"
+                    className="mb-1 block text-sm font-medium text-ink-soft"
                   >
                     {t.solve.lowerBoundLabel}
                   </label>
@@ -828,7 +828,7 @@ export default function Solve() {
                 <div className="flex-1">
                   <label
                     htmlFor="solve-upper-bound"
-                    className="mb-1 block text-sm font-medium text-gray-700"
+                    className="mb-1 block text-sm font-medium text-ink-soft"
                   >
                     {t.solve.upperBoundLabel}
                   </label>
@@ -848,7 +848,7 @@ export default function Solve() {
                 <div className="flex-1">
                   <label
                     htmlFor="solve-limit-point"
-                    className="mb-1 block text-sm font-medium text-gray-700"
+                    className="mb-1 block text-sm font-medium text-ink-soft"
                   >
                     {t.solve.limitPointLabel}
                   </label>
@@ -865,7 +865,7 @@ export default function Solve() {
                 <div className="flex-1">
                   <label
                     htmlFor="solve-limit-direction"
-                    className="mb-1 block text-sm font-medium text-gray-700"
+                    className="mb-1 block text-sm font-medium text-ink-soft"
                   >
                     {t.solve.limitDirectionLabel}
                   </label>
@@ -890,7 +890,7 @@ export default function Solve() {
                 <div className="flex-1">
                   <label
                     htmlFor="solve-series-point"
-                    className="mb-1 block text-sm font-medium text-gray-700"
+                    className="mb-1 block text-sm font-medium text-ink-soft"
                   >
                     {t.solve.seriesPointLabel}
                   </label>
@@ -906,7 +906,7 @@ export default function Solve() {
                 <div className="flex-1">
                   <label
                     htmlFor="solve-series-order"
-                    className="mb-1 block text-sm font-medium text-gray-700"
+                    className="mb-1 block text-sm font-medium text-ink-soft"
                   >
                     {t.solve.seriesOrderLabel}
                   </label>
@@ -930,7 +930,7 @@ export default function Solve() {
                 <div className="flex-1">
                   <label
                     htmlFor="solve-sum-product-variable"
-                    className="mb-1 block text-sm font-medium text-gray-700"
+                    className="mb-1 block text-sm font-medium text-ink-soft"
                   >
                     {t.solve.sumProductVariableLabel}
                   </label>
@@ -947,7 +947,7 @@ export default function Solve() {
                 <div className="flex-1">
                   <label
                     htmlFor="solve-sum-product-lower"
-                    className="mb-1 block text-sm font-medium text-gray-700"
+                    className="mb-1 block text-sm font-medium text-ink-soft"
                   >
                     {t.solve.sumProductLowerLabel}
                   </label>
@@ -964,7 +964,7 @@ export default function Solve() {
                 <div className="flex-1">
                   <label
                     htmlFor="solve-sum-product-upper"
-                    className="mb-1 block text-sm font-medium text-gray-700"
+                    className="mb-1 block text-sm font-medium text-ink-soft"
                   >
                     {t.solve.sumProductUpperLabel}
                   </label>
@@ -985,10 +985,10 @@ export default function Solve() {
               <div className="space-y-4">
                 <div className="flex flex-wrap gap-4">
                   <div>
-                    <p className="mb-1 text-sm font-medium text-gray-700">
+                    <p className="mb-1 text-sm font-medium text-ink-soft">
                       {t.solve.matrixSizeLabel}
                     </p>
-                    <div className="inline-flex rounded-lg border border-gray-300 bg-white p-1 text-sm font-semibold shadow-sm">
+                    <div className="inline-flex rounded-lg border border-rule-strong bg-paper-raised p-1 text-sm font-semibold shadow-sm">
                       {([2, 3] as const).map((size) => (
                         <button
                           key={size}
@@ -997,8 +997,8 @@ export default function Solve() {
                           aria-pressed={matrixSize === size}
                           className={`rounded-md px-4 py-1.5 transition ${
                             matrixSize === size
-                              ? "bg-violet-600 text-white"
-                              : "text-gray-600 hover:bg-gray-50"
+                              ? "bg-mark text-paper-raised"
+                              : "text-ink-soft hover:bg-paper"
                           }`}
                         >
                           {size}×{size}
@@ -1008,10 +1008,10 @@ export default function Solve() {
                   </div>
 
                   <div>
-                    <p className="mb-1 text-sm font-medium text-gray-700">
+                    <p className="mb-1 text-sm font-medium text-ink-soft">
                       {t.solve.matrixOperationLabel}
                     </p>
-                    <div className="inline-flex rounded-lg border border-gray-300 bg-white p-1 text-sm font-semibold shadow-sm">
+                    <div className="inline-flex rounded-lg border border-rule-strong bg-paper-raised p-1 text-sm font-semibold shadow-sm">
                       {(
                         [
                           ["determinant", t.solve.matrixOperationDeterminant],
@@ -1026,8 +1026,8 @@ export default function Solve() {
                           aria-pressed={matrixOperation === op}
                           className={`rounded-md px-3 py-1.5 transition ${
                             matrixOperation === op
-                              ? "bg-violet-600 text-white"
-                              : "text-gray-600 hover:bg-gray-50"
+                              ? "bg-mark text-paper-raised"
+                              : "text-ink-soft hover:bg-paper"
                           }`}
                         >
                           {label}
@@ -1038,7 +1038,7 @@ export default function Solve() {
                 </div>
 
                 <div>
-                  <p className="mb-1 text-sm font-medium text-gray-700">
+                  <p className="mb-1 text-sm font-medium text-ink-soft">
                     {t.solve.matrixCellsLabel}
                   </p>
                   <div
@@ -1066,13 +1066,13 @@ export default function Solve() {
                           }}
                           placeholder={t.solve.matrixCellPlaceholder}
                           aria-label={`${t.solve.matrixCellsLabel} (${rowIndex + 1}, ${colIndex + 1})`}
-                          className="h-14 w-14 rounded-lg border border-gray-300 text-center text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-300"
+                          className="h-14 w-14 rounded-lg border border-rule-strong text-center text-ink shadow-sm focus:outline-none focus:ring-2 focus:ring-mark"
                         />
                       ))
                     )}
                   </div>
                   {matrixCellError && (
-                    <p className="mt-2 text-sm font-medium text-red-600">
+                    <p className="mt-2 text-sm font-medium text-mark-strong">
                       {matrixCellError}
                     </p>
                   )}
@@ -1085,7 +1085,7 @@ export default function Solve() {
                 <div className="flex-1">
                   <label
                     htmlFor="solve-plot-lower"
-                    className="mb-1 block text-sm font-medium text-gray-700"
+                    className="mb-1 block text-sm font-medium text-ink-soft"
                   >
                     {t.solve.plotLowerBoundLabel}
                   </label>
@@ -1101,7 +1101,7 @@ export default function Solve() {
                 <div className="flex-1">
                   <label
                     htmlFor="solve-plot-upper"
-                    className="mb-1 block text-sm font-medium text-gray-700"
+                    className="mb-1 block text-sm font-medium text-ink-soft"
                   >
                     {t.solve.plotUpperBoundLabel}
                   </label>
@@ -1120,24 +1120,24 @@ export default function Solve() {
             <button
               type="submit"
               disabled={status === "loading"}
-              className="w-full rounded-lg bg-violet-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition duration-150 hover:bg-violet-700 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100"
+              className="w-full rounded-lg bg-mark px-6 py-3 text-sm font-semibold text-paper-raised shadow-sm transition duration-150 hover:bg-mark-strong active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100"
             >
               {status === "loading" ? t.solve.submitLoading : t.solve.submit}
             </button>
           </form>
 
           {status === "error" && (
-            <p className="mt-4 text-sm font-medium text-red-600">
+            <p className="mt-4 text-sm font-medium text-mark-strong">
               {t.solve.error}
             </p>
           )}
 
           {(result || plotResult) && (
-            <div className="mt-10 rounded-2xl border border-gray-200 bg-white p-6 shadow-md sm:p-8">
+            <div className="mt-10 rounded-2xl border border-rule bg-paper-raised p-6 shadow-md sm:p-8">
               {plotResult ? (
                 <>
                   {plotResult.input_latex && (
-                    <div className="overflow-x-auto rounded-lg bg-gray-50 px-4 py-3 text-center text-base text-gray-700">
+                    <div className="overflow-x-auto rounded-lg bg-paper px-4 py-3 text-center text-base text-ink-soft">
                       <MathRender latex={plotResult.input_latex} />
                     </div>
                   )}
@@ -1156,7 +1156,7 @@ export default function Solve() {
                 result && (
                   <>
               {result.method && (
-                <span className="inline-block rounded-full bg-violet-100 px-3 py-1.5 text-xs font-bold tracking-wide text-violet-700">
+                <span className="inline-block rounded-full bg-mark-soft px-3 py-1.5 text-xs font-bold tracking-wide text-mark-strong">
                   {t.solve.methodLabel} : {result.method}
                 </span>
               )}
@@ -1168,7 +1168,7 @@ export default function Solve() {
               )}
 
               {result.inputLatex && (
-                <div className="mt-5 overflow-x-auto rounded-lg bg-gray-50 px-4 py-3 text-center text-base text-gray-700">
+                <div className="mt-5 overflow-x-auto rounded-lg bg-paper px-4 py-3 text-center text-base text-ink-soft">
                   <MathRender latex={result.inputLatex} />
                 </div>
               )}
@@ -1183,22 +1183,22 @@ export default function Solve() {
                   answer on the page, the opposite of the stated principle.
                   Verified directly and corrected: Result now renders first,
                   Steps second. */}
-              <h2 className="mt-10 text-sm font-bold uppercase tracking-widest text-violet-700">
+              <h2 className="mt-10 font-mono text-sm font-bold uppercase tracking-widest text-mark-strong">
                 {t.solve.resultHeading}
               </h2>
               {result.resultLatex ? (
-                <div className="mt-3 overflow-x-auto rounded-2xl border border-violet-200 bg-gradient-to-br from-violet-50 to-white px-6 py-8 text-center text-2xl font-semibold text-violet-900 shadow-inner sm:text-3xl">
+                <div className="mt-3 overflow-x-auto rounded-2xl border border-rule bg-check-soft px-6 py-8 text-center text-2xl font-semibold text-ink shadow-inner sm:text-3xl">
                   <MathRender latex={result.resultLatex} />
                 </div>
               ) : (
-                <p className="mt-3 text-2xl font-bold text-violet-800">
+                <p className="mt-3 text-2xl font-bold text-ink">
                   {result.values.join(", ")}
                 </p>
               )}
 
               {result.steps.length > 0 ? (
                 <>
-                  <h3 className="mt-10 text-xs font-bold uppercase tracking-widest text-gray-400">
+                  <h3 className="mt-10 font-mono text-xs font-bold uppercase tracking-widest text-ink-faint">
                     {t.solve.stepsHeading}
                   </h3>
                   <ol className="mt-4 space-y-5">
@@ -1207,19 +1207,19 @@ export default function Solve() {
                         key={index}
                         className={
                           step.is_key
-                            ? "rounded-r-lg border-l-[3px] border-violet-600 bg-violet-50/80 py-2 pl-4 pr-3"
-                            : "rounded-r-lg border-l-[3px] border-violet-300 bg-gray-50/60 py-2 pl-4 pr-3"
+                            ? "rounded-r-lg border-l-[3px] border-mark bg-mark-soft/80 py-2 pl-4 pr-3"
+                            : "rounded-r-lg border-l-[3px] border-rule-strong bg-paper/60 py-2 pl-4 pr-3"
                         }
                       >
-                        <p className="flex items-center gap-2 text-[13px] font-medium text-gray-600">
+                        <p className="flex items-center gap-2 text-[13px] font-medium text-ink-soft">
                           {step.description}
                           {step.is_key && (
-                            <span className="rounded-full bg-violet-600 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+                            <span className="rounded-full bg-mark px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-paper-raised">
                               {t.solve.keyStepLabel}
                             </span>
                           )}
                         </p>
-                        <div className="mt-1.5 overflow-x-auto text-[15px] text-gray-900">
+                        <div className="mt-1.5 overflow-x-auto text-[15px] text-ink">
                           <MathRender latex={step.highlighted_latex ?? step.latex} />
                         </div>
                       </li>
@@ -1229,10 +1229,10 @@ export default function Solve() {
               ) : (
                 result.stepsText.length > 0 && (
                   <>
-                    <h3 className="mt-10 text-xs font-bold uppercase tracking-widest text-gray-400">
+                    <h3 className="mt-10 font-mono text-xs font-bold uppercase tracking-widest text-ink-faint">
                       {t.solve.stepsHeading}
                     </h3>
-                    <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-gray-700">
+                    <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-ink-soft">
                       {result.stepsText.map((step, index) => (
                         <li key={index}>{step}</li>
                       ))}
@@ -1242,14 +1242,14 @@ export default function Solve() {
               )}
 
               {result.glossary.length > 0 && (
-                <div className="mt-8 border-t border-gray-100 pt-5">
-                  <h3 className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                <div className="mt-8 border-t border-rule pt-5">
+                  <h3 className="font-mono text-xs font-semibold uppercase tracking-wide text-ink-faint">
                     {t.solve.glossaryHeading}
                   </h3>
                   <dl className="mt-2 space-y-1.5">
                     {result.glossary.map((entry, index) => (
-                      <div key={index} className="text-xs text-gray-500">
-                        <dt className="inline font-medium text-gray-500">
+                      <div key={index} className="text-xs text-ink-faint">
+                        <dt className="inline font-medium text-ink-faint">
                           {entry.symbol}
                         </dt>
                         <dd className="inline"> — {entry.definition}</dd>
@@ -1261,7 +1261,7 @@ export default function Solve() {
 
               {result.alternativeMethods.length > 0 && (
                 <>
-                  <h3 className="mt-10 text-xs font-bold uppercase tracking-widest text-gray-400">
+                  <h3 className="mt-10 font-mono text-xs font-bold uppercase tracking-widest text-ink-faint">
                     {t.solve.alternativeMethodsHeading}
                   </h3>
                   <div className="mt-4 space-y-2.5">
@@ -1270,7 +1270,7 @@ export default function Solve() {
                       return (
                         <div
                           key={index}
-                          className="overflow-hidden rounded-xl border border-gray-200"
+                          className="overflow-hidden rounded-xl border border-rule"
                         >
                           <button
                             type="button"
@@ -1281,12 +1281,12 @@ export default function Solve() {
                                 ? t.solve.alternativeMethodsCollapse
                                 : t.solve.alternativeMethodsExpand
                             }
-                            className="flex w-full items-center justify-between px-4 py-3.5 text-left text-sm font-semibold text-gray-800 transition-colors duration-150 hover:bg-gray-50 active:scale-95"
+                            className="flex w-full items-center justify-between px-4 py-3.5 text-left text-sm font-semibold text-ink transition-colors duration-150 hover:bg-paper active:scale-95"
                           >
                             <span>{alt.method}</span>
                             <span
                               aria-hidden="true"
-                              className={`text-gray-400 transition-transform duration-200 ${
+                              className={`text-ink-faint transition-transform duration-200 ${
                                 isOpen ? "rotate-180" : ""
                               }`}
                             >
@@ -1295,33 +1295,33 @@ export default function Solve() {
                           </button>
 
                           {isOpen && (
-                            <div className="border-t border-gray-200 px-4 py-4">
+                            <div className="border-t border-rule px-4 py-4">
                               <ol className="space-y-5">
                                 {alt.steps.map((step, stepIndex) => (
                                   <li
                                     key={stepIndex}
                                     className={
                                       step.is_key
-                                        ? "rounded-r-lg border-l-[3px] border-violet-600 bg-violet-50/80 py-2 pl-4 pr-3"
-                                        : "rounded-r-lg border-l-[3px] border-violet-300 bg-gray-50/60 py-2 pl-4 pr-3"
+                                        ? "rounded-r-lg border-l-[3px] border-mark bg-mark-soft/80 py-2 pl-4 pr-3"
+                                        : "rounded-r-lg border-l-[3px] border-rule-strong bg-paper/60 py-2 pl-4 pr-3"
                                     }
                                   >
-                                    <p className="flex items-center gap-2 text-[13px] font-medium text-gray-600">
+                                    <p className="flex items-center gap-2 text-[13px] font-medium text-ink-soft">
                                       {step.description}
                                       {step.is_key && (
-                                        <span className="rounded-full bg-violet-600 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+                                        <span className="rounded-full bg-mark px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-paper-raised">
                                           {t.solve.keyStepLabel}
                                         </span>
                                       )}
                                     </p>
-                                    <div className="mt-1.5 overflow-x-auto text-[15px] text-gray-900">
+                                    <div className="mt-1.5 overflow-x-auto text-[15px] text-ink">
                                       <MathRender latex={step.highlighted_latex ?? step.latex} />
                                     </div>
                                   </li>
                                 ))}
                               </ol>
 
-                              <div className="mt-4 overflow-x-auto rounded-xl border border-gray-200 bg-gray-50 px-5 py-4 text-center text-lg font-medium text-gray-800">
+                              <div className="mt-4 overflow-x-auto rounded-xl border border-rule bg-paper px-5 py-4 text-center text-lg font-medium text-ink">
                                 <MathRender latex={alt.resultLatex} />
                               </div>
                             </div>

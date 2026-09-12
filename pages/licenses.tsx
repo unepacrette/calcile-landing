@@ -70,18 +70,18 @@ function DepTable({
   return (
     <table className="mt-4 w-full border-collapse text-left text-sm">
       <thead>
-        <tr className="border-b border-gray-200 text-gray-500">
+        <tr className="border-b border-rule text-ink-faint">
           <th className="py-2 pr-4 font-medium">{packageLabel}</th>
           <th className="py-2 font-medium">{licenseLabel}</th>
         </tr>
       </thead>
       <tbody>
         {deps.map(([name, license]) => (
-          <tr key={name} className="border-b border-gray-100">
-            <td className="py-2 pr-4 font-mono text-xs text-gray-800">
+          <tr key={name} className="border-b border-rule">
+            <td className="py-2 pr-4 font-mono text-xs text-ink">
               {name}
             </td>
-            <td className="py-2 text-gray-600">{license}</td>
+            <td className="py-2 text-ink-soft">{license}</td>
           </tr>
         ))}
       </tbody>
@@ -104,32 +104,32 @@ export default function Licenses() {
       </div>
 
       <main className="mx-auto max-w-3xl px-6 py-24">
-        <h1 className="text-3xl font-bold text-gray-900">
+        <h1 className="text-3xl font-display font-semibold text-ink">
           {t.licenses.heading}
         </h1>
-        <p className="mt-6 text-base leading-relaxed text-gray-700">
+        <p className="mt-6 text-base leading-relaxed text-ink-soft">
           {t.licenses.intro}
         </p>
 
-        <h2 className="mt-12 text-xl font-bold text-gray-900">
+        <h2 className="mt-12 text-xl font-display font-semibold text-ink">
           {t.licenses.howWeUseHeading}
         </h2>
-        <p className="mt-4 text-base leading-relaxed text-gray-700">
+        <p className="mt-4 text-base leading-relaxed text-ink-soft">
           {t.licenses.howWeUseBody}
         </p>
 
-        <h2 className="mt-12 text-xl font-bold text-gray-900">
+        <h2 className="mt-12 text-xl font-display font-semibold text-ink">
           {t.licenses.sympyHeading}
         </h2>
-        <pre className="mt-4 overflow-x-auto whitespace-pre-wrap rounded-lg bg-gray-50 p-5 font-mono text-xs leading-relaxed text-gray-700">
+        <pre className="mt-4 overflow-x-auto whitespace-pre-wrap rounded-lg bg-paper p-5 font-mono text-xs leading-relaxed text-ink-soft">
           {SYMPY_LICENSE}
         </pre>
 
-        <h2 className="mt-12 text-xl font-bold text-gray-900">
+        <h2 className="mt-12 text-xl font-display font-semibold text-ink">
           {t.licenses.dependenciesHeading}
         </h2>
 
-        <h3 className="mt-6 text-sm font-semibold uppercase tracking-wide text-gray-500">
+        <h3 className="mt-6 font-mono text-sm font-semibold uppercase tracking-wide text-ink-faint">
           {t.licenses.pythonHeading}
         </h3>
         <DepTable
@@ -138,7 +138,7 @@ export default function Licenses() {
           licenseLabel={t.licenses.licenseColumn}
         />
 
-        <h3 className="mt-10 text-sm font-semibold uppercase tracking-wide text-gray-500">
+        <h3 className="mt-10 font-mono text-sm font-semibold uppercase tracking-wide text-ink-faint">
           {t.licenses.npmHeading}
         </h3>
         <DepTable
@@ -147,10 +147,10 @@ export default function Licenses() {
           licenseLabel={t.licenses.licenseColumn}
         />
 
-        <h2 className="mt-12 text-xl font-bold text-gray-900">
+        <h2 className="mt-12 text-xl font-display font-semibold text-ink">
           {t.licenses.ownCodeHeading}
         </h2>
-        <p className="mt-4 text-base leading-relaxed text-gray-700">
+        <p className="mt-4 text-base leading-relaxed text-ink-soft">
           {t.licenses.ownCodeBody}
         </p>
       </main>

@@ -54,7 +54,7 @@ function statusDisplayName(status: string, t: LanguageStrings): string | null {
 }
 
 const inputClass =
-  "w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-violet-300";
+  "w-full rounded-lg border border-rule-strong px-4 py-3 text-ink shadow-sm focus:outline-none focus:ring-2 focus:ring-mark";
 
 // One Student/Prof subscribe card: a monthly/yearly toggle plus a
 // "Subscribe" button. A top-level component (not defined inside
@@ -83,10 +83,10 @@ function TierCheckoutCard({
   const [cycle, setCycle] = useState<BillingCycle>("monthly");
 
   return (
-    <div className="rounded-lg border border-gray-200 p-4">
+    <div className="rounded-lg border border-rule p-4">
       <div className="flex items-center justify-between gap-2">
-        <span className="text-sm font-semibold text-gray-900">{name}</span>
-        <div className="inline-flex rounded-lg border border-gray-300 bg-white p-0.5 text-xs font-semibold">
+        <span className="text-sm font-display font-semibold text-ink">{name}</span>
+        <div className="inline-flex rounded-lg border border-rule-strong bg-paper-raised p-0.5 text-xs font-semibold">
           {(["monthly", "yearly"] as const).map((option) => (
             <button
               key={option}
@@ -95,8 +95,8 @@ function TierCheckoutCard({
               aria-pressed={cycle === option}
               className={`rounded-md px-2.5 py-1 transition duration-150 active:scale-95 ${
                 cycle === option
-                  ? "bg-violet-600 text-white"
-                  : "text-gray-600 hover:bg-gray-50"
+                  ? "bg-mark text-paper-raised"
+                  : "text-ink-soft hover:bg-paper"
               }`}
             >
               {option === "monthly" ? t.auth.profile.billing.monthly : t.auth.profile.billing.yearly}
@@ -104,14 +104,14 @@ function TierCheckoutCard({
           ))}
         </div>
       </div>
-      <p className="mt-2 text-sm text-gray-600">
+      <p className="mt-2 text-sm text-ink-soft">
         {cycle === "monthly" ? monthlyPrice : yearlyPrice}
       </p>
       <button
         type="button"
         disabled={disabled}
         onClick={() => onSubscribe(tier, cycle)}
-        className="mt-3 w-full rounded-lg bg-violet-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition duration-150 hover:bg-violet-700 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100"
+        className="mt-3 w-full rounded-lg bg-mark px-4 py-2 text-sm font-semibold text-paper-raised shadow-sm transition duration-150 hover:bg-mark-strong active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100"
       >
         {t.auth.profile.billing.subscribe}
       </button>
@@ -339,9 +339,9 @@ export default function Profile() {
         <LanguageSwitcher />
       </div>
 
-      <main className="flex min-h-screen items-center justify-center bg-gray-50 px-6 py-24">
+      <main className="flex min-h-screen items-center justify-center bg-paper px-6 py-24">
         <div className="w-full max-w-sm">
-          <h1 className="text-center text-2xl font-bold text-gray-900">
+          <h1 className="text-center text-2xl font-display font-semibold text-ink">
             {t.auth.profile.heading}
           </h1>
 
@@ -349,7 +349,7 @@ export default function Profile() {
             <div>
               <label
                 htmlFor="profile-current-password"
-                className="mb-1 block text-sm font-medium text-gray-700"
+                className="mb-1 block text-sm font-medium text-ink-soft"
               >
                 {t.auth.profile.currentPasswordLabel}
               </label>
@@ -366,7 +366,7 @@ export default function Profile() {
             <div>
               <label
                 htmlFor="profile-new-password"
-                className="mb-1 block text-sm font-medium text-gray-700"
+                className="mb-1 block text-sm font-medium text-ink-soft"
               >
                 {t.auth.profile.newPasswordLabel}
               </label>
@@ -383,7 +383,7 @@ export default function Profile() {
             <div>
               <label
                 htmlFor="profile-confirm-password"
-                className="mb-1 block text-sm font-medium text-gray-700"
+                className="mb-1 block text-sm font-medium text-ink-soft"
               >
                 {t.auth.profile.confirmPasswordLabel}
               </label>
@@ -399,7 +399,7 @@ export default function Profile() {
             </div>
 
             {error && (
-              <p className="text-sm font-medium text-red-600">{error}</p>
+              <p className="text-sm font-medium text-mark-strong">{error}</p>
             )}
             {success && (
               <p className="text-sm font-medium text-green-600">
@@ -410,7 +410,7 @@ export default function Profile() {
             <button
               type="submit"
               disabled={status === "loading"}
-              className="w-full rounded-lg bg-violet-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition duration-150 hover:bg-violet-700 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100"
+              className="w-full rounded-lg bg-mark px-6 py-3 text-sm font-semibold text-paper-raised shadow-sm transition duration-150 hover:bg-mark-strong active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100"
             >
               {status === "loading"
                 ? t.auth.profile.submitLoading
@@ -418,8 +418,8 @@ export default function Profile() {
             </button>
           </form>
 
-          <section className="mt-10 border-t border-gray-200 pt-8">
-            <h2 className="text-center text-lg font-bold text-gray-900">
+          <section className="mt-10 border-t border-rule pt-8">
+            <h2 className="text-center text-lg font-display font-semibold text-ink">
               {t.auth.profile.billing.heading}
             </h2>
 
@@ -429,20 +429,20 @@ export default function Profile() {
               </p>
             )}
             {checkoutNotice === "cancel" && (
-              <p className="mt-4 rounded-lg bg-gray-100 px-3 py-2 text-center text-sm font-medium text-gray-600">
+              <p className="mt-4 rounded-lg bg-rule px-3 py-2 text-center text-sm font-medium text-ink-soft">
                 {t.auth.profile.billing.checkoutCancelNotice}
               </p>
             )}
 
             {!billingLoading && (
               <>
-                <p className="mt-4 text-center text-sm text-gray-600">
+                <p className="mt-4 text-center text-sm text-ink-soft">
                   {t.auth.profile.billing.currentTierPrefix}{" "}
-                  <span className="font-semibold text-gray-900">
+                  <span className="font-semibold text-ink">
                     {tierDisplayName(billingTier, t)}
                   </span>
                   {statusDisplayName(billingStatus, t) && (
-                    <span className="text-gray-500">
+                    <span className="text-ink-faint">
                       {" "}
                       ({statusDisplayName(billingStatus, t)})
                     </span>
@@ -450,7 +450,7 @@ export default function Profile() {
                 </p>
 
                 {billingError && (
-                  <p className="mt-3 text-center text-sm font-medium text-red-600">
+                  <p className="mt-3 text-center text-sm font-medium text-mark-strong">
                     {billingError}
                   </p>
                 )}
@@ -464,22 +464,22 @@ export default function Profile() {
                         immediately on payment, so the right is only lost
                         if the user expressly asks for that and expressly
                         waives it. */}
-                    <div className="flex items-start gap-2 rounded-lg bg-gray-50 p-3">
+                    <div className="flex items-start gap-2 rounded-lg bg-paper p-3">
                       <input
                         id="withdrawal-consent"
                         type="checkbox"
                         checked={withdrawalConsent}
                         onChange={(event) => setWithdrawalConsent(event.target.checked)}
-                        className="mt-0.5 h-4 w-4 shrink-0 rounded border-gray-300 text-violet-600 focus:ring-violet-300"
+                        className="mt-0.5 h-4 w-4 shrink-0 rounded border-rule-strong text-mark focus:ring-mark"
                       />
                       <label
                         htmlFor="withdrawal-consent"
-                        className="text-xs leading-relaxed text-gray-600"
+                        className="text-xs leading-relaxed text-ink-soft"
                       >
                         {t.auth.profile.billing.withdrawalConsentLabel}{" "}
                         <Link
                           href="/terms"
-                          className="font-semibold text-violet-700 hover:underline"
+                          className="font-semibold text-mark-strong hover:underline"
                         >
                           {t.auth.profile.billing.withdrawalConsentTermsLink}
                         </Link>
@@ -504,16 +504,16 @@ export default function Profile() {
                       onSubscribe={handleSubscribe}
                       t={t}
                     />
-                    <div className="rounded-lg border border-gray-200 p-4 text-center">
-                      <p className="text-sm font-semibold text-gray-900">
+                    <div className="rounded-lg border border-rule p-4 text-center">
+                      <p className="text-sm font-display font-semibold text-ink">
                         {t.auth.profile.billing.labName}
                       </p>
-                      <p className="mt-1 text-sm text-gray-600">
+                      <p className="mt-1 text-sm text-ink-soft">
                         {t.auth.profile.billing.labPrice}
                       </p>
                       <a
                         href="mailto:contact@calcile.fr"
-                        className="mt-3 inline-block text-sm font-semibold text-violet-700 hover:underline"
+                        className="mt-3 inline-block text-sm font-semibold text-mark-strong hover:underline"
                       >
                         {t.auth.profile.billing.labContact}
                       </a>
@@ -526,7 +526,7 @@ export default function Profile() {
                     type="button"
                     disabled={billingActionLoading}
                     onClick={handleManageSubscription}
-                    className="mt-4 w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-900 shadow-sm transition duration-150 hover:border-gray-400 hover:bg-gray-50 active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100"
+                    className="mt-4 w-full rounded-lg border border-rule-strong bg-paper-raised px-4 py-2.5 text-sm font-semibold text-ink shadow-sm transition duration-150 hover:border-ink-soft hover:bg-paper active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100"
                   >
                     {t.auth.profile.billing.managePortal}
                   </button>
@@ -535,10 +535,10 @@ export default function Profile() {
             )}
           </section>
 
-          <p className="mt-6 text-center text-sm text-gray-600">
+          <p className="mt-6 text-center text-sm text-ink-soft">
             <Link
               href="/solve"
-              className="font-semibold text-violet-700 hover:underline"
+              className="font-semibold text-mark-strong hover:underline"
             >
               {t.auth.profile.backToSolve}
             </Link>
