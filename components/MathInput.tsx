@@ -197,23 +197,23 @@ export default function MathInput({ id, value, onChange, placeholder }: MathInpu
           ["--placeholder-color" as string]: "var(--color-ink-faint)",
         }}
       />
-      <div style={{ marginTop: "0.625rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+      <div style={{ marginTop: "1rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
         {SYMBOL_GROUPS.map((group) => (
-          <div key={group.title} style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.375rem" }}>
+          <div key={group.title} style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.625rem" }}>
             <span
               style={{
-                fontSize: "0.65rem",
+                fontSize: "0.8rem",
                 fontWeight: 600,
                 textTransform: "uppercase",
-                letterSpacing: "0.06em",
+                letterSpacing: "0.05em",
                 color: "var(--color-ink-faint)",
-                marginRight: "0.125rem",
+                minWidth: "12.5rem",
                 whiteSpace: "nowrap",
               }}
             >
               {group.title}
             </span>
-            <div role="toolbar" aria-label={group.title} style={{ display: "flex", flexWrap: "wrap", gap: "0.25rem" }}>
+            <div role="toolbar" aria-label={group.title} style={{ display: "flex", flexWrap: "wrap", gap: "0.375rem" }}>
               {group.items.map((symbol) => (
                 <button
                   key={symbol.glyph}
@@ -225,14 +225,14 @@ export default function MathInput({ id, value, onChange, placeholder }: MathInpu
                     ref.current?.insert(symbol.latex, { insertionMode: "insertAfter" });
                   }}
                   style={{
-                    height: "1.75rem",
-                    minWidth: "1.75rem",
-                    padding: "0 0.4rem",
-                    borderRadius: "0.375rem",
+                    height: "2.5rem",
+                    minWidth: "2.5rem",
+                    padding: "0 0.6rem",
+                    borderRadius: "0.5rem",
                     border: "none",
                     background: "var(--color-paper)",
                     color: "var(--color-ink-soft)",
-                    fontSize: "0.8rem",
+                    fontSize: "1.1rem",
                     cursor: "pointer",
                   }}
                 >
