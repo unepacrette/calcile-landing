@@ -57,3 +57,13 @@ body {
   color: var(--color-ink);
   font-family: var(--font-sans);
 }
+
+/* MathInput's <math-field> (the /solve calculation bar): setting
+   menuItems = [] (see components/MathInput.tsx) empties MathLive's "≡"
+   menu but doesn't remove the toggle button itself -- it's a CSS part,
+   only reachable from a real stylesheet, not an inline style on the
+   host element. This is a plain equation field, not a full editor, so
+   the button is hidden outright. */
+math-field::part(menu-toggle) {
+  display: none;
+}
