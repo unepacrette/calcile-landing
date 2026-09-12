@@ -647,18 +647,23 @@ export default function Solve() {
     return null;
   }
 
-  const tabs: { key: Operation; label: string; category: Category }[] = [
-    { key: "solve", label: t.solve.tabSolve, category: "algebra" },
-    { key: "system", label: t.solve.tabSystem, category: "algebra" },
-    { key: "inequality", label: t.solve.tabInequality, category: "algebra" },
-    { key: "matrix", label: t.solve.tabMatrix, category: "algebra" },
-    { key: "derivative", label: t.solve.tabDerivative, category: "analysis" },
-    { key: "integral", label: t.solve.tabIntegral, category: "analysis" },
-    { key: "limit", label: t.solve.tabLimit, category: "analysis" },
-    { key: "series", label: t.solve.tabSeries, category: "analysis" },
-    { key: "sum", label: t.solve.tabSum, category: "analysis" },
-    { key: "product", label: t.solve.tabProduct, category: "analysis" },
-    { key: "plot", label: t.solve.tabPlot, category: "graph" },
+  // `glyph` is the compact math notation shown on each button (a
+  // WolframAlpha/Symbolab-style symbol grid instead of a row of French
+  // words) -- `label` stays as the accessible name (aria-label/title),
+  // never dropped, since a bare glyph like "∫" isn't self-explanatory on
+  // its own.
+  const tabs: { key: Operation; label: string; category: Category; glyph: string }[] = [
+    { key: "solve", label: t.solve.tabSolve, category: "algebra", glyph: "x=" },
+    { key: "system", label: t.solve.tabSystem, category: "algebra", glyph: "{=}" },
+    { key: "inequality", label: t.solve.tabInequality, category: "algebra", glyph: "<" },
+    { key: "matrix", label: t.solve.tabMatrix, category: "algebra", glyph: "[A]" },
+    { key: "derivative", label: t.solve.tabDerivative, category: "analysis", glyph: "d/dx" },
+    { key: "integral", label: t.solve.tabIntegral, category: "analysis", glyph: "∫" },
+    { key: "limit", label: t.solve.tabLimit, category: "analysis", glyph: "lim" },
+    { key: "series", label: t.solve.tabSeries, category: "analysis", glyph: "Tₙ" },
+    { key: "sum", label: t.solve.tabSum, category: "analysis", glyph: "Σ" },
+    { key: "product", label: t.solve.tabProduct, category: "analysis", glyph: "Π" },
+    { key: "plot", label: t.solve.tabPlot, category: "graph", glyph: "f(x)" },
   ];
   const categories: { key: Category; label: string }[] = [
     { key: "algebra", label: t.solve.categoryAlgebra },
@@ -737,23 +742,32 @@ export default function Solve() {
               </button>
             ))}
           </div>
-          <div className="mt-3 flex flex-wrap gap-2 rounded-2xl border border-rule-strong bg-paper-raised p-2 text-sm font-semibold shadow-sm">
+          {/* A symbol grid (WolframAlpha/Symbolab-style) instead of a row
+              of French words: each chip shows the operation's own math
+              notation, with the full name kept as title/aria-label so a
+              bare glyph like "∫" is never the only cue. */}
+          <div className="mt-3 grid grid-cols-4 gap-2 rounded-2xl border border-rule-strong bg-paper-raised p-2 shadow-sm sm:grid-cols-6">
             {visibleTabs.map((tab) => (
               <button
                 key={tab.key}
                 type="button"
                 onClick={() => setOperation(tab.key)}
                 aria-pressed={operation === tab.key}
-                className={`rounded-full px-4 py-2 transition duration-150 active:scale-95 ${
+                aria-label={tab.label}
+                title={tab.label}
+                className={`flex aspect-square flex-col items-center justify-center rounded-xl font-display text-lg transition duration-150 active:scale-95 ${
                   operation === tab.key
                     ? "bg-mark text-paper-raised"
-                    : "text-ink-soft hover:bg-paper"
+                    : "bg-paper text-ink-soft hover:bg-mark-soft hover:text-mark-strong"
                 }`}
               >
-                {tab.label}
+                {tab.glyph}
               </button>
             ))}
           </div>
+          <p className="mt-2 text-center text-xs text-ink-faint">
+            {tabs.find((tab) => tab.key === operation)?.label}
+          </p>
 
           <form onSubmit={handleSubmit} className="mt-8 space-y-4">
             {operation !== "system" && operation !== "matrix" && (
