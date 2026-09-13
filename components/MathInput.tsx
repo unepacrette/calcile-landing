@@ -33,18 +33,15 @@ type MathInputProps = {
 
 type QuickSymbol = { glyph: string; latex: string; label: string };
 
-const MATRIX_SIZE_MIN = 1;
-const MATRIX_SIZE_MAX = 6;
+// The only sizes calcile-api's matrix endpoints actually accept
+// (solver.sympy_engine._parse_matrix: "Only 2x2 or 3x3 matrices are
+// supported") -- every other size raises a clean ParseError, so this
+// picker only ever offers what a submit can really do with, square only
+// (rows and cols always equal, never picked independently).
+const MATRIX_SIZES = [2, 3] as const;
 
-function clampMatrixSize(n: number): number {
-  if (Number.isNaN(n)) return MATRIX_SIZE_MIN;
-  return Math.min(MATRIX_SIZE_MAX, Math.max(MATRIX_SIZE_MIN, Math.round(n)));
-}
-
-// Builds a \begin{pmatrix}...\end{pmatrix} of any rows x cols, each cell
-// its own placeholder -- the fixed-size 2x2 button this replaces
-// couldn't produce anything else ("ne pas être limité à une matrice de
-// taille 2x2").
+// Builds a \begin{pmatrix}...\end{pmatrix} of size x size, each cell its
+// own placeholder.
 function buildMatrixLatex(rows: number, cols: number): string {
   const row = Array(cols).fill("#0").join("&");
   const body = Array(rows).fill(row).join("\\\\");
@@ -64,11 +61,17 @@ function buildMatrixLatex(rows: number, cols: number): string {
 // this palette shipped several that silently mis-parsed as bare symbols
 // (\nabla, \in, \cup, \mathbb{R}, \to, \pm, \approx, ...) instead of
 // erroring, which is worse than an error: a wrong "answer" that looks
-// like a real one. Anything that couldn't be made to genuinely compute
-// (no backend concept of sets/logic/vectors/complex numbers/multi-
-// variable calculus exists yet) was removed rather than shipped
-// decorative -- see the calcile-api commit this palette was audited
-// against for the full list of what was cut and why.
+// like a real one. Some of what was cut in that pass was then genuinely
+// fixed instead of left out (complex numbers -- "i" is now the real
+// imaginary unit, not a bare symbol, and \Re/\Im/\arg now compute
+// instead of staying symbolic; permutation now has a real P(n,k); the
+// matrix picker's size options match what calcile-api actually accepts,
+// 2x2/3x3 only, not an arbitrary 1-6). What's still missing has no
+// backend concept to hook into at all -- sets/logic (no set-literal
+// parser exists), vectors (no vector object anywhere in this app), and
+// multi-variable calculus (∇, double/triple integrals) -- restoring
+// those as buttons would ship the same silently-wrong behavior this
+// audit was for.
 const SYMBOL_GROUPS: { title: string; items: QuickSymbol[] }[] = [
   {
     title: "Puissances & racines",
@@ -142,27 +145,36 @@ const SYMBOL_GROUPS: { title: string; items: QuickSymbol[] }[] = [
     ],
   },
   {
-    // The matrix-size picker (any rows x cols, not just a fixed 2x2, and
-    // determinant or inverse) is rendered before these -- see the
-    // "Matrices" special case below. No vector items here: \vec{},
-    // \cdot as a "dot product" and \times as a "cross product" all
-    // checked out as either unparseable or just silently falling back to
-    // ordinary scalar multiplication (this app has no vector object at
-    // all), so a button implying real vector math would be a lie.
+    // The 2x2/3x3 matrix picker (determinant or inverse) is rendered
+    // before these -- see the "Matrices" special case below; that's the
+    // only size calcile-api's matrix endpoints actually accept. No
+    // vector items here: \vec{}, \cdot as a "dot product" and \times as
+    // a "cross product" all checked out as either unparseable or just
+    // silently falling back to ordinary scalar multiplication (this app
+    // has no vector object at all), so a button implying real vector
+    // math would be a lie.
     title: "Matrices",
     items: [],
   },
   {
-    title: "Combinatoire",
+    title: "Combinatoire & complexes",
     items: [
       { glyph: "n!", latex: "#0!", label: "Factorielle" },
       { glyph: "Cₙₖ", latex: "\\binom{#0}{#0}", label: "Coefficient binomial" },
+      { glyph: "Pₙₖ", latex: "P(#0,#0)", label: "Permutation" },
+      { glyph: "i", latex: "i", label: "Unité imaginaire" },
+      { glyph: "z̄", latex: "\\overline{#0}", label: "Conjugué" },
+      { glyph: "Re", latex: "\\Re(#0)", label: "Partie réelle" },
+      { glyph: "Im", latex: "\\Im(#0)", label: "Partie imaginaire" },
+      { glyph: "arg", latex: "\\arg(#0)", label: "Argument (complexe)" },
     ],
   },
   {
     title: "Divers",
     items: [
       { glyph: "∞", latex: "\\infty", label: "Infini" },
+      { glyph: "%", latex: "\\cdot\\dfrac{1}{100}", label: "Pourcent" },
+      { glyph: "°", latex: "\\cdot\\dfrac{\\pi}{180}", label: "Degré (converti en radians)" },
       { glyph: "⌊x⌋", latex: "\\lfloor#0\\rfloor", label: "Partie entière (plancher)" },
       { glyph: "⌈x⌉", latex: "\\lceil#0\\rceil", label: "Partie entière (plafond)" },
     ],
@@ -173,8 +185,7 @@ export default function MathInput({ id, value, onChange, placeholder }: MathInpu
   const ref = useRef<MathfieldElement>(null);
   const [focused, setFocused] = useState(false);
   const [matrixPickerOpen, setMatrixPickerOpen] = useState(false);
-  const [matrixRows, setMatrixRows] = useState(2);
-  const [matrixCols, setMatrixCols] = useState(2);
+  const [matrixSize, setMatrixSize] = useState<(typeof MATRIX_SIZES)[number]>(2);
 
   // One-time setup. mathVirtualKeyboardPolicy "manual" means MathLive's
   // own full virtual keyboard panel never shows itself automatically --
@@ -292,52 +303,35 @@ export default function MathInput({ id, value, onChange, placeholder }: MathInpu
                         whiteSpace: "nowrap",
                       }}
                     >
-                      <label style={{ fontSize: "0.75rem", color: "var(--color-ink-soft)" }}>
-                        Lignes
-                        <input
-                          type="number"
-                          min={MATRIX_SIZE_MIN}
-                          max={MATRIX_SIZE_MAX}
-                          value={matrixRows}
-                          onChange={(e) => setMatrixRows(clampMatrixSize(Number(e.target.value)))}
-                          style={{
-                            marginLeft: "0.375rem",
-                            width: "3rem",
-                            borderRadius: "0.375rem",
-                            border: "1px solid var(--color-rule-strong)",
-                            background: "var(--color-paper)",
-                            color: "var(--color-ink)",
-                            padding: "0.25rem 0.375rem",
-                            textAlign: "center",
-                          }}
-                        />
-                      </label>
-                      <span aria-hidden="true" style={{ color: "var(--color-ink-faint)" }}>×</span>
-                      <label style={{ fontSize: "0.75rem", color: "var(--color-ink-soft)" }}>
-                        Colonnes
-                        <input
-                          type="number"
-                          min={MATRIX_SIZE_MIN}
-                          max={MATRIX_SIZE_MAX}
-                          value={matrixCols}
-                          onChange={(e) => setMatrixCols(clampMatrixSize(Number(e.target.value)))}
-                          style={{
-                            marginLeft: "0.375rem",
-                            width: "3rem",
-                            borderRadius: "0.375rem",
-                            border: "1px solid var(--color-rule-strong)",
-                            background: "var(--color-paper)",
-                            color: "var(--color-ink)",
-                            padding: "0.25rem 0.375rem",
-                            textAlign: "center",
-                          }}
-                        />
-                      </label>
+                      {/* Only square 2x2/3x3 with numeric cells are
+                          actually computable (calcile-api's _parse_matrix
+                          rejects anything else -- confirmed directly: a
+                          size outside {2,3}, a non-square shape, or a
+                          symbolic cell all raise a clean ParseError, none
+                          are silently accepted). A free 1-6 rows x cols
+                          picker offered sizes the backend would reject on
+                          submit -- this reflects what's really supported,
+                          not what would be nice. */}
+                      {MATRIX_SIZES.map((size) => (
+                        <button
+                          key={size}
+                          type="button"
+                          onClick={() => setMatrixSize(size)}
+                          aria-pressed={matrixSize === size}
+                          className={`rounded-md px-2.5 py-1.5 text-sm font-semibold transition duration-150 active:scale-95 focus:outline-none focus:ring-2 focus:ring-mark ${
+                            matrixSize === size
+                              ? "bg-mark text-paper-raised"
+                              : "border border-rule-strong text-ink-soft hover:bg-rule"
+                          }`}
+                        >
+                          {size}×{size}
+                        </button>
+                      ))}
                       <button
                         type="button"
                         onClick={() => {
                           ref.current?.focus();
-                          ref.current?.insert(buildMatrixLatex(matrixRows, matrixCols), {
+                          ref.current?.insert(buildMatrixLatex(matrixSize, matrixSize), {
                             insertionMode: "insertAfter",
                           });
                           setMatrixPickerOpen(false);
@@ -351,7 +345,7 @@ export default function MathInput({ id, value, onChange, placeholder }: MathInpu
                         title="Insère la matrice suivie de ^{-1} -- calcule son inverse au lieu de son déterminant"
                         onClick={() => {
                           ref.current?.focus();
-                          ref.current?.insert(`${buildMatrixLatex(matrixRows, matrixCols)}^{-1}`, {
+                          ref.current?.insert(`${buildMatrixLatex(matrixSize, matrixSize)}^{-1}`, {
                             insertionMode: "insertAfter",
                           });
                           setMatrixPickerOpen(false);
