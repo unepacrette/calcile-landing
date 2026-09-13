@@ -58,6 +58,17 @@ function buildMatrixLatex(rows: number, cols: number): string {
 // calculation types get added server-side the input for them is already
 // here -- no picker to extend later. "#0" is MathLive's own placeholder
 // token (highlighted, tab-through-able).
+// Every symbol here was checked directly against the backend it actually
+// reaches (sympy.parsing.latex.parse_latex and/or calcile-api's own
+// detectOperation-style routing) before being kept -- a first pass at
+// this palette shipped several that silently mis-parsed as bare symbols
+// (\nabla, \in, \cup, \mathbb{R}, \to, \pm, \approx, ...) instead of
+// erroring, which is worse than an error: a wrong "answer" that looks
+// like a real one. Anything that couldn't be made to genuinely compute
+// (no backend concept of sets/logic/vectors/complex numbers/multi-
+// variable calculus exists yet) was removed rather than shipped
+// decorative -- see the calcile-api commit this palette was audited
+// against for the full list of what was cut and why.
 const SYMBOL_GROUPS: { title: string; items: QuickSymbol[] }[] = [
   {
     title: "Puissances & racines",
@@ -67,7 +78,6 @@ const SYMBOL_GROUPS: { title: string; items: QuickSymbol[] }[] = [
       { glyph: "√", latex: "\\sqrt{#0}", label: "Racine carrée" },
       { glyph: "ⁿ√", latex: "\\sqrt[#0]{#0}", label: "Racine n-ième" },
       { glyph: "a/b", latex: "\\frac{#0}{#0}", label: "Fraction" },
-      { glyph: "|x|", latex: "\\left|#0\\right|", label: "Valeur absolue" },
     ],
   },
   {
@@ -89,7 +99,6 @@ const SYMBOL_GROUPS: { title: string; items: QuickSymbol[] }[] = [
       { glyph: "log", latex: "\\log(#0)", label: "Logarithme décimal" },
       { glyph: "logᵦ", latex: "\\log_{#0}(#0)", label: "Logarithme en base b" },
       { glyph: "eˣ", latex: "e^{#0}", label: "Exponentielle" },
-      { glyph: "mod", latex: "#0\\bmod#0", label: "Modulo" },
     ],
   },
   {
@@ -100,32 +109,16 @@ const SYMBOL_GROUPS: { title: string; items: QuickSymbol[] }[] = [
       { glyph: "∂/∂x", latex: "\\frac{\\partial}{\\partial x}#0", label: "Dérivée partielle" },
       { glyph: "∫", latex: "\\int #0\\,dx", label: "Intégrale" },
       { glyph: "∫ᵃᵇ", latex: "\\int_{#0}^{#0}#0\\,dx", label: "Intégrale définie" },
-      { glyph: "∬", latex: "\\iint #0\\,dA", label: "Intégrale double" },
-      { glyph: "∭", latex: "\\iiint #0\\,dV", label: "Intégrale triple" },
-      { glyph: "∮", latex: "\\oint #0\\,dx", label: "Intégrale de contour" },
       { glyph: "Σ", latex: "\\sum_{n=#0}^{#0}#0", label: "Somme" },
       { glyph: "Π", latex: "\\prod_{n=#0}^{#0}#0", label: "Produit" },
       { glyph: "lim", latex: "\\lim_{x\\to#0}#0", label: "Limite" },
-      { glyph: "∇", latex: "\\nabla#0", label: "Gradient" },
-      { glyph: "∇·", latex: "\\nabla\\cdot#0", label: "Divergence" },
-      { glyph: "∇×", latex: "\\nabla\\times#0", label: "Rotationnel" },
-      { glyph: "∇²", latex: "\\nabla^{2}#0", label: "Laplacien" },
     ],
   },
   {
     title: "Relations",
     items: [
-      { glyph: "≠", latex: "\\neq", label: "Différent" },
       { glyph: "≤", latex: "\\le", label: "Inférieur ou égal" },
       { glyph: "≥", latex: "\\ge", label: "Supérieur ou égal" },
-      { glyph: "≈", latex: "\\approx", label: "Environ égal" },
-      { glyph: "≡", latex: "\\equiv", label: "Équivalent (congruence)" },
-      { glyph: "∝", latex: "\\propto", label: "Proportionnel à" },
-      { glyph: "±", latex: "\\pm", label: "Plus ou moins" },
-      { glyph: "→", latex: "\\to", label: "Tend vers" },
-      { glyph: "↦", latex: "\\mapsto", label: "Associe à" },
-      { glyph: "⇒", latex: "\\Rightarrow", label: "Implique" },
-      { glyph: "⇔", latex: "\\Leftrightarrow", label: "Équivaut à" },
     ],
   },
   {
@@ -149,68 +142,27 @@ const SYMBOL_GROUPS: { title: string; items: QuickSymbol[] }[] = [
     ],
   },
   {
-    title: "Ensembles & logique",
-    items: [
-      { glyph: "∈", latex: "\\in", label: "Appartient à" },
-      { glyph: "∉", latex: "\\notin", label: "N'appartient pas à" },
-      { glyph: "⊂", latex: "\\subset", label: "Inclus dans" },
-      { glyph: "⊆", latex: "\\subseteq", label: "Inclus ou égal" },
-      { glyph: "∪", latex: "\\cup", label: "Union" },
-      { glyph: "∩", latex: "\\cap", label: "Intersection" },
-      { glyph: "∅", latex: "\\emptyset", label: "Ensemble vide" },
-      { glyph: "⊕", latex: "\\oplus", label: "Somme directe" },
-      { glyph: "⊗", latex: "\\otimes", label: "Produit tensoriel" },
-      { glyph: "∀", latex: "\\forall", label: "Pour tout" },
-      { glyph: "∃", latex: "\\exists", label: "Il existe" },
-      { glyph: "¬", latex: "\\neg", label: "Non" },
-      { glyph: "∧", latex: "\\wedge", label: "Et" },
-      { glyph: "∨", latex: "\\vee", label: "Ou" },
-    ],
+    // The matrix-size picker (any rows x cols, not just a fixed 2x2, and
+    // determinant or inverse) is rendered before these -- see the
+    // "Matrices" special case below. No vector items here: \vec{},
+    // \cdot as a "dot product" and \times as a "cross product" all
+    // checked out as either unparseable or just silently falling back to
+    // ordinary scalar multiplication (this app has no vector object at
+    // all), so a button implying real vector math would be a lie.
+    title: "Matrices",
+    items: [],
   },
   {
-    title: "Ensembles numériques",
-    items: [
-      { glyph: "ℝ", latex: "\\mathbb{R}", label: "Nombres réels" },
-      { glyph: "ℕ", latex: "\\mathbb{N}", label: "Nombres entiers naturels" },
-      { glyph: "ℤ", latex: "\\mathbb{Z}", label: "Nombres entiers relatifs" },
-      { glyph: "ℚ", latex: "\\mathbb{Q}", label: "Nombres rationnels" },
-      { glyph: "ℂ", latex: "\\mathbb{C}", label: "Nombres complexes" },
-    ],
-  },
-  {
-    // The matrix-size picker (any rows x cols, not just a fixed 2x2) is
-    // rendered before these -- see the "Matrices & vecteurs" special
-    // case below.
-    title: "Matrices & vecteurs",
-    items: [
-      { glyph: "v⃗", latex: "\\vec{#0}", label: "Vecteur" },
-      { glyph: "det", latex: "\\det\\left(#0\\right)", label: "Déterminant" },
-      { glyph: "Aᵀ", latex: "^{T}", label: "Transposée" },
-      { glyph: "A⁻¹", latex: "^{-1}", label: "Inverse" },
-      { glyph: "‖x‖", latex: "\\left\\|#0\\right\\|", label: "Norme" },
-      { glyph: "u·v", latex: "#0\\cdot#0", label: "Produit scalaire" },
-      { glyph: "u×v", latex: "#0\\times#0", label: "Produit vectoriel" },
-    ],
-  },
-  {
-    title: "Combinatoire & complexes",
+    title: "Combinatoire",
     items: [
       { glyph: "n!", latex: "#0!", label: "Factorielle" },
       { glyph: "Cₙₖ", latex: "\\binom{#0}{#0}", label: "Coefficient binomial" },
-      { glyph: "Pₙₖ", latex: "P(#0,#0)", label: "Permutation" },
-      { glyph: "i", latex: "i", label: "Unité imaginaire" },
-      { glyph: "z̄", latex: "\\overline{#0}", label: "Conjugué" },
-      { glyph: "Re", latex: "\\Re(#0)", label: "Partie réelle" },
-      { glyph: "Im", latex: "\\Im(#0)", label: "Partie imaginaire" },
-      { glyph: "arg", latex: "\\arg(#0)", label: "Argument (complexe)" },
     ],
   },
   {
     title: "Divers",
     items: [
       { glyph: "∞", latex: "\\infty", label: "Infini" },
-      { glyph: "°", latex: "^{\\circ}", label: "Degré" },
-      { glyph: "%", latex: "\\%", label: "Pourcent" },
       { glyph: "⌊x⌋", latex: "\\lfloor#0\\rfloor", label: "Partie entière (plancher)" },
       { glyph: "⌈x⌉", latex: "\\lceil#0\\rceil", label: "Partie entière (plafond)" },
     ],
@@ -310,7 +262,7 @@ export default function MathInput({ id, value, onChange, placeholder }: MathInpu
               {group.title}
             </span>
             <div role="toolbar" aria-label={group.title} style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.375rem" }}>
-              {group.title === "Matrices & vecteurs" && (
+              {group.title === "Matrices" && (
                 <div style={{ position: "relative" }}>
                   <button
                     type="button"
@@ -393,6 +345,20 @@ export default function MathInput({ id, value, onChange, placeholder }: MathInpu
                         className="rounded-md bg-mark px-3 py-1.5 text-sm font-semibold text-paper-raised transition duration-150 hover:bg-mark-strong active:scale-95 focus:outline-none focus:ring-2 focus:ring-mark"
                       >
                         Insérer
+                      </button>
+                      <button
+                        type="button"
+                        title="Insère la matrice suivie de ^{-1} -- calcule son inverse au lieu de son déterminant"
+                        onClick={() => {
+                          ref.current?.focus();
+                          ref.current?.insert(`${buildMatrixLatex(matrixRows, matrixCols)}^{-1}`, {
+                            insertionMode: "insertAfter",
+                          });
+                          setMatrixPickerOpen(false);
+                        }}
+                        className="rounded-md border border-rule-strong px-3 py-1.5 text-sm font-semibold text-ink-soft transition duration-150 hover:bg-rule active:scale-95 focus:outline-none focus:ring-2 focus:ring-mark"
+                      >
+                        Insérer l&rsquo;inverse
                       </button>
                     </div>
                   )}

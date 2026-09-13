@@ -190,6 +190,13 @@ function detectOperation(latex: string): Operation {
   if (/\\prod/.test(s)) return "product";
   if (/\\int/.test(s)) return "integral";
   if (/\\frac\{d(\^\d+)?\}\{d[a-zA-Z](\^\d+)?\}/.test(s)) return "derivative";
+  // \partial notation: this app is single-variable throughout, so a
+  // partial derivative is computed the same way as an ordinary one --
+  // without this, \frac{\partial}{\partial x} fell through to "solve"
+  // and got sent raw, which parse_latex happens to turn into a real
+  // sympy.Derivative object (confirmed) but then answers a different
+  // question ("where is the derivative zero") than the button implies.
+  if (/\\frac\{\\partial\}\{\\partial[a-zA-Z]\}/.test(s)) return "derivative";
   if (/<|>|\\le\b|\\ge\b|\\leq\b|\\geq\b/.test(s)) return "inequality";
   return "solve";
 }
@@ -216,9 +223,23 @@ function stripOuterParens(raw: string): string {
 }
 
 function extractDerivative(s: string): { expression: string; order: number } {
-  const m = s.match(/^\\frac\{d(\^(\d+))?\}\{d[a-zA-Z](\^(\d+))?\}(.*)$/);
-  if (!m) return { expression: s, order: 1 };
-  return { expression: stripOuterParens(m[5]), order: m[2] ? parseInt(m[2], 10) : 1 };
+  const ordinary = s.match(/^\\frac\{d(\^(\d+))?\}\{d[a-zA-Z](\^(\d+))?\}(.*)$/);
+  if (ordinary) {
+    return {
+      expression: stripOuterParens(ordinary[5]),
+      order: ordinary[2] ? parseInt(ordinary[2], 10) : 1,
+    };
+  }
+  // \frac{\partial}{\partial x} -- same single order as the ordinary
+  // case above (see detectOperation's comment on why); the variable
+  // letter itself (\partial x vs \partial y) doesn't matter here since
+  // compute_derivative always differentiates w.r.t. the expression's own
+  // free variable, not a caller-specified one.
+  const partial = s.match(/^\\frac\{\\partial\}\{\\partial\s*[a-zA-Z]\}(.*)$/);
+  if (partial) {
+    return { expression: stripOuterParens(partial[1]), order: 1 };
+  }
+  return { expression: s, order: 1 };
 }
 
 function extractIntegral(
@@ -262,6 +283,15 @@ function extractMatrix(s: string): string[][] | null {
   const m = s.match(/\\begin\{[pbv]?matrix\}(.*)\\end\{[pbv]?matrix\}/);
   if (!m) return null;
   return m[1].split("\\\\").map((row) => row.split("&").map((cell) => cell.trim()));
+}
+
+// A matrix raised to the -1 power is, mathematically, exactly a request
+// for its inverse -- real notation, not a category picker (matches how
+// \int vs \frac{d}{dx} already select different endpoints from
+// notation alone). Only "^{-1}" or "^-1" immediately after the matrix's
+// \end{...matrix} counts, so a -1 appearing inside a cell never matches.
+function extractMatrixOperation(s: string): MatrixOperation {
+  return /\\end\{[pbv]?matrix\}\s*\^\{?-1\}?/.test(s) ? "inverse" : "determinant";
 }
 
 // A handful of evenly-spaced tick positions between min and max --
@@ -466,10 +496,11 @@ export default function Solve() {
   const [sumProductVariable, setSumProductVariable] = useState("n");
   const [sumProductLower, setSumProductLower] = useState("");
   const [sumProductUpper, setSumProductUpper] = useState("");
-  // No operation picker means no UI to choose inverse/eigenvalues either
-  // -- a bare matrix always computes its determinant (see detectOperation's
-  // own comment on this being a known, deliberate gap).
-  const matrixOperation: MatrixOperation = "determinant";
+  // Determinant by default; "^{-1}" right after the matrix switches this
+  // to inverse (see extractMatrixOperation) -- notation-driven, still no
+  // operation-picker UI. Eigenvalues has no equivalent notation and stays
+  // unreachable from this bar (a known, deliberate gap).
+  const [matrixOperation, setMatrixOperation] = useState<MatrixOperation>("determinant");
   const [matrixCells, setMatrixCells] = useState<string[][] | null>(null);
   const [status, setStatus] = useState<Status>("idle");
   const [result, setResult] = useState<Result | null>(null);
@@ -544,6 +575,7 @@ export default function Solve() {
         break;
       case "matrix":
         setMatrixCells(extractMatrix(equation));
+        setMatrixOperation(extractMatrixOperation(equation));
         break;
       default:
         setDerivedExpression(equation);
