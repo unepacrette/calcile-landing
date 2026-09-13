@@ -3,6 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
+import FormulaSheet from "@/components/FormulaSheet";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import MathRender from "@/components/MathRender";
 import { useLanguage } from "@/lib/i18n";
@@ -846,7 +847,13 @@ export default function Solve() {
       </div>
 
       <main className="min-h-screen bg-paper px-6 py-24">
-        <div className="mx-auto max-w-3xl">
+        {/* A plain centered column up to lg (unchanged from before), a
+            two-column grid past it -- the reference sheet ("à côté de
+            ces calculs") sits beside the bar on a wide screen and simply
+            stacks below it on a narrow one, rather than fighting the
+            existing centered layout for space. */}
+        <div className="mx-auto max-w-3xl lg:grid lg:max-w-6xl lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start lg:gap-12">
+        <div className="mx-auto max-w-3xl lg:mx-0">
           <h1 className="text-center text-4xl font-display font-semibold tracking-tight text-ink">
             {t.solve.heading}
           </h1>
@@ -1107,6 +1114,9 @@ export default function Solve() {
               )}
             </div>
           )}
+        </div>
+
+        <FormulaSheet />
         </div>
       </main>
     </>
