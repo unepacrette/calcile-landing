@@ -40,6 +40,11 @@ type QuickSymbol = { glyph: string; latex: string; label: string };
 // (rows and cols always equal, never picked independently).
 const MATRIX_SIZES = [2, 3] as const;
 
+// Dot product and norm work for any dimension, but cross product is only
+// defined in 3D (calcile-api's compute_vector_operation rejects anything
+// else) -- 2 and 3 covers both cases the picker below actually offers.
+const VECTOR_SIZES = [2, 3] as const;
+
 // Builds a \begin{pmatrix}...\end{pmatrix} of size x size, each cell its
 // own placeholder.
 function buildMatrixLatex(rows: number, cols: number): string {
@@ -147,14 +152,38 @@ const SYMBOL_GROUPS: { title: string; items: QuickSymbol[] }[] = [
   {
     // The 2x2/3x3 matrix picker (determinant or inverse) is rendered
     // before these -- see the "Matrices" special case below; that's the
-    // only size calcile-api's matrix endpoints actually accept. No
-    // vector items here: \vec{}, \cdot as a "dot product" and \times as
-    // a "cross product" all checked out as either unparseable or just
-    // silently falling back to ordinary scalar multiplication (this app
-    // has no vector object at all), so a button implying real vector
-    // math would be a lie.
+    // only size calcile-api's matrix endpoints actually accept.
     title: "Matrices",
     items: [],
+  },
+  {
+    // The vector picker (dot/cross product, norm) is rendered before
+    // these -- see the "Vecteurs" special case below. calcile-api now
+    // has a real /api/vectors endpoint (a vector is a column matrix,
+    // same object the matrix endpoints already use); \vec{} itself is
+    // still not used as notation here since it names an abstract vector
+    // rather than giving its components, which is what actually gets
+    // computed on.
+    title: "Vecteurs",
+    items: [],
+  },
+  {
+    // \forall/\exists/\neg/\wedge/\vee and the blackboard number sets
+    // (ℝ, ℕ, ...) are still not here: propositional logic has no
+    // well-defined "compute" action for an arbitrary symbolic predicate
+    // (this would be a proof assistant, not a calculator), and the
+    // number sets are domain labels, not something to operate on by
+    // themselves. Concrete finite sets (union/intersection/difference/
+    // membership/subset) are real, computed operations -- calcile-api's
+    // /api/sets.
+    title: "Ensembles",
+    items: [
+      { glyph: "∪", latex: "\\{#0\\}\\cup\\{#0\\}", label: "Union" },
+      { glyph: "∩", latex: "\\{#0\\}\\cap\\{#0\\}", label: "Intersection" },
+      { glyph: "∖", latex: "\\{#0\\}\\setminus\\{#0\\}", label: "Différence" },
+      { glyph: "∈", latex: "#0\\in\\{#0\\}", label: "Appartenance" },
+      { glyph: "⊆", latex: "\\{#0\\}\\subseteq\\{#0\\}", label: "Inclusion" },
+    ],
   },
   {
     title: "Combinatoire & complexes",
@@ -186,6 +215,8 @@ export default function MathInput({ id, value, onChange, placeholder }: MathInpu
   const [focused, setFocused] = useState(false);
   const [matrixPickerOpen, setMatrixPickerOpen] = useState(false);
   const [matrixSize, setMatrixSize] = useState<(typeof MATRIX_SIZES)[number]>(2);
+  const [vectorPickerOpen, setVectorPickerOpen] = useState(false);
+  const [vectorSize, setVectorSize] = useState<(typeof VECTOR_SIZES)[number]>(2);
 
   // One-time setup. mathVirtualKeyboardPolicy "manual" means MathLive's
   // own full virtual keyboard panel never shows itself automatically --
@@ -353,6 +384,100 @@ export default function MathInput({ id, value, onChange, placeholder }: MathInpu
                         className="rounded-md border border-rule-strong px-3 py-1.5 text-sm font-semibold text-ink-soft transition duration-150 hover:bg-rule active:scale-95 focus:outline-none focus:ring-2 focus:ring-mark"
                       >
                         Insérer l&rsquo;inverse
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+              {group.title === "Vecteurs" && (
+                <div style={{ position: "relative" }}>
+                  <button
+                    type="button"
+                    title="Vecteur (taille au choix)"
+                    aria-label="Vecteur (taille au choix)"
+                    aria-expanded={vectorPickerOpen}
+                    onClick={() => setVectorPickerOpen((open) => !open)}
+                    className="flex h-10 items-center justify-center gap-1.5 rounded-lg px-3 text-sm font-medium text-ink-soft transition duration-150 hover:bg-rule active:scale-95 focus:outline-none focus:ring-2 focus:ring-mark"
+                  >
+                    <span aria-hidden="true">v⃗</span> Vecteur
+                  </button>
+                  {vectorPickerOpen && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "calc(100% + 0.375rem)",
+                        left: 0,
+                        zIndex: 10,
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                        borderRadius: "0.5rem",
+                        border: "1px solid var(--color-rule-strong)",
+                        background: "var(--color-paper-raised)",
+                        padding: "0.625rem 0.75rem",
+                        boxShadow: "0 4px 16px 0 rgb(0 0 0 / 0.12)",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {VECTOR_SIZES.map((size) => (
+                        <button
+                          key={size}
+                          type="button"
+                          onClick={() => setVectorSize(size)}
+                          aria-pressed={vectorSize === size}
+                          className={`rounded-md px-2.5 py-1.5 text-sm font-semibold transition duration-150 active:scale-95 focus:outline-none focus:ring-2 focus:ring-mark ${
+                            vectorSize === size
+                              ? "bg-mark text-paper-raised"
+                              : "border border-rule-strong text-ink-soft hover:bg-rule"
+                          }`}
+                        >
+                          {size}D
+                        </button>
+                      ))}
+                      <button
+                        type="button"
+                        title="Insère deux vecteurs reliés par un produit scalaire"
+                        onClick={() => {
+                          ref.current?.focus();
+                          const v = buildMatrixLatex(vectorSize, 1);
+                          ref.current?.insert(`${v}\\cdot${v}`, { insertionMode: "insertAfter" });
+                          setVectorPickerOpen(false);
+                        }}
+                        className="rounded-md bg-mark px-3 py-1.5 text-sm font-semibold text-paper-raised transition duration-150 hover:bg-mark-strong active:scale-95 focus:outline-none focus:ring-2 focus:ring-mark"
+                      >
+                        u·v
+                      </button>
+                      {/* Cross product is only defined in 3D (the
+                          standard mathematical definition, no 2D or n-D
+                          generalization to fall back to) -- hidden
+                          rather than shown-then-rejected at 2D. */}
+                      {vectorSize === 3 && (
+                        <button
+                          type="button"
+                          title="Insère deux vecteurs reliés par un produit vectoriel"
+                          onClick={() => {
+                            ref.current?.focus();
+                            const v = buildMatrixLatex(vectorSize, 1);
+                            ref.current?.insert(`${v}\\times${v}`, { insertionMode: "insertAfter" });
+                            setVectorPickerOpen(false);
+                          }}
+                          className="rounded-md border border-rule-strong px-3 py-1.5 text-sm font-semibold text-ink-soft transition duration-150 hover:bg-rule active:scale-95 focus:outline-none focus:ring-2 focus:ring-mark"
+                        >
+                          u×v
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        title="Insère un vecteur entouré des barres de norme"
+                        onClick={() => {
+                          ref.current?.focus();
+                          const v = buildMatrixLatex(vectorSize, 1);
+                          ref.current?.insert(`\\left\\|${v}\\right\\|`, { insertionMode: "insertAfter" });
+                          setVectorPickerOpen(false);
+                        }}
+                        className="rounded-md border border-rule-strong px-3 py-1.5 text-sm font-semibold text-ink-soft transition duration-150 hover:bg-rule active:scale-95 focus:outline-none focus:ring-2 focus:ring-mark"
+                      >
+                        ‖u‖
                       </button>
                     </div>
                   )}

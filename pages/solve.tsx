@@ -30,6 +30,8 @@ type Operation =
   | "sum"
   | "product"
   | "matrix"
+  | "sets"
+  | "vectors"
   | "plot";
 type Status = "idle" | "loading" | "error";
 type LimitDirection = "both" | "left" | "right";
@@ -119,6 +121,35 @@ type MatrixApiResponse = {
   eigenvalues: string[];
 };
 
+// /api/sets's shape: no single "result" field -- either result_elements
+// (union/intersection/difference) or result_boolean (in/subset), the
+// other always null (same "not applicable" convention as MatrixApiResponse).
+// No alternative_methods either: unlike solving an equation there's no
+// second elementary technique to offer for a mechanical set operation.
+type SetsApiResponse = {
+  operator: string;
+  input_latex: string;
+  result_latex: string;
+  steps: StepApi[];
+  steps_text: string[];
+  glossary: GlossaryEntryApi[];
+  result_elements: string[] | null;
+  result_boolean: boolean | null;
+};
+
+// /api/vectors's shape: `result` (a scalar, dot/norm) xor `result_vector`
+// (cross), the other null.
+type VectorsApiResponse = {
+  operator: string;
+  input_latex: string;
+  result_latex: string;
+  steps: StepApi[];
+  steps_text: string[];
+  glossary: GlossaryEntryApi[];
+  result: string | null;
+  result_vector: string[] | null;
+};
+
 // /api/plot's shape: no method/steps/alternative_methods/glossary at all
 // (a sampled curve has no pedagogical derivation to narrate) -- just the
 // labeled function and its sampled points, rendered as its own dedicated
@@ -178,12 +209,18 @@ const inputClass =
 // Known, deliberate gap: series and plot both need information (a
 // Taylor order, or plot bounds) that no LaTeX marker distinguishes from
 // a bare expression -- they're not reachable from this single bar today.
-// Matrix detection always computes the determinant (there's no marker
-// in a bare matrix for "I want the inverse instead"); inverse and
-// eigenvalues are the same known gap.
+// A bare matrix always computes the determinant unless followed by
+// "^{-1}" (a real notational marker for inverse, see
+// extractMatrixOperation) -- eigenvalues has no equivalent marker and
+// stays the same known gap. Sets/vectors are checked before the generic
+// matrix check below: both use a \begin{...matrix}...\end{...matrix}
+// block as their own building block (a vector is just a column matrix),
+// which would otherwise match the plain "matrix" branch first.
 function detectOperation(latex: string): Operation {
   const s = latex.replace(/\s+/g, "");
   if (!s) return "solve";
+  if (extractVectorOperation(s) !== null) return "vectors";
+  if (extractSetOperation(s) !== null) return "sets";
   if (/\\begin\{[pbv]?matrix\}/.test(s)) return "matrix";
   if (/;/.test(s) && (s.match(/=/g) ?? []).length >= 2) return "system";
   if (/\\lim/.test(s)) return "limit";
@@ -293,6 +330,78 @@ function extractMatrix(s: string): string[][] | null {
 // \end{...matrix} counts, so a -1 appearing inside a cell never matches.
 function extractMatrixOperation(s: string): MatrixOperation {
   return /\\end\{[pbv]?matrix\}\s*\^\{?-1\}?/.test(s) ? "inverse" : "determinant";
+}
+
+// --- sets -----------------------------------------------------------------
+//
+// Concrete finite sets only, e.g. {1,2,3} -- no interval or set-builder
+// notation. Not routed through calcile-api's parse_latex at all (that
+// grammar has zero support for \{...\}, confirmed directly): the same
+// extraction-then-send-each-element pattern as extractMatrix, never the
+// whole LaTeX string.
+type SetsOperator = "union" | "intersection" | "difference" | "in" | "subset";
+
+function extractSetElements(raw: string): string[] {
+  const m = raw.match(/^\\\{(.*)\\\}$/);
+  const inner = m ? m[1] : raw;
+  if (inner.trim() === "") return [];
+  return inner.split(",").map((e) => e.trim()).filter((e) => e.length > 0);
+}
+
+function extractSetOperation(
+  s: string
+): { operator: SetsOperator; left: string[]; right: string[] } | null {
+  const binaryOp = s.match(/^(\\\{.*?\\\})(\\cup|\\cap|\\setminus)(\\\{.*?\\\})$/);
+  if (binaryOp) {
+    const operator: SetsOperator =
+      binaryOp[2] === "\\cup" ? "union" : binaryOp[2] === "\\cap" ? "intersection" : "difference";
+    return { operator, left: extractSetElements(binaryOp[1]), right: extractSetElements(binaryOp[3]) };
+  }
+  const subset = s.match(/^(\\\{.*?\\\})(\\subseteq|\\subset)(\\\{.*?\\\})$/);
+  if (subset) {
+    return { operator: "subset", left: extractSetElements(subset[1]), right: extractSetElements(subset[3]) };
+  }
+  const membership = s.match(/^(.*?)\\in(\\\{.*\\\})$/);
+  if (membership) {
+    return { operator: "in", left: [membership[1]], right: extractSetElements(membership[2]) };
+  }
+  return null;
+}
+
+// --- vectors ----------------------------------------------------------------
+//
+// A vector is a column matrix, e.g. \begin{pmatrix}1\\2\\3\end{pmatrix} --
+// reuses the exact same \begin{...matrix}...\end{...matrix} block
+// extractMatrix already parses, just flattened to one list of components
+// instead of a grid, since a vector's only ever 1 row or 1 column.
+function extractVectorComponents(matrixLatex: string): string[] {
+  const m = matrixLatex.match(/^\\begin\{[pbv]?matrix\}(.*)\\end\{[pbv]?matrix\}$/);
+  if (!m) return [];
+  return m[1]
+    .split("\\\\")
+    .flatMap((row) => row.split("&").map((cell) => cell.trim()))
+    .filter((cell) => cell.length > 0);
+}
+
+function extractVectorOperation(
+  s: string
+): { operator: "dot" | "cross" | "norm"; left: string[]; right: string[] | null } | null {
+  const matrixBlock = "\\\\begin\\{[pbv]?matrix\\}.*?\\\\end\\{[pbv]?matrix\\}";
+  const norm =
+    s.match(new RegExp(`^\\\\left\\\\\\|(${matrixBlock})\\\\right\\\\\\|$`)) ??
+    s.match(new RegExp(`^\\\\\\|(${matrixBlock})\\\\\\|$`));
+  if (norm) {
+    return { operator: "norm", left: extractVectorComponents(norm[1]), right: null };
+  }
+  const dot = s.match(new RegExp(`^(${matrixBlock})\\\\cdot(${matrixBlock})$`));
+  if (dot) {
+    return { operator: "dot", left: extractVectorComponents(dot[1]), right: extractVectorComponents(dot[2]) };
+  }
+  const cross = s.match(new RegExp(`^(${matrixBlock})\\\\times(${matrixBlock})$`));
+  if (cross) {
+    return { operator: "cross", left: extractVectorComponents(cross[1]), right: extractVectorComponents(cross[2]) };
+  }
+  return null;
 }
 
 // A handful of evenly-spaced tick positions between min and max --
@@ -503,6 +612,12 @@ export default function Solve() {
   // unreachable from this bar (a known, deliberate gap).
   const [matrixOperation, setMatrixOperation] = useState<MatrixOperation>("determinant");
   const [matrixCells, setMatrixCells] = useState<string[][] | null>(null);
+  const [setsOperator, setSetsOperator] = useState<SetsOperator | null>(null);
+  const [setsLeft, setSetsLeft] = useState<string[] | null>(null);
+  const [setsRight, setSetsRight] = useState<string[] | null>(null);
+  const [vectorOperator, setVectorOperator] = useState<"dot" | "cross" | "norm" | null>(null);
+  const [vectorLeft, setVectorLeft] = useState<string[] | null>(null);
+  const [vectorRight, setVectorRight] = useState<string[] | null>(null);
   const [status, setStatus] = useState<Status>("idle");
   const [result, setResult] = useState<Result | null>(null);
   const [plotResult, setPlotResult] = useState<PlotApiResponse | null>(null);
@@ -578,6 +693,20 @@ export default function Solve() {
         setMatrixCells(extractMatrix(equation));
         setMatrixOperation(extractMatrixOperation(equation));
         break;
+      case "sets": {
+        const parsed = extractSetOperation(equation);
+        setSetsOperator(parsed?.operator ?? null);
+        setSetsLeft(parsed?.left ?? null);
+        setSetsRight(parsed?.right ?? null);
+        break;
+      }
+      case "vectors": {
+        const parsed = extractVectorOperation(equation);
+        setVectorOperator(parsed?.operator ?? null);
+        setVectorLeft(parsed?.left ?? null);
+        setVectorRight(parsed?.right ?? null);
+        break;
+      }
       default:
         setDerivedExpression(equation);
     }
@@ -601,6 +730,14 @@ export default function Solve() {
     if (operation === "matrix" && matrixCells === null) {
       // Detected a matrix environment but couldn't parse cells out of it
       // (malformed LaTeX) -- never send a guessed/empty matrix.
+      setStatus("error");
+      return;
+    }
+    if (operation === "sets" && (setsOperator === null || setsLeft === null || setsRight === null)) {
+      setStatus("error");
+      return;
+    }
+    if (operation === "vectors" && (vectorOperator === null || vectorLeft === null)) {
       setStatus("error");
       return;
     }
@@ -681,6 +818,22 @@ export default function Solve() {
           headers: authHeaders(token),
           body: JSON.stringify({ matrix: currentMatrixCells() }),
         });
+      } else if (operation === "sets") {
+        response = await fetch(`${API_URL}/api/sets`, {
+          method: "POST",
+          headers: authHeaders(token),
+          body: JSON.stringify({ operator: setsOperator, left: setsLeft, right: setsRight }),
+        });
+      } else if (operation === "vectors") {
+        response = await fetch(`${API_URL}/api/vectors`, {
+          method: "POST",
+          headers: authHeaders(token),
+          body: JSON.stringify({
+            operator: vectorOperator,
+            left: vectorLeft,
+            ...(vectorRight !== null ? { right: vectorRight } : {}),
+          }),
+        });
       } else {
         // system: one equation per non-empty line.
         const equations = systemEquations
@@ -759,6 +912,44 @@ export default function Solve() {
           glossary: body.glossary ?? [],
           isInvertible: body.is_invertible,
         });
+      } else if (operation === "sets") {
+        const body = (await response.json()) as SetsApiResponse;
+        const operatorLabels: Record<string, string> = {
+          union: t.solve.setsOperatorUnion,
+          intersection: t.solve.setsOperatorIntersection,
+          difference: t.solve.setsOperatorDifference,
+          in: t.solve.setsOperatorIn,
+          subset: t.solve.setsOperatorSubset,
+        };
+        setResult({
+          values: [],
+          method: operatorLabels[body.operator] ?? body.operator,
+          inputLatex: body.input_latex,
+          resultLatex: body.result_latex,
+          steps: body.steps ?? [],
+          stepsText: body.steps_text ?? [],
+          alternativeMethods: [],
+          glossary: body.glossary ?? [],
+          isInvertible: null,
+        });
+      } else if (operation === "vectors") {
+        const body = (await response.json()) as VectorsApiResponse;
+        const operatorLabels: Record<string, string> = {
+          dot: t.solve.vectorOperatorDot,
+          cross: t.solve.vectorOperatorCross,
+          norm: t.solve.vectorOperatorNorm,
+        };
+        setResult({
+          values: [],
+          method: operatorLabels[body.operator] ?? body.operator,
+          inputLatex: body.input_latex,
+          resultLatex: body.result_latex,
+          steps: body.steps ?? [],
+          stepsText: body.steps_text ?? [],
+          alternativeMethods: [],
+          glossary: body.glossary ?? [],
+          isInvertible: null,
+        });
       } else if (operation === "plot") {
         const body = (await response.json()) as PlotApiResponse;
         setPlotResult(body);
@@ -805,6 +996,8 @@ export default function Solve() {
     { key: "system", label: t.solve.tabSystem, glyph: "{=}" },
     { key: "inequality", label: t.solve.tabInequality, glyph: "<" },
     { key: "matrix", label: t.solve.tabMatrix, glyph: "[A]" },
+    { key: "sets", label: t.solve.tabSets, glyph: "{A}" },
+    { key: "vectors", label: t.solve.tabVectors, glyph: "v⃗" },
     { key: "derivative", label: t.solve.tabDerivative, glyph: "d/dx" },
     { key: "integral", label: t.solve.tabIntegral, glyph: "∫" },
     { key: "limit", label: t.solve.tabLimit, glyph: "lim" },
