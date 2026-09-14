@@ -191,6 +191,8 @@ const SYMBOL_GROUPS: { title: string; items: QuickSymbol[] }[] = [
       { glyph: "n!", latex: "#0!", label: "Factorielle" },
       { glyph: "Cₙₖ", latex: "\\binom{#0}{#0}", label: "Coefficient binomial" },
       { glyph: "Pₙₖ", latex: "P(#0,#0)", label: "Permutation" },
+      { glyph: "pgcd", latex: "gcd(#0,#0)", label: "PGCD (plus grand commun diviseur)" },
+      { glyph: "ppcm", latex: "lcm(#0,#0)", label: "PPCM (plus petit commun multiple)" },
       { glyph: "i", latex: "i", label: "Unité imaginaire" },
       { glyph: "z̄", latex: "\\overline{#0}", label: "Conjugué" },
       { glyph: "Re", latex: "\\Re(#0)", label: "Partie réelle" },
@@ -384,6 +386,21 @@ export default function MathInput({ id, value, onChange, placeholder }: MathInpu
                         className="rounded-md border border-rule-strong px-3 py-1.5 text-sm font-semibold text-ink-soft transition duration-150 hover:bg-rule active:scale-95 focus:outline-none focus:ring-2 focus:ring-mark"
                       >
                         Insérer l&rsquo;inverse
+                      </button>
+                      <button
+                        type="button"
+                        title="Insère l'équation caractéristique det(A - λI) = 0 -- calcule les valeurs propres"
+                        onClick={() => {
+                          ref.current?.focus();
+                          ref.current?.insert(
+                            `\\det(${buildMatrixLatex(matrixSize, matrixSize)}-\\lambda I)=0`,
+                            { insertionMode: "insertAfter" }
+                          );
+                          setMatrixPickerOpen(false);
+                        }}
+                        className="rounded-md border border-rule-strong px-3 py-1.5 text-sm font-semibold text-ink-soft transition duration-150 hover:bg-rule active:scale-95 focus:outline-none focus:ring-2 focus:ring-mark"
+                      >
+                        Valeurs propres
                       </button>
                     </div>
                   )}

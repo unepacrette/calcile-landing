@@ -209,11 +209,11 @@ const inputClass =
 // Known, deliberate gap: series and plot both need information (a
 // Taylor order, or plot bounds) that no LaTeX marker distinguishes from
 // a bare expression -- they're not reachable from this single bar today.
-// A bare matrix always computes the determinant unless followed by
-// "^{-1}" (a real notational marker for inverse, see
-// extractMatrixOperation) -- eigenvalues has no equivalent marker and
-// stays the same known gap. Sets/vectors are checked before the generic
-// matrix check below: both use a \begin{...matrix}...\end{...matrix}
+// A bare matrix computes the determinant; "^{-1}" after it means
+// inverse; det(A - λI) = 0 (the real, standard characteristic-equation
+// notation) means eigenvalues -- see extractMatrixOperation. Sets/
+// vectors are checked before the generic matrix check below: both use a
+// \begin{...matrix}...\end{...matrix}
 // block as their own building block (a vector is just a column matrix),
 // which would otherwise match the plain "matrix" branch first.
 function detectOperation(latex: string): Operation {
@@ -328,7 +328,14 @@ function extractMatrix(s: string): string[][] | null {
 // \int vs \frac{d}{dx} already select different endpoints from
 // notation alone). Only "^{-1}" or "^-1" immediately after the matrix's
 // \end{...matrix} counts, so a -1 appearing inside a cell never matches.
+// Eigenvalues have their own real, standard notation too: the
+// characteristic equation det(A - λI) = 0 -- \det and \lambda both
+// present is specific enough to be an unambiguous marker (extractMatrix
+// itself doesn't care where the matrix block sits in the larger string,
+// so the surrounding \det(...-\lambda I)=0 text around it is ignored
+// there exactly the same way "^{-1}" is here).
 function extractMatrixOperation(s: string): MatrixOperation {
+  if (/\\det/.test(s) && /\\lambda/.test(s)) return "eigenvalues";
   return /\\end\{[pbv]?matrix\}\s*\^\{?-1\}?/.test(s) ? "inverse" : "determinant";
 }
 
