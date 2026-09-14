@@ -389,7 +389,7 @@ export const translations = {
       lastUpdated: "Dernière mise à jour : 11 septembre 2026",
       publisherHeading: "Éditeur du site",
       publisherBody:
-        "Calcile est édité par Amaury Le Roux, entrepreneur individuel (micro-entreprise), domicilié au 30 ch de l'espérance, Appt D, 25000 Besançon, France. SIREN : 109 888 321. TVA non applicable, article 293 B du Code général des impôts. Contact : contact@calcile.fr.",
+        "Calcile est édité par Amaury Le Roux, entrepreneur individuel (micro-entreprise), domicilié au 30 ch de l'espérance, Appt D, 25000 Besançon, France. SIREN : 109 935 692. TVA non applicable, article 293 B du Code général des impôts. Contact : contact@calcile.fr.",
       publicationDirectorHeading: "Directeur de la publication",
       publicationDirectorBody: "Amaury Le Roux, en sa qualité d'éditeur du site.",
       hostHeading: "Hébergement",
@@ -849,7 +849,7 @@ export const translations = {
       lastUpdated: "Last updated: September 11, 2026",
       publisherHeading: "Site publisher",
       publisherBody:
-        "Calcile is published by Amaury Le Roux, sole trader (French \"micro-entreprise\"), based at 30 ch de l'espérance, Appt D, 25000 Besançon, France. SIREN: 109 888 321. VAT not applicable, article 293 B of the French General Tax Code. Contact: contact@calcile.fr.",
+        "Calcile is published by Amaury Le Roux, sole trader (French \"micro-entreprise\"), based at 30 ch de l'espérance, Appt D, 25000 Besançon, France. SIREN: 109 935 692. VAT not applicable, article 293 B of the French General Tax Code. Contact: contact@calcile.fr.",
       publicationDirectorHeading: "Publication director",
       publicationDirectorBody: "Amaury Le Roux, as the site's publisher.",
       hostHeading: "Hosting",
