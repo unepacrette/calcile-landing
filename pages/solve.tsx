@@ -235,7 +235,17 @@ function detectOperation(latex: string): Operation {
   // sympy.Derivative object (confirmed) but then answers a different
   // question ("where is the derivative zero") than the button implies.
   if (/\\frac\{\\partial\}\{\\partial[a-zA-Z]\}/.test(s)) return "derivative";
-  if (/<|>|\\le\b|\\ge\b|\\leq\b|\\geq\b/.test(s)) return "inequality";
+  // \b never actually matches after \le/\ge in practice -- their
+  // argument (a digit or variable) is a word character too, so there's
+  // no word/non-word transition for \b to find (confirmed directly:
+  // "x\le5", "x\le n" and even "x\leq5" all failed to match this
+  // exact pattern before the fix, silently routing the only two
+  // Relations quick-symbol buttons -- ≤ and ≥ -- to "solve" instead of
+  // "inequality"). A negative lookahead against \left is what \le
+  // actually needs to guard against (the one real conflicting command
+  // in this app's vocabulary -- checked directly against every \command
+  // MathInput.tsx uses); \ge has no such conflict here.
+  if (/<|>|\\le(?!ft)|\\ge|\\leq|\\geq/.test(s)) return "inequality";
   return "solve";
 }
 
