@@ -544,6 +544,20 @@ const CHAINABLE_SET_OP_MAP: Record<string, SetsOperator> = {
   "\\times": "cartesian_product",
 };
 
+// A well-formed set element is a scalar value/expression -- never a
+// nested set or another set operation. One of these tokens surviving
+// inside an extracted element means the user tried to use curly braces
+// for GROUPING (e.g. "{{A}∪{B}}∩{C}", parentheses are the correct way --
+// see chained set expressions below) instead of writing a literal set.
+// Rejecting this here, rather than silently forwarding a compound string
+// as if it were one atomic element, is what stops calcile-api's LaTeX
+// parser from absorbing "\cup"/"\cap" into fabricated symbol names like
+// "cup"/"cap" instead of raising (confirmed directly:
+// parse_expression_only('\{A\}\cup\{B\}') silently returns A*(B*cup)
+// rather than erroring -- "doesn't crash" isn't "computes the right
+// thing", the same class of bug this whole feature was built to avoid).
+const INVALID_SET_ELEMENT_CONTENT = /\\(cup|cap|setminus|triangle)\b|\\[{}]/;
+
 function parseSetExpressionTree(s: string): SetExprNode | null {
   let pos = 0;
 
@@ -566,7 +580,9 @@ function parseSetExpressionTree(s: string): SetExprNode | null {
         pos++;
       }
       if (depth !== 0) return null;
-      return { kind: "leaf", elements: extractSetElements(s.slice(start, pos)) };
+      const elements = extractSetElements(s.slice(start, pos));
+      if (elements.some((e) => INVALID_SET_ELEMENT_CONTENT.test(e))) return null;
+      return { kind: "leaf", elements };
     }
     // Interval bound content excludes brackets too, not just braces/parens
     // -- without that, a greedy match can swallow past its own closing
