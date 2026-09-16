@@ -223,6 +223,10 @@ function detectOperation(latex: string): Operation {
   if (!s) return "solve";
   if (extractVectorOperation(s) !== null) return "vectors";
   if (extractSetOperation(s) !== null) return "sets";
+  // extractSetOperation only matches a single operation -- a parenthesized
+  // chain like (A∪B)∩C needs the real recursive parser (see
+  // parseSetExpressionTree) to be recognized at all.
+  if (countSetExpressionOps(parseSetExpressionTree(s)) >= 2) return "sets";
   if (/\\begin\{[pbv]?matrix\}/.test(s)) return "matrix";
   if (/;/.test(s) && (s.match(/=/g) ?? []).length >= 2) return "system";
   if (extractSeriesOperation(s) !== null) return "series";
@@ -418,13 +422,6 @@ type SetsOperator =
   | "power_set"
   | "cartesian_product";
 
-// Either a \{...\} finite-set block, or a bracketed interval token
-// (opening bracket, a lower bound, a comma, an upper bound, a closing
-// bracket -- deliberately not validating the bracket characters
-// themselves here, that's calcile-api's job; this only needs to find
-// where one operand ends and the operator begins).
-const SET_OPERAND = "\\\\\\{.*?\\\\\\}|[\\[\\(\\]][^,{}]+,[^,{}]+[\\]\\)\\[]";
-
 function extractSetElements(raw: string): string[] {
   const braceMatch = raw.match(/^\\\{(.*)\\\}$/);
   if (braceMatch) {
@@ -437,49 +434,209 @@ function extractSetElements(raw: string): string[] {
   return [raw.trim()];
 }
 
+// Finds the first occurrence of tokenRe that sits outside any \{...\} or
+// (...) nesting -- depth-tracked, not a flat regex, so a token that's
+// actually part of a nested operand's content (e.g. buried inside a
+// compound left-hand side) is never mistaken for the top-level split
+// point.
+function findTopLevelToken(
+  s: string,
+  tokenRe: RegExp
+): { index: number; match: string } | null {
+  let depth = 0;
+  let i = 0;
+  while (i < s.length) {
+    if (s.slice(i, i + 2) === "\\{" || s[i] === "(") {
+      depth++;
+      i += s[i] === "(" ? 1 : 2;
+      continue;
+    }
+    if (s.slice(i, i + 2) === "\\}" || s[i] === ")") {
+      depth--;
+      i += s[i] === ")" ? 1 : 2;
+      continue;
+    }
+    if (depth === 0) {
+      const m = tokenRe.exec(s.slice(i));
+      if (m && m.index === 0) return { index: i, match: m[0] };
+    }
+    i++;
+  }
+  return null;
+}
+
+// \in and \subseteq/\subset produce a boolean, so unlike the six chainable
+// operators below they can never be a sub-expression operand -- they're
+// always the single, outermost operation on the whole input. Detected via
+// a depth-aware top-level scan (not a flat regex) so a nested \in/\subset
+// occurring inside a compound operand's content is never mistaken for the
+// real split point.
+function extractMembershipOperation(
+  s: string
+): { operator: SetsOperator; left: string[]; right: string[] } | null {
+  const inTok = findTopLevelToken(s, /^\\in/);
+  if (inTok) {
+    const rightTree = parseSetExpressionTree(s.slice(inTok.index + inTok.match.length));
+    if (rightTree && rightTree.kind === "leaf") {
+      return { operator: "in", left: [s.slice(0, inTok.index)], right: rightTree.elements };
+    }
+  }
+  const subTok = findTopLevelToken(s, /^(\\subseteq|\\subset)/);
+  if (subTok) {
+    const leftTree = parseSetExpressionTree(s.slice(0, subTok.index));
+    const rightTree = parseSetExpressionTree(s.slice(subTok.index + subTok.match.length));
+    if (leftTree?.kind === "leaf" && rightTree?.kind === "leaf") {
+      return { operator: "subset", left: leftTree.elements, right: rightTree.elements };
+    }
+  }
+  return null;
+}
+
+// A single chainable operation (union/intersection/difference/
+// symmetric_difference/power_set/cartesian_product) is exactly a
+// one-op-node chain -- reuses parseSetExpressionTree instead of a second,
+// separately-fragile flat-regex implementation (the old version here used
+// a flat SET_OPERAND regex with no brace-nesting awareness, which could
+// mis-split a compound operand into garbage instead of failing cleanly;
+// confirmed directly: a real user's "{{A}∪{B}}∩{C}" produced
+// left="\{A", right="B\}\}\cap\{C" instead of being rejected).
 function extractSetOperation(
   s: string
 ): { operator: SetsOperator; left: string[]; right: string[] } | null {
-  const binaryOp = s.match(
-    new RegExp(`^(${SET_OPERAND})(\\\\cup|\\\\cap|\\\\setminus|\\\\triangle)(${SET_OPERAND})$`)
-  );
-  if (binaryOp) {
-    const opMap: Record<string, SetsOperator> = {
-      "\\cup": "union",
-      "\\cap": "intersection",
-      "\\setminus": "difference",
-      "\\triangle": "symmetric_difference",
-    };
-    return {
-      operator: opMap[binaryOp[2]],
-      left: extractSetElements(binaryOp[1]),
-      right: extractSetElements(binaryOp[3]),
-    };
-  }
-  const subset = s.match(
-    new RegExp(`^(${SET_OPERAND})(\\\\subseteq|\\\\subset)(${SET_OPERAND})$`)
-  );
-  if (subset) {
-    return { operator: "subset", left: extractSetElements(subset[1]), right: extractSetElements(subset[3]) };
-  }
-  const cartesian = s.match(new RegExp(`^(${SET_OPERAND})\\\\times(${SET_OPERAND})$`));
-  if (cartesian) {
-    return {
-      operator: "cartesian_product",
-      left: extractSetElements(cartesian[1]),
-      right: extractSetElements(cartesian[2]),
-    };
-  }
-  // \mathcal{P}(...) is real, standard power-set notation.
-  const powerSet = s.match(/^\\mathcal\{P\}\((\\\{.*?\\\})\)$/);
-  if (powerSet) {
-    return { operator: "power_set", left: extractSetElements(powerSet[1]), right: [] };
-  }
-  const membership = s.match(new RegExp(`^(.*?)\\\\in(${SET_OPERAND})$`));
-  if (membership) {
-    return { operator: "in", left: [membership[1]], right: extractSetElements(membership[2]) };
+  const membership = extractMembershipOperation(s);
+  if (membership) return membership;
+  const tree = parseSetExpressionTree(s);
+  if (tree?.kind === "op" && countSetExpressionOps(tree) === 1) {
+    if (tree.left.kind === "leaf" && (tree.right === null || tree.right.kind === "leaf")) {
+      return {
+        operator: tree.operator,
+        left: tree.left.elements,
+        right: tree.right ? tree.right.elements : [],
+      };
+    }
   }
   return null;
+}
+
+// --- chained set expressions, e.g. (A∪B)∩C ---------------------------------
+//
+// A real recursive-descent parser building an expression tree --
+// parentheses group a sub-expression (the correct,
+// standard way to write this; curly braces always mean "this is a
+// literal set", never "grouping", same as on paper), flattened into the
+// three-address-code form calcile-api's /api/sets/expression expects
+// (each step's operand either a literal set/interval or an int index
+// referencing an earlier step's own result). Scoped to the operators that
+// always produce a real set to chain further (∪,∩,∖,∆,×, plus the
+// power-set wrapper, matching calcile-api's own _CHAINABLE_SET_OPERATORS)
+// -- \in/\subseteq stay single-operation only (extractMembershipOperation
+// above), since a plain boolean isn't a meaningful operand of a further
+// set op.
+type SetExprNode =
+  | { kind: "leaf"; elements: string[] }
+  | { kind: "op"; operator: SetsOperator; left: SetExprNode; right: SetExprNode | null };
+
+const CHAINABLE_SET_OP_MAP: Record<string, SetsOperator> = {
+  "\\cup": "union",
+  "\\cap": "intersection",
+  "\\setminus": "difference",
+  "\\triangle": "symmetric_difference",
+  "\\times": "cartesian_product",
+};
+
+function parseSetExpressionTree(s: string): SetExprNode | null {
+  let pos = 0;
+
+  function parseSetLiteral(): SetExprNode | null {
+    if (s.slice(pos, pos + 2) === "\\{") {
+      let depth = 0;
+      const start = pos;
+      while (pos < s.length) {
+        if (s.slice(pos, pos + 2) === "\\{") {
+          depth++;
+          pos += 2;
+          continue;
+        }
+        if (s.slice(pos, pos + 2) === "\\}") {
+          depth--;
+          pos += 2;
+          if (depth === 0) break;
+          continue;
+        }
+        pos++;
+      }
+      if (depth !== 0) return null;
+      return { kind: "leaf", elements: extractSetElements(s.slice(start, pos)) };
+    }
+    // Interval bound content excludes brackets too, not just braces/parens
+    // -- without that, a greedy match can swallow past its own closing
+    // bracket into whatever follows (confirmed directly: matched
+    // "[1,5]\cap[" as if that whole span were one interval's upper bound).
+    const m = /^[[(\]][^,{}()[\]]+,[^,{}()[\]]+[\])[]/.exec(s.slice(pos));
+    if (m) {
+      pos += m[0].length;
+      return { kind: "leaf", elements: [m[0]] };
+    }
+    return null;
+  }
+
+  function parseTerm(): SetExprNode | null {
+    if (s[pos] === "(") {
+      pos++;
+      const inner = parseExpr();
+      if (inner === null || s[pos] !== ")") return null;
+      pos++;
+      return inner;
+    }
+    if (s.slice(pos, pos + "\\mathcal{P}(".length) === "\\mathcal{P}(") {
+      pos += "\\mathcal{P}(".length;
+      // The argument is a full sub-expression, not just a bare literal --
+      // \mathcal{P}(A\cup B) is a legitimate power set of a compound set,
+      // and without this it silently fell through to the old flat-regex
+      // extractSetOperation path, which mis-split the compound argument
+      // into a corrupted fragment that computed a wrong answer instead of
+      // erroring (confirmed directly: \mathcal{P}(\{1,2,3,4\}\cup\{5,6,7\})
+      // dropped an element rather than raising).
+      const arg = parseExpr();
+      if (arg === null || s[pos] !== ")") return null;
+      pos++;
+      return { kind: "op", operator: "power_set", left: arg, right: null };
+    }
+    return parseSetLiteral();
+  }
+
+  function parseExpr(): SetExprNode | null {
+    let left = parseTerm();
+    if (left === null) return null;
+    for (;;) {
+      const opMatch = /^(\\cup|\\cap|\\setminus|\\triangle|\\times)/.exec(s.slice(pos));
+      if (!opMatch) break;
+      pos += opMatch[0].length;
+      const right = parseTerm();
+      if (right === null) return null;
+      left = { kind: "op", operator: CHAINABLE_SET_OP_MAP[opMatch[0]], left, right };
+    }
+    return left;
+  }
+
+  const result = parseExpr();
+  return result !== null && pos === s.length ? result : null;
+}
+
+function countSetExpressionOps(node: SetExprNode | null): number {
+  if (!node || node.kind !== "op") return 0;
+  return 1 + countSetExpressionOps(node.left) + (node.right ? countSetExpressionOps(node.right) : 0);
+}
+
+function flattenSetExpressionTree(
+  node: SetExprNode,
+  steps: { operator: SetsOperator; left: string[] | number; right: string[] | number | null }[]
+): string[] | number {
+  if (node.kind === "leaf") return node.elements;
+  const left = flattenSetExpressionTree(node.left, steps);
+  const right = node.right ? flattenSetExpressionTree(node.right, steps) : null;
+  steps.push({ operator: node.operator, left, right });
+  return steps.length - 1;
 }
 
 // --- vectors ----------------------------------------------------------------
@@ -732,6 +889,13 @@ export default function Solve() {
   const [setsOperator, setSetsOperator] = useState<SetsOperator | null>(null);
   const [setsLeft, setSetsLeft] = useState<string[] | null>(null);
   const [setsRight, setSetsRight] = useState<string[] | null>(null);
+  // Non-null only for a genuinely chained expression like (A∪B)∩C (2+
+  // operations) -- handleSubmit posts to /api/sets/expression instead of
+  // /api/sets when this is set, otherwise the plain single-operation
+  // fields above are used exactly as before.
+  const [setsExpressionSteps, setSetsExpressionSteps] = useState<
+    { operator: SetsOperator; left: string[] | number; right: string[] | number | null }[] | null
+  >(null);
   const [vectorOperator, setVectorOperator] = useState<"dot" | "cross" | "norm" | null>(null);
   const [vectorLeft, setVectorLeft] = useState<string[] | null>(null);
   const [vectorRight, setVectorRight] = useState<string[] | null>(null);
@@ -811,10 +975,23 @@ export default function Solve() {
         setMatrixOperation(extractMatrixOperation(equation));
         break;
       case "sets": {
-        const parsed = extractSetOperation(equation);
-        setSetsOperator(parsed?.operator ?? null);
-        setSetsLeft(parsed?.left ?? null);
-        setSetsRight(parsed?.right ?? null);
+        const tree = parseSetExpressionTree(equation);
+        if (countSetExpressionOps(tree) >= 2) {
+          // A genuinely chained expression -- flatten to steps and use
+          // /api/sets/expression instead of the single-operation fields.
+          const steps: { operator: SetsOperator; left: string[] | number; right: string[] | number | null }[] = [];
+          flattenSetExpressionTree(tree as SetExprNode, steps);
+          setSetsExpressionSteps(steps);
+          setSetsOperator(null);
+          setSetsLeft(null);
+          setSetsRight(null);
+        } else {
+          setSetsExpressionSteps(null);
+          const parsed = extractSetOperation(equation);
+          setSetsOperator(parsed?.operator ?? null);
+          setSetsLeft(parsed?.left ?? null);
+          setSetsRight(parsed?.right ?? null);
+        }
         break;
       }
       case "vectors": {
@@ -863,7 +1040,11 @@ export default function Solve() {
       setStatus("error");
       return;
     }
-    if (operation === "sets" && (setsOperator === null || setsLeft === null || setsRight === null)) {
+    if (
+      operation === "sets" &&
+      setsExpressionSteps === null &&
+      (setsOperator === null || setsLeft === null || setsRight === null)
+    ) {
       setStatus("error");
       return;
     }
@@ -949,11 +1130,18 @@ export default function Solve() {
           body: JSON.stringify({ matrix: currentMatrixCells() }),
         });
       } else if (operation === "sets") {
-        response = await fetch(`${API_URL}/api/sets`, {
-          method: "POST",
-          headers: authHeaders(token),
-          body: JSON.stringify({ operator: setsOperator, left: setsLeft, right: setsRight }),
-        });
+        response =
+          setsExpressionSteps !== null
+            ? await fetch(`${API_URL}/api/sets/expression`, {
+                method: "POST",
+                headers: authHeaders(token),
+                body: JSON.stringify({ steps: setsExpressionSteps }),
+              })
+            : await fetch(`${API_URL}/api/sets`, {
+                method: "POST",
+                headers: authHeaders(token),
+                body: JSON.stringify({ operator: setsOperator, left: setsLeft, right: setsRight }),
+              });
       } else if (operation === "vectors") {
         response = await fetch(`${API_URL}/api/vectors`, {
           method: "POST",
@@ -1067,8 +1255,12 @@ export default function Solve() {
           union: t.solve.setsOperatorUnion,
           intersection: t.solve.setsOperatorIntersection,
           difference: t.solve.setsOperatorDifference,
+          symmetric_difference: t.solve.setsOperatorSymmetricDifference,
           in: t.solve.setsOperatorIn,
           subset: t.solve.setsOperatorSubset,
+          power_set: t.solve.setsOperatorPowerSet,
+          cartesian_product: t.solve.setsOperatorCartesianProduct,
+          expression: t.solve.setsOperatorExpression,
         };
         setResult({
           values: [],
