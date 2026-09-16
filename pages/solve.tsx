@@ -206,10 +206,12 @@ const inputClass =
 // against one real example per operation before wiring this in, not
 // assumed to work from the regexes alone.
 //
-// Known, deliberate gap: series and plot both need information (a
-// Taylor order, or plot bounds) that no LaTeX marker distinguishes from
-// a bare expression -- they're not reachable from this single bar today.
-// A bare matrix computes the determinant; "^{-1}" after it means
+// Series is reachable via "taylor(f(x),a,n)" (a disclosed exception --
+// see extractSeriesOperation -- since no real notation for it exists in
+// any tool, unlike every other marker here); plot bounds default to
+// [-10,10] with no way to override from the bar (no operation-picker UI
+// to set them, matching the same "no picker" principle as everything
+// else). A bare matrix computes the determinant; "^{-1}" after it means
 // inverse; det(A - λI) = 0 (the real, standard characteristic-equation
 // notation) means eigenvalues -- see extractMatrixOperation. Sets/
 // vectors are checked before the generic matrix check below: both use a
@@ -223,6 +225,8 @@ function detectOperation(latex: string): Operation {
   if (extractSetOperation(s) !== null) return "sets";
   if (/\\begin\{[pbv]?matrix\}/.test(s)) return "matrix";
   if (/;/.test(s) && (s.match(/=/g) ?? []).length >= 2) return "system";
+  if (extractSeriesOperation(s) !== null) return "series";
+  if (extractPlotOperation(s) !== null) return "plot";
   if (/\\lim/.test(s)) return "limit";
   if (/\\sum/.test(s)) return "sum";
   if (/\\prod/.test(s)) return "product";
@@ -349,36 +353,129 @@ function extractMatrixOperation(s: string): MatrixOperation {
   return /\\end\{[pbv]?matrix\}\s*\^\{?-1\}?/.test(s) ? "inverse" : "determinant";
 }
 
+// --- series (Taylor/Maclaurin) ---------------------------------------------
+//
+// Unlike every other marker here, no real handwritten/typed-notation
+// convention for "give me the Taylor series of this" exists anywhere --
+// checked directly against Wolfram|Alpha (free-text query, not
+// notation), Mathematica (Series[f,{x,a,n}]), Maple (taylor(f,x=a,n)),
+// SageMath (f.taylor(x,x0,n)), GeoGebra (TaylorPolynomial(f,a,n)): every
+// one of them is a command, never a piece of math notation a person
+// would write on paper. This is a deliberate, disclosed exception --
+// adopting a known CAS function-call convention (Maple/SageMath-style)
+// typed literally into the bar, not inventing new notation the way
+// every other marker in this file avoids doing.
+function extractSeriesOperation(
+  s: string
+): { expression: string; point: string; order: string } | null {
+  const m = s.match(/^taylor\((.+),([^,()]+),([^,()]+)\)$/);
+  if (!m) return null;
+  return { expression: m[1], point: m[2].trim(), order: m[3].trim() };
+}
+
+// --- plot -------------------------------------------------------------------
+//
+// y = f(x) (or g(t) = ...) is a genuine, near-universal convention for
+// "graph this" -- verified directly: it's Desmos's and GeoGebra's own
+// primary interaction model (typing exactly this auto-plots), matches
+// graphing-calculator convention (Y1=...) and standard textbook phrasing
+// ("tracer la fonction y=f(x)"). A bare expression alone stays ambiguous
+// (reads as "evaluate/simplify"), so the isolated dependent variable is
+// what makes this an unambiguous marker.
+function extractPlotOperation(
+  s: string
+): { variable: string; expression: string } | null {
+  const named = s.match(/^([a-zA-Z])\(([a-zA-Z])\)=(.+)$/);
+  if (named) return { variable: named[2], expression: named[3] };
+  const bare = s.match(/^y=(.+)$/);
+  if (bare) return { variable: "x", expression: bare[1] };
+  return null;
+}
+
 // --- sets -----------------------------------------------------------------
 //
-// Concrete finite sets only, e.g. {1,2,3} -- no interval or set-builder
-// notation. Not routed through calcile-api's parse_latex at all (that
-// grammar has zero support for \{...\}, confirmed directly): the same
-// extraction-then-send-each-element pattern as extractMatrix, never the
-// whole LaTeX string.
-type SetsOperator = "union" | "intersection" | "difference" | "in" | "subset";
+// Finite sets, e.g. {1,2,3}, AND real intervals, e.g. [1,5] or ]1,5[ --
+// scope grounded in real French lycée/L1 "calcul ensembliste" course
+// material (interval union/intersection is the single most commonly
+// drilled exercise type found there), matching calcile-api's own
+// _parse_set_or_interval exactly: a single operand written in interval
+// notation is sent as a one-element list, recognized and parsed as a
+// real interval server-side, everything else is a plain finite set.
+// Both bracket conventions work at once -- international "(1,5)"/
+// "[1,5]" and French "]1,5["/"[1,5]" -- since they use different
+// characters for "open" and position (first vs. last) disambiguates.
+// Not routed through calcile-api's parse_latex at all (that grammar has
+// zero support for \{...\} or intervals, confirmed directly): the same
+// extraction-then-send pattern as extractMatrix, never the whole LaTeX
+// string.
+type SetsOperator =
+  | "union"
+  | "intersection"
+  | "difference"
+  | "symmetric_difference"
+  | "in"
+  | "subset"
+  | "power_set"
+  | "cartesian_product";
+
+// Either a \{...\} finite-set block, or a bracketed interval token
+// (opening bracket, a lower bound, a comma, an upper bound, a closing
+// bracket -- deliberately not validating the bracket characters
+// themselves here, that's calcile-api's job; this only needs to find
+// where one operand ends and the operator begins).
+const SET_OPERAND = "\\\\\\{.*?\\\\\\}|[\\[\\(\\]][^,{}]+,[^,{}]+[\\]\\)\\[]";
 
 function extractSetElements(raw: string): string[] {
-  const m = raw.match(/^\\\{(.*)\\\}$/);
-  const inner = m ? m[1] : raw;
-  if (inner.trim() === "") return [];
-  return inner.split(",").map((e) => e.trim()).filter((e) => e.length > 0);
+  const braceMatch = raw.match(/^\\\{(.*)\\\}$/);
+  if (braceMatch) {
+    const inner = braceMatch[1];
+    if (inner.trim() === "") return [];
+    return inner.split(",").map((e) => e.trim()).filter((e) => e.length > 0);
+  }
+  // A single interval token (e.g. "[1,5]") is sent as-is, as the sole
+  // element of a one-element list -- see the section comment above.
+  return [raw.trim()];
 }
 
 function extractSetOperation(
   s: string
 ): { operator: SetsOperator; left: string[]; right: string[] } | null {
-  const binaryOp = s.match(/^(\\\{.*?\\\})(\\cup|\\cap|\\setminus)(\\\{.*?\\\})$/);
+  const binaryOp = s.match(
+    new RegExp(`^(${SET_OPERAND})(\\\\cup|\\\\cap|\\\\setminus|\\\\triangle)(${SET_OPERAND})$`)
+  );
   if (binaryOp) {
-    const operator: SetsOperator =
-      binaryOp[2] === "\\cup" ? "union" : binaryOp[2] === "\\cap" ? "intersection" : "difference";
-    return { operator, left: extractSetElements(binaryOp[1]), right: extractSetElements(binaryOp[3]) };
+    const opMap: Record<string, SetsOperator> = {
+      "\\cup": "union",
+      "\\cap": "intersection",
+      "\\setminus": "difference",
+      "\\triangle": "symmetric_difference",
+    };
+    return {
+      operator: opMap[binaryOp[2]],
+      left: extractSetElements(binaryOp[1]),
+      right: extractSetElements(binaryOp[3]),
+    };
   }
-  const subset = s.match(/^(\\\{.*?\\\})(\\subseteq|\\subset)(\\\{.*?\\\})$/);
+  const subset = s.match(
+    new RegExp(`^(${SET_OPERAND})(\\\\subseteq|\\\\subset)(${SET_OPERAND})$`)
+  );
   if (subset) {
     return { operator: "subset", left: extractSetElements(subset[1]), right: extractSetElements(subset[3]) };
   }
-  const membership = s.match(/^(.*?)\\in(\\\{.*\\\})$/);
+  const cartesian = s.match(new RegExp(`^(${SET_OPERAND})\\\\times(${SET_OPERAND})$`));
+  if (cartesian) {
+    return {
+      operator: "cartesian_product",
+      left: extractSetElements(cartesian[1]),
+      right: extractSetElements(cartesian[2]),
+    };
+  }
+  // \mathcal{P}(...) is real, standard power-set notation.
+  const powerSet = s.match(/^\\mathcal\{P\}\((\\\{.*?\\\})\)$/);
+  if (powerSet) {
+    return { operator: "power_set", left: extractSetElements(powerSet[1]), right: [] };
+  }
+  const membership = s.match(new RegExp(`^(.*?)\\\\in(${SET_OPERAND})$`));
   if (membership) {
     return { operator: "in", left: [membership[1]], right: extractSetElements(membership[2]) };
   }
@@ -612,6 +709,9 @@ export default function Solve() {
   const [lowerBound, setLowerBound] = useState("");
   const [upperBound, setUpperBound] = useState("");
   const [limitPoint, setLimitPoint] = useState("0");
+  const [seriesPoint, setSeriesPoint] = useState("0");
+  const [seriesOrder, setSeriesOrder] = useState("5");
+  const [plotVariable, setPlotVariable] = useState("x");
   // No UI for this anymore (no operation picker at all) -- "both" is the
   // only value ever used, kept as a variable only because handleSubmit's
   // existing /api/limit request body already names it.
@@ -722,6 +822,19 @@ export default function Solve() {
         setVectorOperator(parsed?.operator ?? null);
         setVectorLeft(parsed?.left ?? null);
         setVectorRight(parsed?.right ?? null);
+        break;
+      }
+      case "series": {
+        const parsed = extractSeriesOperation(equation);
+        setDerivedExpression(parsed?.expression ?? equation);
+        setSeriesPoint(parsed?.point ?? "0");
+        setSeriesOrder(parsed?.order ?? "5");
+        break;
+      }
+      case "plot": {
+        const parsed = extractPlotOperation(equation);
+        setDerivedExpression(parsed?.expression ?? equation);
+        setPlotVariable(parsed?.variable ?? "x");
         break;
       }
       default:
@@ -849,6 +962,25 @@ export default function Solve() {
             operator: vectorOperator,
             left: vectorLeft,
             ...(vectorRight !== null ? { right: vectorRight } : {}),
+          }),
+        });
+      } else if (operation === "series") {
+        response = await fetch(`${API_URL}/api/series`, {
+          method: "POST",
+          headers: authHeaders(token),
+          body: JSON.stringify({
+            expression: derivedExpression,
+            point: seriesPoint,
+            order: Number(seriesOrder),
+          }),
+        });
+      } else if (operation === "plot") {
+        response = await fetch(`${API_URL}/api/plot`, {
+          method: "POST",
+          headers: authHeaders(token),
+          body: JSON.stringify({
+            expression: derivedExpression,
+            variable: plotVariable,
           }),
         });
       } else {

@@ -120,6 +120,16 @@ const SYMBOL_GROUPS: { title: string; items: QuickSymbol[] }[] = [
       { glyph: "Σ", latex: "\\sum_{n=#0}^{#0}#0", label: "Somme" },
       { glyph: "Π", latex: "\\prod_{n=#0}^{#0}#0", label: "Produit" },
       { glyph: "lim", latex: "\\lim_{x\\to#0}#0", label: "Limite" },
+      // No real handwritten notation exists for "Taylor series" in any
+      // tool (checked directly: Wolfram|Alpha, Mathematica, Maple,
+      // SageMath, GeoGebra all use a command, never notation) -- this
+      // adopts a known CAS function-call convention instead of inventing
+      // one, a deliberate, disclosed exception to how every other button
+      // here works.
+      { glyph: "Tₙ", latex: "taylor(#0,#0,#0)", label: "Série de Taylor (expression, point, ordre)" },
+      // y=f(x) is a real, standard convention for "graph this" (Desmos
+      // and GeoGebra's own primary interaction model).
+      { glyph: "y=f(x)", latex: "y=#0", label: "Tracer un graphique" },
     ],
   },
   {
@@ -181,8 +191,13 @@ const SYMBOL_GROUPS: { title: string; items: QuickSymbol[] }[] = [
       { glyph: "∪", latex: "\\{#0\\}\\cup\\{#0\\}", label: "Union" },
       { glyph: "∩", latex: "\\{#0\\}\\cap\\{#0\\}", label: "Intersection" },
       { glyph: "∖", latex: "\\{#0\\}\\setminus\\{#0\\}", label: "Différence" },
+      { glyph: "∆", latex: "\\{#0\\}\\triangle\\{#0\\}", label: "Différence symétrique" },
       { glyph: "∈", latex: "#0\\in\\{#0\\}", label: "Appartenance" },
       { glyph: "⊆", latex: "\\{#0\\}\\subseteq\\{#0\\}", label: "Inclusion" },
+      { glyph: "𝒫", latex: "\\mathcal{P}(\\{#0\\})", label: "Ensemble des parties" },
+      { glyph: "×", latex: "\\{#0\\}\\times\\{#0\\}", label: "Produit cartésien" },
+      { glyph: "[a,b]", latex: "[#0,#0]", label: "Intervalle fermé" },
+      { glyph: "]a,b[", latex: "]#0,#0[", label: "Intervalle ouvert" },
     ],
   },
   {
