@@ -239,6 +239,11 @@ function detectOperation(latex: string): Operation {
   // parens), so placement here (rather than earlier/later) is for
   // readability only, not correctness.
   if (looksLikeSymbolicSetExpression(s)) return "sets-symbolic";
+  // Reached only when neither concrete check above matched -- a braced
+  // expression using set operators inside an operand, not a valid
+  // element list (see toSymbolicSetExpression's own comment for why
+  // this is worth a second try instead of failing outright).
+  if (toSymbolicSetExpression(s) !== null) return "sets-symbolic";
   if (/\\begin\{[pbv]?matrix\}/.test(s)) return "matrix";
   if (/;/.test(s) && (s.match(/=/g) ?? []).length >= 2) return "system";
   if (extractSeriesOperation(s) !== null) return "series";
@@ -724,6 +729,30 @@ function looksLikeSymbolicSetExpression(s: string): boolean {
   if (!SYMBOLIC_SET_OPERATOR_RE.test(s)) return false;
   const stripped = s.replace(SYMBOLIC_SET_TOKEN_RE, "");
   return stripped === "";
+}
+
+// A real user overwhelmingly reaches for the EXISTING concrete-set
+// buttons (which insert "\{#0\}\cup\{#0\}"-style skeletons) even when
+// they mean abstract sets, not concrete elements -- confirmed directly,
+// repeatedly: "\{\{A\}\cap\{B\}\}\cup\{C\}", braces used purely for
+// GROUPING (meant as (A\cap B)\cup C) around further set operators, not
+// enclosing an actual element list. That's indistinguishable in intent
+// from the same expression with every "\{"/"\}" swapped for "("/")" --
+// so when the concrete grammar rejects a braced expression (nested
+// operators inside an operand, never valid element-list content), try
+// that substitution before giving up. Returns the substituted string to
+// actually send (not just a yes/no) since the caller needs it verbatim
+// for the /api/sets/simplify request -- the raw typed string still has
+// the "\{"/"\}" that would themselves get rejected by the backend's own
+// whitelist. Returns null for anything that isn't this shape at all
+// (no braces present) or that still doesn't reduce to a valid symbolic
+// expression after substitution (e.g. a genuine concrete set like
+// "\{1,2,3\}", digits and commas were never going to pass
+// looksLikeSymbolicSetExpression either way).
+function toSymbolicSetExpression(s: string): string | null {
+  if (!/\\[{}]/.test(s)) return null;
+  const substituted = s.replace(/\\\{/g, "(").replace(/\\\}/g, ")");
+  return looksLikeSymbolicSetExpression(substituted) ? substituted : null;
 }
 
 // --- vectors ----------------------------------------------------------------
@@ -1243,13 +1272,22 @@ export default function Solve() {
                 body: JSON.stringify({ operator: setsOperator, left: setsLeft, right: setsRight }),
               });
       } else if (operation === "sets-symbolic") {
-        // The whole raw LaTeX string forwarded as-is -- unlike the
+        // The whole expression forwarded as one string -- unlike the
         // concrete-sets branch above, /api/sets/simplify takes one
         // expression, not pre-extracted operator/left/right fields.
+        // toSymbolicSetExpression(equation) is non-null exactly when
+        // detectOperation reached this operation via its brace-fallback
+        // path (see its own comment) -- the braces the user actually
+        // typed would themselves be rejected by the backend's whitelist,
+        // so the "(" / ")"-substituted form is what actually gets sent;
+        // falls back to the raw equation unchanged for the no-braces
+        // case, which toSymbolicSetExpression always returns null for.
         response = await fetch(`${API_URL}/api/sets/simplify`, {
           method: "POST",
           headers: authHeaders(token),
-          body: JSON.stringify({ expression: equation }),
+          body: JSON.stringify({
+            expression: toSymbolicSetExpression(equation) ?? equation,
+          }),
         });
       } else if (operation === "vectors") {
         response = await fetch(`${API_URL}/api/vectors`, {
