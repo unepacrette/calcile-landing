@@ -11,7 +11,21 @@ import { FORMULA_CATEGORIES } from "@/lib/formulaSheet";
 export default function FormulaSheet() {
   const { t } = useLanguage();
   const [panelOpen, setPanelOpen] = useState(true);
-  const [openCategories, setOpenCategories] = useState<Set<string>>(new Set());
+  // Open by default -- all 5 categories collapsed was the actual cause of
+  // the large empty gap below/beside this card on /solve's two-column
+  // layout (confirmed directly in a real browser at both a desktop width
+  // and the lg breakpoint transition): with nothing expanded, this card
+  // renders far shorter than the symbol-palette/calculator column beside
+  // it, and CSS Grid's `items-start` never stretches it to match, so the
+  // rest of that column reads as stark dead space instead of intentional
+  // page background. Showing the real reference content up front (which
+  // is the whole point of a sheet meant to sit "à côté de ces calculs")
+  // fixes that with genuine content rather than an artificial min-height
+  // or background treatment -- still collapsible per-category for anyone
+  // who wants to tidy it back up.
+  const [openCategories, setOpenCategories] = useState<Set<string>>(
+    new Set(FORMULA_CATEGORIES.map((category) => category.id))
+  );
 
   function toggleCategory(id: string) {
     setOpenCategories((current) => {

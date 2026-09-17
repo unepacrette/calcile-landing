@@ -197,6 +197,16 @@ const SYMBOL_GROUPS: { title: string; items: QuickSymbol[] }[] = [
       { glyph: "∩", latex: "\\{#0\\}\\cap\\{#0\\}", label: "Intersection" },
       { glyph: "∖", latex: "\\{#0\\}\\setminus\\{#0\\}", label: "Différence" },
       { glyph: "∆", latex: "\\{#0\\}\\triangle\\{#0\\}", label: "Différence symétrique" },
+      // The braces above always mean "literal set with explicit elements"
+      // -- {1,2,3}, not A/B/C. calcile-api's /api/sets/simplify (bare,
+      // unbraced capital letters instead) is the real notation for
+      // simplifying an expression over abstract/named sets in general --
+      // these four skeletons insert that grammar's own operators directly
+      // around bare placeholders instead.
+      { glyph: "A∪B", latex: "#0\\cup#0", label: "Union symbolique (ensembles abstraits A, B, C…)" },
+      { glyph: "A∩B", latex: "#0\\cap#0", label: "Intersection symbolique (ensembles abstraits)" },
+      { glyph: "A∖B", latex: "#0\\setminus#0", label: "Différence symbolique (ensembles abstraits)" },
+      { glyph: "A∆B", latex: "#0\\triangle#0", label: "Différence symétrique symbolique (ensembles abstraits)" },
       { glyph: "∈", latex: "#0\\in\\{#0\\}", label: "Appartenance" },
       { glyph: "⊆", latex: "\\{#0\\}\\subseteq\\{#0\\}", label: "Inclusion" },
       { glyph: "𝒫", latex: "\\mathcal{P}(\\{#0\\})", label: "Ensemble des parties" },

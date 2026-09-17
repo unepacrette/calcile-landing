@@ -107,9 +107,19 @@ export default function Hero() {
           <span className="absolute -top-[11px] left-6 rounded-full bg-mark px-2.5 py-0.5 font-mono text-[10.5px] uppercase tracking-[0.08em] text-paper-raised">
             {t.hero.demoTag}
           </span>
+          {/* Sits in the gap between the step-number column and the step
+              content, not on top of either -- px-6 (card padding, 24px) +
+              pl-5 (the row's own inset, 20px) + w-3.5 (the number's own
+              width, 14px) = the number column spans 44px-58px from the
+              card's left edge; content starts 12px later (gap-3) at 70px.
+              left-[46px] (checked directly, not eyeballed: confirmed via a
+              real rendered screenshot) fell inside the number's own 44-58px
+              span, cutting every digit in half -- exactly the clipping the
+              founder's screenshot showed. left-16 (64px) is the midpoint of
+              the real 58-70px gap instead. */}
           <span
             aria-hidden
-            className="absolute bottom-0 left-[46px] top-0 w-px bg-mark-soft"
+            className="absolute bottom-0 left-16 top-0 w-px bg-mark-soft"
           />
           <p className="pl-5 font-mono text-[13px] text-ink-faint">
             {t.hero.demoInputLabel}&nbsp;x² − 4 = 0

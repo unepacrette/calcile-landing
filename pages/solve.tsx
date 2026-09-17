@@ -31,6 +31,7 @@ type Operation =
   | "product"
   | "matrix"
   | "sets"
+  | "sets-symbolic"
   | "vectors"
   | "plot";
 type Status = "idle" | "loading" | "error";
@@ -227,6 +228,17 @@ function detectOperation(latex: string): Operation {
   // chain like (A∪B)∩C needs the real recursive parser (see
   // parseSetExpressionTree) to be recognized at all.
   if (countSetExpressionOps(parseSetExpressionTree(s)) >= 2) return "sets";
+  // Bare, unbraced uppercase letters + at least one of \cup/\cap/\setminus/
+  // \triangle -- the new symbolic/abstract set-algebra grammar (see
+  // looksLikeSymbolicSetExpression below). Braces always route to the
+  // concrete checks above instead, so there's no overlap with them; no
+  // other check in this function has a marker this shape would collide
+  // with either (confirmed directly: none of matrix/system/series/plot/
+  // lim/sum/prod/integral/derivative/inequality's markers can appear in a
+  // string made only of bare capital letters, the four set operators, and
+  // parens), so placement here (rather than earlier/later) is for
+  // readability only, not correctness.
+  if (looksLikeSymbolicSetExpression(s)) return "sets-symbolic";
   if (/\\begin\{[pbv]?matrix\}/.test(s)) return "matrix";
   if (/;/.test(s) && (s.match(/=/g) ?? []).length >= 2) return "system";
   if (extractSeriesOperation(s) !== null) return "series";
@@ -678,6 +690,40 @@ function flattenSetExpressionTree(
   const right = node.right ? flattenSetExpressionTree(node.right, steps) : null;
   steps.push({ operator: node.operator, left, right });
   return steps.length - 1;
+}
+
+// --- symbolic/abstract set expressions, e.g. A\cup(B\cap C) ---------------
+//
+// A genuinely different feature from the concrete-sets grammar above:
+// calcile-api's POST /api/sets/simplify treats bare, unbraced uppercase
+// letters (never wrapped in \{...\}) as abstract/named set variables and
+// simplifies the whole expression via Boolean-algebra isomorphism
+// (union<->Or, intersection<->And, ...). Disambiguated from the concrete
+// grammar purely by operand shape -- \{1,2,3\}\cup\{4,5\} (braces) is the
+// existing concrete feature; A\cup B (no braces at all) is this one.
+// Mirrors calcile-api's own grammar exactly (see solver.sympy_engine's
+// compute_symbolic_set_simplify docstring): valid tokens are a bare A-Z
+// (optionally subscripted -- A_1 or A_{1}), \cup, \cap, \setminus,
+// \triangle, ( and ). No tree needs to be built here (unlike the chained
+// concrete-set expression above, which has to flatten into three-address
+// code for /api/sets/expression) -- the whole raw string is forwarded
+// as-is to /api/sets/simplify, so a careful structural regex check
+// (at least one real operator present, nothing survives after stripping
+// every valid token) is enough: no recursive-descent parser needed.
+const SYMBOLIC_SET_OPERATOR_RE = /\\cup|\\cap|\\setminus|\\triangle/;
+const SYMBOLIC_SET_TOKEN_RE =
+  /[A-Z](_\{?\d+\}?)?|\\cup|\\cap|\\setminus|\\triangle|[()]/g;
+
+function looksLikeSymbolicSetExpression(s: string): boolean {
+  // Braces anywhere mean "this is the concrete-sets grammar's territory"
+  // -- mutual exclusivity by design, checked first so a compound string
+  // containing both a brace and a bare letter is never ambiguously routed.
+  if (/\\[{}]/.test(s)) return false;
+  // A bare "A" alone, or "(A)" alone, isn't a set expression worth
+  // routing here -- it falls through to ordinary "solve" unchanged.
+  if (!SYMBOLIC_SET_OPERATOR_RE.test(s)) return false;
+  const stripped = s.replace(SYMBOLIC_SET_TOKEN_RE, "");
+  return stripped === "";
 }
 
 // --- vectors ----------------------------------------------------------------
@@ -1196,6 +1242,15 @@ export default function Solve() {
                 headers: authHeaders(token),
                 body: JSON.stringify({ operator: setsOperator, left: setsLeft, right: setsRight }),
               });
+      } else if (operation === "sets-symbolic") {
+        // The whole raw LaTeX string forwarded as-is -- unlike the
+        // concrete-sets branch above, /api/sets/simplify takes one
+        // expression, not pre-extracted operator/left/right fields.
+        response = await fetch(`${API_URL}/api/sets/simplify`, {
+          method: "POST",
+          headers: authHeaders(token),
+          body: JSON.stringify({ expression: equation }),
+        });
       } else if (operation === "vectors") {
         response = await fetch(`${API_URL}/api/vectors`, {
           method: "POST",
@@ -1360,8 +1415,16 @@ export default function Solve() {
         const body = (await response.json()) as PlotApiResponse;
         setPlotResult(body);
       } else {
-        // derivative, integral, limit, series, inequality, sum, product:
-        // same {result, method, ...} shape.
+        // derivative, integral, limit, series, inequality, sum, product,
+        // sets-symbolic: same {result, method, input_latex, result_latex,
+        // steps, steps_text, alternative_methods, glossary} shape --
+        // /api/sets/simplify's SymbolicSetsResponse is this exact
+        // CalcApiResponse backbone plus two extra fields (input, variables)
+        // this UI has no use for, so it's read with the same type and
+        // rendered through the same generic branch rather than duplicating
+        // it; alt.method is already rendered as-is below (in French, from
+        // the backend), so no new i18n key is needed for the CNF/DNF
+        // "alternative_methods" rewrites this endpoint returns either.
         const body = (await response.json()) as CalcApiResponse;
         setResult({
           values: [body.result],
@@ -1403,6 +1466,11 @@ export default function Solve() {
     { key: "inequality", label: t.solve.tabInequality, glyph: "<" },
     { key: "matrix", label: t.solve.tabMatrix, glyph: "[A]" },
     { key: "sets", label: t.solve.tabSets, glyph: "{A}" },
+    // Same label as the concrete-sets tab above -- this is the same
+    // "Ensembles"/"Sets" feature area, just the abstract-variable grammar
+    // (bare A, B, C... instead of \{...\}) rather than a separate concept
+    // needing its own translated name.
+    { key: "sets-symbolic", label: t.solve.tabSets, glyph: "A∪B" },
     { key: "vectors", label: t.solve.tabVectors, glyph: "v⃗" },
     { key: "derivative", label: t.solve.tabDerivative, glyph: "d/dx" },
     { key: "integral", label: t.solve.tabIntegral, glyph: "∫" },
