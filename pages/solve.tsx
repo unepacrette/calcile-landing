@@ -916,6 +916,15 @@ export default function Solve() {
   const [vectorLeft, setVectorLeft] = useState<string[] | null>(null);
   const [vectorRight, setVectorRight] = useState<string[] | null>(null);
   const [status, setStatus] = useState<Status>("idle");
+  // The specific reason a computation failed, when the backend gave one
+  // (e.g. "unsupported command '\wedge'", "chained inequalities aren't
+  // supported yet") -- shown instead of the generic error message so a
+  // rejected input (out of scope, not a real bug) is distinguishable from
+  // an actual failure. null falls back to the generic message: a network
+  // failure or a client-side-only rejection (couldn't extract matrix/sets/
+  // vector params before ever calling the API) has no backend detail to
+  // show.
+  const [errorDetail, setErrorDetail] = useState<string | null>(null);
   const [result, setResult] = useState<Result | null>(null);
   const [plotResult, setPlotResult] = useState<PlotApiResponse | null>(null);
   // Indices of alternative methods currently expanded (collapsed by
@@ -1054,6 +1063,7 @@ export default function Solve() {
       // Detected a matrix environment but couldn't parse cells out of it
       // (malformed LaTeX) -- never send a guessed/empty matrix.
       setStatus("error");
+      setErrorDetail(null);
       return;
     }
     if (
@@ -1062,16 +1072,19 @@ export default function Solve() {
       (setsOperator === null || setsLeft === null || setsRight === null)
     ) {
       setStatus("error");
+      setErrorDetail(null);
       return;
     }
     if (operation === "vectors" && (vectorOperator === null || vectorLeft === null)) {
       setStatus("error");
+      setErrorDetail(null);
       return;
     }
 
     setStatus("loading");
     setResult(null);
     setPlotResult(null);
+    setErrorDetail(null);
     setOpenAlternatives(new Set());
 
     try {
@@ -1207,6 +1220,17 @@ export default function Solve() {
       }
 
       if (!response.ok) {
+        // The backend's error handlers always return {"detail": "..."}
+        // (see calcile-api's api/errors.py) -- surfacing it instead of
+        // only the generic banner is what lets a cleanly-rejected,
+        // out-of-scope input (e.g. "unsupported command") read as
+        // different from an actual failure.
+        try {
+          const body = (await response.json()) as { detail?: string };
+          setErrorDetail(typeof body.detail === "string" ? body.detail : null);
+        } catch {
+          setErrorDetail(null);
+        }
         setStatus("error");
         return;
       }
@@ -1455,7 +1479,7 @@ export default function Solve() {
 
           {status === "error" && (
             <p className="mt-4 text-sm font-medium text-mark-strong">
-              {t.solve.error}
+              {errorDetail ?? t.solve.error}
             </p>
           )}
 
