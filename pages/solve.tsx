@@ -35,7 +35,7 @@ type Operation =
   | "plot";
 type Status = "idle" | "loading" | "error";
 type LimitDirection = "both" | "left" | "right";
-type MatrixOperation = "determinant" | "inverse" | "eigenvalues";
+type MatrixOperation = "determinant" | "inverse" | "eigenvalues" | "transpose";
 
 // is_key marks the step where the actual solving technique is chosen/
 // applied (see calcile-api's solver.sympy_engine.Step docstring) --
@@ -252,8 +252,11 @@ function detectOperation(latex: string): Operation {
   // "inequality"). A negative lookahead against \left is what \le
   // actually needs to guard against (the one real conflicting command
   // in this app's vocabulary -- checked directly against every \command
-  // MathInput.tsx uses); \ge has no such conflict here.
-  if (/<|>|\\le(?!ft)|\\ge|\\leq|\\geq/.test(s)) return "inequality";
+  // MathInput.tsx uses); \ge has no such conflict here. \ne (as a
+  // literal prefix) covers \neq too -- \neq === "\ne" + "q", so a single
+  // \\ne pattern matches both spellings in one branch (verified directly,
+  // not assumed).
+  if (/<|>|\\le(?!ft)|\\ge|\\leq|\\geq|\\ne/.test(s)) return "inequality";
   return "solve";
 }
 
@@ -351,10 +354,16 @@ function extractMatrix(s: string): string[][] | null {
 // present is specific enough to be an unambiguous marker (extractMatrix
 // itself doesn't care where the matrix block sits in the larger string,
 // so the surrounding \det(...-\lambda I)=0 text around it is ignored
-// there exactly the same way "^{-1}" is here).
+// there exactly the same way "^{-1}" is here). Transpose has its own real
+// notation too -- "^{T}"/"^T" immediately after the matrix, the standard
+// A^T convention -- checked after inverse (order between the two doesn't
+// matter, a matrix can't end in both at once, but both must come after
+// the eigenvalues check above since that's checked first).
 function extractMatrixOperation(s: string): MatrixOperation {
   if (/\\det/.test(s) && /\\lambda/.test(s)) return "eigenvalues";
-  return /\\end\{[pbv]?matrix\}\s*\^\{?-1\}?/.test(s) ? "inverse" : "determinant";
+  if (/\\end\{[pbv]?matrix\}\s*\^\{?-1\}?/.test(s)) return "inverse";
+  if (/\\end\{[pbv]?matrix\}\s*\^\{?T\}?/.test(s)) return "transpose";
+  return "determinant";
 }
 
 // --- series (Taylor/Maclaurin) ---------------------------------------------
@@ -583,6 +592,22 @@ function parseSetExpressionTree(s: string): SetExprNode | null {
       const elements = extractSetElements(s.slice(start, pos));
       if (elements.some((e) => INVALID_SET_ELEMENT_CONTENT.test(e))) return null;
       return { kind: "leaf", elements };
+    }
+    // \emptyset and \mathbb{R/N/Z/Q/C} are real set-literal leaves too --
+    // matching calcile-api's own _parse_finite_set special-casing
+    // (confirmed backend-side): an operand whose element list is EXACTLY
+    // ["\emptyset"] maps to the real empty set, and ["\mathbb{R}"] etc.
+    // map to sympy.Reals/Naturals/Integers/Rationals/Complexes. Neither
+    // token ever starts with "\{" so there's no ambiguity with the
+    // finite-set branch above -- checked as fixed-length literal prefixes.
+    if (s.slice(pos, pos + "\\emptyset".length) === "\\emptyset") {
+      pos += "\\emptyset".length;
+      return { kind: "leaf", elements: ["\\emptyset"] };
+    }
+    const mathbbMatch = /^\\mathbb\{([RNZQC])\}/.exec(s.slice(pos));
+    if (mathbbMatch) {
+      pos += mathbbMatch[0].length;
+      return { kind: "leaf", elements: [`\\mathbb{${mathbbMatch[1]}}`] };
     }
     // Interval bound content excludes brackets too, not just braces/parens
     // -- without that, a greedy match can swallow past its own closing

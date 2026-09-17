@@ -64,19 +64,20 @@ function buildMatrixLatex(rows: number, cols: number): string {
 // reaches (sympy.parsing.latex.parse_latex and/or calcile-api's own
 // detectOperation-style routing) before being kept -- a first pass at
 // this palette shipped several that silently mis-parsed as bare symbols
-// (\nabla, \in, \cup, \mathbb{R}, \to, \pm, \approx, ...) instead of
-// erroring, which is worse than an error: a wrong "answer" that looks
-// like a real one. Some of what was cut in that pass was then genuinely
-// fixed instead of left out (complex numbers -- "i" is now the real
-// imaginary unit, not a bare symbol, and \Re/\Im/\arg now compute
-// instead of staying symbolic; permutation now has a real P(n,k); the
-// matrix picker's size options match what calcile-api actually accepts,
-// 2x2/3x3 only, not an arbitrary 1-6). What's still missing has no
-// backend concept to hook into at all -- sets/logic (no set-literal
-// parser exists), vectors (no vector object anywhere in this app), and
-// multi-variable calculus (∇, double/triple integrals) -- restoring
-// those as buttons would ship the same silently-wrong behavior this
-// audit was for.
+// (\nabla, \in, \cup, \mathbb{R}, \to, \approx, ...) instead of erroring,
+// which is worse than an error: a wrong "answer" that looks like a real
+// one. Some of what was cut in that pass was then genuinely fixed instead
+// of left out (complex numbers -- "i" is now the real imaginary unit, not
+// a bare symbol, and \Re/\Im/\arg now compute instead of staying
+// symbolic; permutation now has a real P(n,k); the matrix picker's size
+// options match what calcile-api actually accepts, 2x2/3x3 only, not an
+// arbitrary 1-6; sets/vectors below are real, computed endpoints now too,
+// including \emptyset/\mathbb{R,N,Z,Q,C} as real set operands -- see the
+// "Ensembles" group). What's still missing has no backend concept to
+// hook into at all -- propositional logic (\forall/\exists/\neg/\wedge/
+// \vee) and multi-variable calculus (∇, double/triple integrals) --
+// restoring those as buttons would ship the same silently-wrong behavior
+// this audit was for.
 const SYMBOL_GROUPS: { title: string; items: QuickSymbol[] }[] = [
   {
     title: "Puissances & racines",
@@ -137,6 +138,8 @@ const SYMBOL_GROUPS: { title: string; items: QuickSymbol[] }[] = [
     items: [
       { glyph: "≤", latex: "\\le", label: "Inférieur ou égal" },
       { glyph: "≥", latex: "\\ge", label: "Supérieur ou égal" },
+      { glyph: "≠", latex: "\\ne", label: "Différent" },
+      { glyph: "±", latex: "\\pm", label: "Plus ou moins" },
     ],
   },
   {
@@ -178,14 +181,16 @@ const SYMBOL_GROUPS: { title: string; items: QuickSymbol[] }[] = [
     items: [],
   },
   {
-    // \forall/\exists/\neg/\wedge/\vee and the blackboard number sets
-    // (ℝ, ℕ, ...) are still not here: propositional logic has no
-    // well-defined "compute" action for an arbitrary symbolic predicate
-    // (this would be a proof assistant, not a calculator), and the
-    // number sets are domain labels, not something to operate on by
-    // themselves. Concrete finite sets (union/intersection/difference/
-    // membership/subset) are real, computed operations -- calcile-api's
-    // /api/sets.
+    // \forall/\exists/\neg/\wedge/\vee still aren't here: propositional
+    // logic has no well-defined "compute" action for an arbitrary
+    // symbolic predicate (this would be a proof assistant, not a
+    // calculator). The blackboard-bold number sets (ℝ, ℕ, ℤ, ℚ, ℂ) USED
+    // to be excluded on the same "domain label, not something to operate
+    // on by itself" reasoning -- that's no longer accurate: calcile-api's
+    // /api/sets and /api/sets/expression now genuinely accept \emptyset
+    // and \mathbb{R/N/Z/Q/C} as real operands (the actual empty set / the
+    // actual ℝ, ℕ, ℤ, ℚ, ℂ, not a symbolic placeholder), so both are real,
+    // computed set literals here too -- e.g. \mathbb{Z}\cap[0,10].
     title: "Ensembles",
     items: [
       { glyph: "∪", latex: "\\{#0\\}\\cup\\{#0\\}", label: "Union" },
@@ -198,6 +203,12 @@ const SYMBOL_GROUPS: { title: string; items: QuickSymbol[] }[] = [
       { glyph: "×", latex: "\\{#0\\}\\times\\{#0\\}", label: "Produit cartésien" },
       { glyph: "[a,b]", latex: "[#0,#0]", label: "Intervalle fermé" },
       { glyph: "]a,b[", latex: "]#0,#0[", label: "Intervalle ouvert" },
+      { glyph: "∅", latex: "\\emptyset", label: "Ensemble vide" },
+      { glyph: "ℝ", latex: "\\mathbb{R}", label: "Ensemble des réels" },
+      { glyph: "ℕ", latex: "\\mathbb{N}", label: "Ensemble des entiers naturels" },
+      { glyph: "ℤ", latex: "\\mathbb{Z}", label: "Ensemble des entiers relatifs" },
+      { glyph: "ℚ", latex: "\\mathbb{Q}", label: "Ensemble des rationnels" },
+      { glyph: "ℂ", latex: "\\mathbb{C}", label: "Ensemble des complexes" },
     ],
   },
   {
@@ -208,6 +219,7 @@ const SYMBOL_GROUPS: { title: string; items: QuickSymbol[] }[] = [
       { glyph: "Pₙₖ", latex: "P(#0,#0)", label: "Permutation" },
       { glyph: "pgcd", latex: "gcd(#0,#0)", label: "PGCD (plus grand commun diviseur)" },
       { glyph: "ppcm", latex: "lcm(#0,#0)", label: "PPCM (plus petit commun multiple)" },
+      { glyph: "mod", latex: "\\bmod", label: "Modulo (reste de la division euclidienne)" },
       { glyph: "i", latex: "i", label: "Unité imaginaire" },
       { glyph: "z̄", latex: "\\overline{#0}", label: "Conjugué" },
       { glyph: "Re", latex: "\\Re(#0)", label: "Partie réelle" },
@@ -401,6 +413,20 @@ export default function MathInput({ id, value, onChange, placeholder }: MathInpu
                         className="rounded-md border border-rule-strong px-3 py-1.5 text-sm font-semibold text-ink-soft transition duration-150 hover:bg-rule active:scale-95 focus:outline-none focus:ring-2 focus:ring-mark"
                       >
                         Insérer l&rsquo;inverse
+                      </button>
+                      <button
+                        type="button"
+                        title="Insère la matrice suivie de ^{T} -- calcule sa transposée"
+                        onClick={() => {
+                          ref.current?.focus();
+                          ref.current?.insert(`${buildMatrixLatex(matrixSize, matrixSize)}^{T}`, {
+                            insertionMode: "insertAfter",
+                          });
+                          setMatrixPickerOpen(false);
+                        }}
+                        className="rounded-md border border-rule-strong px-3 py-1.5 text-sm font-semibold text-ink-soft transition duration-150 hover:bg-rule active:scale-95 focus:outline-none focus:ring-2 focus:ring-mark"
+                      >
+                        Insérer la transposée
                       </button>
                       <button
                         type="button"
