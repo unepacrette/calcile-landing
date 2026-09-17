@@ -336,7 +336,17 @@ export default function MathInput({ id, value, onChange, placeholder }: MathInpu
                 textTransform: "uppercase",
                 letterSpacing: "0.05em",
                 color: "var(--color-ink-faint)",
+                // Fixed width so every group's toolbar starts at the same x
+                // (intentional, see git history) -- text is right-aligned
+                // within that box rather than left-aligned so a label
+                // shorter than 12.5rem doesn't leave a dead gap between
+                // its own text and the flex `gap` before the toolbar; the
+                // leftover space now sits before the label instead, which
+                // reads as an ordinary right-aligned label column instead
+                // of a stray hole ("des espaces qui ne devraient pas être
+                // là" -- confirmed in a rendered check before this fix).
                 minWidth: "12.5rem",
+                textAlign: "right",
                 whiteSpace: "nowrap",
               }}
             >
