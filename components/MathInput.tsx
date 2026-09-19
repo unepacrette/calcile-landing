@@ -29,6 +29,12 @@ type MathInputProps = {
   value: string;
   onChange: (latex: string) => void;
   placeholder?: string;
+  // Rendered directly beside the field itself (e.g. the submit button) --
+  // "le bouton calculer devrait etre a cote de la barre de calcul" -- kept
+  // as a slot rather than hardcoding a button here, since submitting is
+  // the parent form's concern (handleSubmit lives in solve.tsx), not
+  // something this input component should know about.
+  trailingAction?: React.ReactNode;
 };
 
 type QuickSymbol = { glyph: string; latex: string; label: string };
@@ -249,13 +255,30 @@ const SYMBOL_GROUPS: { title: string; items: QuickSymbol[] }[] = [
   },
 ];
 
-export default function MathInput({ id, value, onChange, placeholder }: MathInputProps) {
+export default function MathInput({ id, value, onChange, placeholder, trailingAction }: MathInputProps) {
   const ref = useRef<MathfieldElement>(null);
   const [focused, setFocused] = useState(false);
   const [matrixPickerOpen, setMatrixPickerOpen] = useState(false);
   const [matrixSize, setMatrixSize] = useState<(typeof MATRIX_SIZES)[number]>(2);
   const [vectorPickerOpen, setVectorPickerOpen] = useState(false);
   const [vectorSize, setVectorSize] = useState<(typeof VECTOR_SIZES)[number]>(2);
+  // Collapsed by default -- 12 groups shown open at once (the previous
+  // behavior) is exactly the "gagner de la place" complaint; opening one
+  // to find a symbol costs one click, closed-by-default is the right
+  // trade for a reference panel this dense. Each group toggles
+  // independently, same interaction as FormulaSheet's own categories.
+  const [openGroups, setOpenGroups] = useState<Set<string>>(new Set());
+  function toggleGroup(title: string) {
+    setOpenGroups((current) => {
+      const next = new Set(current);
+      if (next.has(title)) {
+        next.delete(title);
+      } else {
+        next.add(title);
+      }
+      return next;
+    });
+  }
 
   // One-time setup. mathVirtualKeyboardPolicy "manual" means MathLive's
   // own full virtual keyboard panel never shows itself automatically --
@@ -291,41 +314,59 @@ export default function MathInput({ id, value, onChange, placeholder }: MathInpu
 
   return (
     <div>
-      <math-field
-        ref={ref}
-        id={id}
-        onInput={(event) => {
-          const target = event.target as MathfieldElement;
-          onChange(target.getValue("latex"));
-        }}
-        onFocus={() => setFocused(true)}
-        onBlur={() => setFocused(false)}
-        style={{
-          display: "block",
-          width: "100%",
-          borderRadius: "0.75rem",
-          border: focused ? "2px solid var(--color-mark)" : "2px solid var(--color-rule-strong)",
-          background: "var(--color-paper-raised)",
-          // A single central bar (WolframAlpha-style) reads as *the*
-          // control on the page only if it's unmistakably legible --
-          // explicit high-contrast ink color (not left to inheritance)
-          // plus generous size, instead of the small, easy-to-miss field
-          // this replaced ("on ne voit pas bien ce qui est écrit").
-          color: "var(--color-ink)",
-          padding: "1.1rem 1.35rem",
-          fontSize: "1.5rem",
-          minHeight: "3.5rem",
-          boxShadow: focused
-            ? "0 2px 12px 0 rgb(0 0 0 / 0.10)"
-            : "0 1px 2px 0 rgb(0 0 0 / 0.05)",
-          transition: "border-color 120ms ease, box-shadow 120ms ease",
-          // MathLive's own documented theming hooks -- matches the app's
-          // ink/mark tokens instead of MathLive's default blue caret.
-          ["--caret-color" as string]: "var(--color-mark)",
-          ["--primary" as string]: "var(--color-mark)",
-          ["--placeholder-color" as string]: "var(--color-ink-faint)",
-        }}
-      />
+      <div className="flex flex-col items-stretch gap-2.5 sm:flex-row">
+        <math-field
+          ref={ref}
+          id={id}
+          onInput={(event) => {
+            const target = event.target as MathfieldElement;
+            onChange(target.getValue("latex"));
+          }}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          onKeyDown={(event) => {
+            // Enter runs the calculation instead of only inserting a
+            // newline/doing nothing -- "lorsque j'appuie sur la touche
+            // entree, ca lance la reflexion... plutot que de descendre
+            // en bas de page sur le bouton calculer". Shift+Enter is
+            // left alone (MathLive's own multi-line affordance, not
+            // relevant for a single equation but not worth stealing
+            // from it); requestSubmit() reuses the real form submit
+            // handler (handleSubmit in solve.tsx) instead of duplicating
+            // its logic here.
+            if (event.key === "Enter" && !event.shiftKey) {
+              event.preventDefault();
+              (event.target as MathfieldElement).closest("form")?.requestSubmit();
+            }
+          }}
+          style={{
+            display: "block",
+            width: "100%",
+            borderRadius: "0.75rem",
+            border: focused ? "2px solid var(--color-mark)" : "2px solid var(--color-rule-strong)",
+            background: "var(--color-paper-raised)",
+            // A single central bar (WolframAlpha-style) reads as *the*
+            // control on the page only if it's unmistakably legible --
+            // explicit high-contrast ink color (not left to inheritance)
+            // plus generous size, instead of the small, easy-to-miss field
+            // this replaced ("on ne voit pas bien ce qui est écrit").
+            color: "var(--color-ink)",
+            padding: "1.1rem 1.35rem",
+            fontSize: "1.5rem",
+            minHeight: "3.5rem",
+            boxShadow: focused
+              ? "0 2px 12px 0 rgb(0 0 0 / 0.10)"
+              : "0 1px 2px 0 rgb(0 0 0 / 0.05)",
+            transition: "border-color 120ms ease, box-shadow 120ms ease",
+            // MathLive's own documented theming hooks -- matches the app's
+            // ink/mark tokens instead of MathLive's default blue caret.
+            ["--caret-color" as string]: "var(--color-mark)",
+            ["--primary" as string]: "var(--color-mark)",
+            ["--placeholder-color" as string]: "var(--color-ink-faint)",
+          }}
+        />
+        {trailingAction}
+      </div>
       {/* Label ABOVE its row, not beside it -- the previous side-by-side
           layout (a fixed-width label column next to a wrapping button row)
           could never look aligned: a long label ("PUISSANCES & RACINES")
@@ -344,12 +385,28 @@ export default function MathInput({ id, value, onChange, placeholder }: MathInpu
           of a loose stack of rows floating on the page background. */}
       <div className="mt-5 rounded-xl border border-rule bg-paper-raised/70 p-4">
         <div className="flex flex-col divide-y divide-rule">
-          {SYMBOL_GROUPS.map((group) => (
-            <div key={group.title} className="py-3 first:pt-0 last:pb-0">
-              <p className="mb-2 font-mono text-[0.7rem] font-bold uppercase tracking-widest text-ink-faint">
-                {group.title}
-              </p>
-              <div role="toolbar" aria-label={group.title} className="flex flex-wrap items-center gap-1.5">
+          {SYMBOL_GROUPS.map((group) => {
+            const isOpen = openGroups.has(group.title);
+            return (
+            <div key={group.title} className="py-1.5 first:pt-0 last:pb-0">
+              <button
+                type="button"
+                onClick={() => toggleGroup(group.title)}
+                aria-expanded={isOpen}
+                className="flex w-full items-center justify-between gap-2 rounded-lg px-1 py-1.5 text-left transition-colors duration-150 hover:bg-paper active:scale-[0.99]"
+              >
+                <span className="font-mono text-[0.7rem] font-bold uppercase tracking-widest text-ink-faint">
+                  {group.title}
+                </span>
+                <span
+                  aria-hidden="true"
+                  className={`text-ink-faint transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                >
+                  ▾
+                </span>
+              </button>
+              {isOpen && (
+              <div role="toolbar" aria-label={group.title} className="mt-1.5 flex flex-wrap items-center gap-1.5">
               {group.title === "Matrices" && (
                 <div style={{ position: "relative" }}>
                   <button
@@ -577,8 +634,10 @@ export default function MathInput({ id, value, onChange, placeholder }: MathInpu
                 </button>
               ))}
               </div>
+              )}
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
