@@ -39,12 +39,21 @@ type MathInputProps = {
 
 type QuickSymbol = { glyph: string; latex: string; label: string };
 
-// The only sizes calcile-api's matrix endpoints actually accept
-// (solver.sympy_engine._parse_matrix: "Only 2x2 or 3x3 matrices are
-// supported") -- every other size raises a clean ParseError, so this
-// picker only ever offers what a submit can really do with, square only
-// (rows and cols always equal, never picked independently).
-const MATRIX_SIZES = [2, 3] as const;
+// The sizes calcile-api's determinant/inverse/transpose endpoints
+// actually accept (solver.sympy_engine._parse_matrix, extended from the
+// original 2x2/3x3-only limit) -- square only (rows and cols always
+// equal, never picked independently), since that's still all any
+// endpoint here takes.
+const MATRIX_SIZES = [2, 3, 4, 5, 6] as const;
+// Eigenvalues specifically stays capped lower -- calcile-api verified
+// directly that a general 5x5+ characteristic polynomial generically
+// has no closed-form root (Abel-Ruffini) and sized-checked that this
+// stops being honestly computable in reasonable time before 5x5, not
+// because of an arbitrary UI choice. The "Valeurs propres" button is
+// disabled above this size instead of just failing on submit -- same
+// "only offer what really works" principle that set MATRIX_SIZES
+// itself in the first place.
+const EIGENVALUE_MAX_SIZE = 4;
 
 // Dot product and norm work for any dimension, but cross product is only
 // defined in 3D (calcile-api's compute_vector_operation rejects anything
@@ -518,7 +527,12 @@ export default function MathInput({ id, value, onChange, placeholder, trailingAc
                       </button>
                       <button
                         type="button"
-                        title="Insère l'équation caractéristique det(A - λI) = 0 -- calcule les valeurs propres"
+                        disabled={matrixSize > EIGENVALUE_MAX_SIZE}
+                        title={
+                          matrixSize > EIGENVALUE_MAX_SIZE
+                            ? `Valeurs propres exactes non disponibles au-delà de ${EIGENVALUE_MAX_SIZE}x${EIGENVALUE_MAX_SIZE} (pas de formule générale par radicaux au-delà)`
+                            : "Insère l'équation caractéristique det(A - λI) = 0 -- calcule les valeurs propres"
+                        }
                         onClick={() => {
                           ref.current?.focus();
                           ref.current?.insert(
@@ -527,7 +541,7 @@ export default function MathInput({ id, value, onChange, placeholder, trailingAc
                           );
                           setMatrixPickerOpen(false);
                         }}
-                        className="rounded-md border border-rule-strong px-3 py-1.5 text-sm font-semibold text-ink-soft transition duration-150 hover:bg-rule active:scale-95 focus:outline-none focus:ring-2 focus:ring-mark"
+                        className="rounded-md border border-rule-strong px-3 py-1.5 text-sm font-semibold text-ink-soft transition duration-150 hover:bg-rule active:scale-95 focus:outline-none focus:ring-2 focus:ring-mark disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent disabled:active:scale-100"
                       >
                         Valeurs propres
                       </button>
