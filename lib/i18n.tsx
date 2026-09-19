@@ -76,7 +76,7 @@ export const translations = {
           annualNote: "ou 39€/an (3,25€/mois) en facturation annuelle",
           description: "Pour vérifier tes réponses et progresser.",
           features: [
-            "14 types de calculs : équations, dérivées, intégrales, matrices, systèmes, et plus",
+            "Équations, dérivées, intégrales, matrices, systèmes, et bien plus",
             "Étapes détaillées, avec l'étape clé mise en évidence",
             "Historique de tes calculs",
           ],
@@ -557,7 +557,7 @@ export const translations = {
           annualNote: "or €39/year (€3.25/month) billed annually",
           description: "Check your answers and keep improving.",
           features: [
-            "14 calculation types: equations, derivatives, integrals, matrices, systems, and more",
+            "Equations, derivatives, integrals, matrices, systems, and much more",
             "Detailed steps, with the key step highlighted",
             "History of your calculations",
           ],
