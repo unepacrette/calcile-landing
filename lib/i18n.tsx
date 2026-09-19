@@ -64,6 +64,8 @@ export const translations = {
     pricing: {
       heading: "Tarifs",
       cta: "Rejoindre la liste d'attente",
+      freePromise:
+        "Bêta gratuite sur invitation, sans carte bancaire — les formules ci-dessous sont optionnelles, à activer quand tu veux.",
       faqQuestion: "Faut-il payer pour rejoindre la liste d'attente ?",
       faqAnswer:
         "Non. L'inscription est gratuite et ne demande qu'un email — tu ne payes qu'au lancement, si tu choisis de t'abonner.",
@@ -74,8 +76,8 @@ export const translations = {
           annualNote: "ou 39€/an (3,25€/mois) en facturation annuelle",
           description: "Pour vérifier tes réponses et progresser.",
           features: [
-            "Résolution d'équations, dérivées, intégrales",
-            "Étapes détaillées à chaque calcul",
+            "14 types de calculs : équations, dérivées, intégrales, matrices, systèmes, et plus",
+            "Étapes détaillées, avec l'étape clé mise en évidence",
             "Historique de tes calculs",
           ],
         },
@@ -86,7 +88,7 @@ export const translations = {
           description: "Pour automatiser la correction d'exercices.",
           features: [
             "Tout ce qui est inclus dans Student",
-            "Pensé pour un usage intensif en classe",
+            "Corrige un exercice en quelques secondes — économise 3 à 4h par semaine",
             "Support prioritaire",
           ],
         },
@@ -95,7 +97,7 @@ export const translations = {
           price: "Sur devis",
           description: "Pour les labs et universités.",
           features: [
-            "API robuste, haute disponibilité",
+            "API robuste et haute disponibilité, avec accès aux mêmes 14 types de calculs que Calcile",
             "Intégration à vos outils internes",
             "Accompagnement dédié",
           ],
@@ -543,6 +545,8 @@ export const translations = {
     pricing: {
       heading: "Pricing",
       cta: "Join the waitlist",
+      freePromise:
+        "Free beta by invitation, no card required — the plans below are optional, activate one whenever you're ready.",
       faqQuestion: "Do I have to pay to join the waitlist?",
       faqAnswer:
         "No. Signing up is free and only takes an email — you only pay at launch, if you choose to subscribe.",
@@ -553,8 +557,8 @@ export const translations = {
           annualNote: "or €39/year (€3.25/month) billed annually",
           description: "Check your answers and keep improving.",
           features: [
-            "Solve equations, derivatives, integrals",
-            "Detailed steps for every calculation",
+            "14 calculation types: equations, derivatives, integrals, matrices, systems, and more",
+            "Detailed steps, with the key step highlighted",
             "History of your calculations",
           ],
         },
@@ -565,7 +569,7 @@ export const translations = {
           description: "Automate exercise grading.",
           features: [
             "Everything in Student",
-            "Built for heavy classroom use",
+            "Grade an exercise in seconds — save 3 to 4 hours a week",
             "Priority support",
           ],
         },
@@ -574,7 +578,7 @@ export const translations = {
           price: "Custom pricing",
           description: "For labs and universities.",
           features: [
-            "Robust, high-availability API",
+            "Robust, high-availability API, with access to the same 14 calculation types as Calcile",
             "Integration with your internal tools",
             "Dedicated support",
           ],

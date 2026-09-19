@@ -13,7 +13,10 @@ export default function Pricing({ onSelectTier }: PricingProps) {
         <h2 className="text-center font-display text-3xl font-semibold text-ink">
           {t.pricing.heading}
         </h2>
-        <div className="mt-12 grid gap-4 sm:grid-cols-3">
+        <p className="mx-auto mt-3 max-w-xl text-center text-sm text-ink-soft">
+          {t.pricing.freePromise}
+        </p>
+        <div className="mt-10 grid gap-4 sm:grid-cols-3">
           {t.pricing.tiers.map((tier, index) => (
             <div
               key={tier.name}
