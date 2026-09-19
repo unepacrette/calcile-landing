@@ -105,25 +105,31 @@ export default function Hero() {
           </div>
         </div>
 
-        <div className="relative rounded-xl border border-rule bg-paper-raised px-6 py-5 shadow-[0_1px_0_var(--color-rule)]">
-          <span className="absolute -top-[11px] left-6 rounded-full bg-mark px-2.5 py-0.5 font-mono text-[10.5px] uppercase tracking-[0.08em] text-paper-raised">
+        <div className="relative rounded-2xl border border-rule bg-paper-raised px-6 py-6 shadow-[0_8px_24px_-8px_rgb(28_39_64_/_0.12),0_2px_6px_-2px_rgb(28_39_64_/_0.06)]">
+          <span className="absolute -top-[11px] left-6 rounded-full bg-mark px-2.5 py-1 font-mono text-[10.5px] font-semibold uppercase tracking-[0.08em] text-paper-raised">
             {t.hero.demoTag}
           </span>
-          <p className="pl-5 font-mono text-[13px] text-ink-faint">
+          <p className="font-mono text-[12.5px] tracking-wide text-ink-faint">
             {t.hero.demoInputLabel}&nbsp;x²sin(x)
           </p>
-          {DEMO_STEPS.map((step, index) => (
-            <div key={index}>
-              {index > 0 && <div className="my-1.5 ml-5 h-px bg-rule" />}
-              <div className="flex gap-3 py-2 pl-5">
+          <div className="mt-3.5 flex flex-col gap-3.5">
+            {DEMO_STEPS.map((step, index) => (
+              <div
+                key={index}
+                className={
+                  step.isKey
+                    ? "-mx-3 flex items-start gap-3 rounded-xl bg-mark-soft px-3 py-2.5"
+                    : "flex items-start gap-3"
+                }
+              >
                 <span
-                  className={`w-3.5 flex-none pt-0.5 font-mono text-xs ${
-                    step.isKey ? "font-semibold text-mark" : "text-ink-faint"
+                  className={`flex h-[22px] w-[22px] flex-none items-center justify-center rounded-full font-mono text-[11px] font-semibold ${
+                    step.isKey ? "bg-mark text-paper-raised" : "bg-rule text-ink-soft"
                   }`}
                 >
                   {index + 1}
                 </span>
-                <div className="flex-1">
+                <div className="flex-1 pt-px">
                   <p
                     className={`text-[12.5px] ${
                       step.isKey ? "font-semibold text-mark-strong" : "text-ink-soft"
@@ -132,18 +138,37 @@ export default function Hero() {
                     {step.isKey ? `${t.hero.demoKeyStepPrefix} — ` : ""}
                     {step.description}
                   </p>
-                  <div className="mt-1 overflow-x-auto text-base text-ink">
+                  <div className="mt-1 overflow-x-auto text-[17px] text-ink">
                     <MathRender latex={step.latex} displayMode={false} />
                   </div>
                 </div>
               </div>
+            ))}
+          </div>
+          <div className="mt-4 flex items-center gap-2.5 rounded-xl border border-check-soft bg-check-soft px-4 py-3.5">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 20 20"
+              fill="none"
+              aria-hidden="true"
+              className="flex-none"
+            >
+              <circle cx="10" cy="10" r="9" className="fill-check" />
+              <path
+                d="M6 10.5l2.5 2.5L14 7.5"
+                stroke="white"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <div className="overflow-x-auto text-lg text-ink">
+              <MathRender
+                latex="x^{2} \cos{\left(x \right)} + 2 x \sin{\left(x \right)}"
+                displayMode={false}
+              />
             </div>
-          ))}
-          <div className="ml-5 mt-2 overflow-x-auto rounded-lg border border-rule bg-check-soft px-4 py-3.5 text-lg text-ink">
-            <MathRender
-              latex="x^{2} \cos{\left(x \right)} + 2 x \sin{\left(x \right)}"
-              displayMode={false}
-            />
           </div>
         </div>
       </div>
