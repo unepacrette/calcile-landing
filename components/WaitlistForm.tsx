@@ -91,7 +91,17 @@ export default function WaitlistForm({
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             placeholder={t.waitlist.emailPlaceholder}
-            className="w-full rounded-lg border-0 px-4 py-3 text-ink shadow-sm focus:outline-none focus:ring-2 focus:ring-mark sm:max-w-xs"
+            // "on ne voit pas la zone pour entrer son adresse mail" -- no
+            // explicit background was ever set here, so a visitor with
+            // OS/browser dark mode enabled got the browser's own native
+            // dark form-control styling (a dark input background) with
+            // this app's own text-ink (dark navy) text on top of it --
+            // dark-on-dark, invisible. bg-paper-raised is the same token
+            // pair used everywhere else text-ink appears against a light
+            // surface -- both flip together in dark mode, so contrast is
+            // guaranteed in either color scheme instead of left to
+            // whatever the browser's dark-mode heuristic decides.
+            className="w-full rounded-lg border-0 bg-paper-raised px-4 py-3 text-ink shadow-sm focus:outline-none focus:ring-2 focus:ring-mark sm:max-w-xs"
           />
           <button
             type="submit"

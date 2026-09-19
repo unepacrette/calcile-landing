@@ -57,7 +57,7 @@ export const translations = {
       heading: "Comment ça marche",
       steps: [
         "Tape ton équation ou ton expression",
-        "Calcile la résout avec SymPy — équations, dérivées, intégrales, et plus",
+        "Calcile la résout — équations, dérivées, intégrales, et plus",
         "Tu obtiens la réponse ET chaque étape. Jamais l'une sans l'autre.",
       ],
     },
@@ -538,7 +538,7 @@ export const translations = {
       heading: "How it works",
       steps: [
         "Type your equation or expression",
-        "Calcile solves it with SymPy — equations, derivatives, integrals, and more",
+        "Calcile solves it — equations, derivatives, integrals, and more",
         "You get the answer AND every step. Never one without the other.",
       ],
     },
