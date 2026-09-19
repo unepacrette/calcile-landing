@@ -4,29 +4,31 @@ import { useLanguage } from "@/lib/i18n";
 
 const CALENDLY_URL = "https://calendly.com/amaury-calcile"; // TODO: remplacer par l'URL Calendly réelle
 
-// Real output of engine.solve_equation("x^2 - 4 = 0") (calcile-api,
+// Real output of engine.compute_derivative("x^2\sin(x)", 1) (calcile-api,
 // solver/sympy_engine.py) -- copied verbatim, not retyped by hand, so
 // the demo never drifts from what the real engine actually produces.
-// is_key matches the real value for each step; there is no
-// highlighted_latex on this particular example (the diff between step 1
-// and step 2's LaTeX is a full rewrite, past the "too much changed"
-// threshold -- shown as-is rather than forcing a highlight that
-// wouldn't be real).
+// Swapped from the original solve-a-quadratic example ("change
+// l'exemple... un exemple actuel et surtout beaucoup plus vendeur") --
+// a product-rule derivative is a far more relatable "I don't understand
+// the steps" moment for the actual audience (calc students/teachers)
+// than a quadratic most can already factor by eye, and its one is_key
+// step (applying the product rule) is a genuine, distinct "aha" moment
+// the two-tone step badge is built to highlight.
 const DEMO_STEPS = [
   {
-    description: "On regroupe tous les termes du même côté de l'égalité.",
-    latex: "x^{2} - 4 = 0",
+    description: "Expression de départ.",
+    latex: "x^{2} \\sin{\\left(x \\right)}",
     isKey: false,
   },
   {
-    description:
-      "On factorise l'expression : un produit de facteurs est nul si l'un des facteurs est nul.",
-    latex: "\\left(x - 2\\right) \\left(x + 2\\right) = 0",
+    description: "On applique la règle du produit : (u·v)' = u'·v + u·v'.",
+    latex:
+      "\\frac{d}{d x} x^{2} \\sin{\\left(x \\right)} = x^{2} \\cos{\\left(x \\right)} + 2 x \\sin{\\left(x \\right)}",
     isKey: true,
   },
   {
-    description: "On obtient l'ensemble des solutions.",
-    latex: "\\left\\{-2, 2\\right\\}",
+    description: "Résultat de la dérivée.",
+    latex: "x^{2} \\cos{\\left(x \\right)} + 2 x \\sin{\\left(x \\right)}",
     isKey: false,
   },
 ];
@@ -122,7 +124,7 @@ export default function Hero() {
             className="absolute bottom-0 left-16 top-0 w-px bg-mark-soft"
           />
           <p className="pl-5 font-mono text-[13px] text-ink-faint">
-            {t.hero.demoInputLabel}&nbsp;x² − 4 = 0
+            {t.hero.demoInputLabel}&nbsp;x²sin(x)
           </p>
           {DEMO_STEPS.map((step, index) => (
             <div key={index}>
@@ -151,8 +153,11 @@ export default function Hero() {
               </div>
             </div>
           ))}
-          <div className="ml-5 mt-2 rounded-lg border border-rule bg-check-soft px-4 py-3.5 font-mono text-lg text-ink">
-            x ∈ {"{"} −2, 2 {"}"}
+          <div className="ml-5 mt-2 overflow-x-auto rounded-lg border border-rule bg-check-soft px-4 py-3.5 text-lg text-ink">
+            <MathRender
+              latex="x^{2} \cos{\left(x \right)} + 2 x \sin{\left(x \right)}"
+              displayMode={false}
+            />
           </div>
         </div>
       </div>
