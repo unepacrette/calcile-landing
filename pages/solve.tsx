@@ -1636,6 +1636,27 @@ export default function Solve() {
                 explicit affordance, not the only way to submit. */}
           </form>
 
+          {/* Right under the bar/form itself -- "la section essayer un
+              exemple... on pourrait la mettre juste en dessous de
+              formulaire" (the calculation form, not the formula
+              reference sheet it was sitting under before, in the
+              easy-to-miss sidebar column). A horizontal row of chips
+              fits the bar's own full width better than the vertical
+              list that made sense in the narrower sidebar. */}
+          <div className="mt-3 flex flex-wrap items-center gap-x-1 gap-y-1.5 text-sm">
+            <span className="mr-1 text-ink-faint">{t.solve.examplesHeading} :</span>
+            {QUICK_EXAMPLES.map((example) => (
+              <button
+                key={example.id}
+                type="button"
+                onClick={() => setEquation(example.latex)}
+                className="rounded-full border border-rule px-3 py-1 text-ink-soft transition duration-150 hover:border-rule-strong hover:bg-paper active:scale-95"
+              >
+                {t.solve.examples[example.id as keyof typeof t.solve.examples]}
+              </button>
+            ))}
+          </div>
+
           {status === "error" && (
             <p className="mt-4 text-sm font-medium text-mark-strong">
               {errorDetail ?? t.solve.error}
@@ -1721,13 +1742,20 @@ export default function Solve() {
                             : "rounded-r-lg border-l-[3px] border-rule-strong bg-paper/60 py-2 pl-4 pr-3"
                         }
                       >
-                        <p className="flex items-center gap-2 text-[13px] font-medium text-ink-soft">
-                          {step.description}
+                        {/* A leading inline-block badge (not a flex row) --
+                            a flex row with no wrap could push the badge
+                            past the container's edge or squeeze a long
+                            description against it instead of wrapping
+                            normally (confirmed as a real rendering
+                            complaint, not just theoretical). Plain inline
+                            flow wraps like any other text, badge included. */}
+                        <p className="text-[13px] font-medium text-ink-soft">
                           {step.is_key && (
-                            <span className="rounded-full bg-mark px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-paper-raised">
+                            <span className="mr-2 inline-block rounded-full bg-mark px-1.5 py-0.5 align-middle text-[10px] font-bold uppercase tracking-wide text-paper-raised">
                               {t.solve.keyStepLabel}
                             </span>
                           )}
+                          {step.description}
                         </p>
                         <div className="mt-1.5 overflow-x-auto text-[15px] text-ink">
                           <MathRender latex={step.highlighted_latex ?? step.latex} />
@@ -1816,13 +1844,13 @@ export default function Solve() {
                                         : "rounded-r-lg border-l-[3px] border-rule-strong bg-paper/60 py-2 pl-4 pr-3"
                                     }
                                   >
-                                    <p className="flex items-center gap-2 text-[13px] font-medium text-ink-soft">
-                                      {step.description}
+                                    <p className="text-[13px] font-medium text-ink-soft">
                                       {step.is_key && (
-                                        <span className="rounded-full bg-mark px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-paper-raised">
+                                        <span className="mr-2 inline-block rounded-full bg-mark px-1.5 py-0.5 align-middle text-[10px] font-bold uppercase tracking-wide text-paper-raised">
                                           {t.solve.keyStepLabel}
                                         </span>
                                       )}
+                                      {step.description}
                                     </p>
                                     <div className="mt-1.5 overflow-x-auto text-[15px] text-ink">
                                       <MathRender latex={step.highlighted_latex ?? step.latex} />
@@ -1850,24 +1878,6 @@ export default function Solve() {
         </div>
 
         <FormulaSheet />
-
-        <div className="mt-4 rounded-xl border border-rule bg-paper-raised p-4">
-          <p className="font-mono text-[0.7rem] font-bold uppercase tracking-widest text-ink-faint">
-            {t.solve.examplesHeading}
-          </p>
-          <div className="mt-2.5 flex flex-col gap-1.5">
-            {QUICK_EXAMPLES.map((example) => (
-              <button
-                key={example.id}
-                type="button"
-                onClick={() => setEquation(example.latex)}
-                className="rounded-lg px-2 py-1.5 text-left text-sm text-ink-soft transition duration-150 hover:bg-paper active:scale-[0.99]"
-              >
-                {t.solve.examples[example.id as keyof typeof t.solve.examples]}
-              </button>
-            ))}
-          </div>
-        </div>
         </div>
       </main>
     </>
