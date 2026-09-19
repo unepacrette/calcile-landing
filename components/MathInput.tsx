@@ -326,33 +326,30 @@ export default function MathInput({ id, value, onChange, placeholder }: MathInpu
           ["--placeholder-color" as string]: "var(--color-ink-faint)",
         }}
       />
-      <div style={{ marginTop: "1rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-        {SYMBOL_GROUPS.map((group) => (
-          <div key={group.title} style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.625rem" }}>
-            <span
-              style={{
-                fontSize: "0.8rem",
-                fontWeight: 600,
-                textTransform: "uppercase",
-                letterSpacing: "0.05em",
-                color: "var(--color-ink-faint)",
-                // Fixed width so every group's toolbar starts at the same x
-                // (intentional, see git history) -- text is right-aligned
-                // within that box rather than left-aligned so a label
-                // shorter than 12.5rem doesn't leave a dead gap between
-                // its own text and the flex `gap` before the toolbar; the
-                // leftover space now sits before the label instead, which
-                // reads as an ordinary right-aligned label column instead
-                // of a stray hole ("des espaces qui ne devraient pas être
-                // là" -- confirmed in a rendered check before this fix).
-                minWidth: "12.5rem",
-                textAlign: "right",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {group.title}
-            </span>
-            <div role="toolbar" aria-label={group.title} style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "0.375rem" }}>
+      {/* Label ABOVE its row, not beside it -- the previous side-by-side
+          layout (a fixed-width label column next to a wrapping button row)
+          could never look aligned: a long label ("PUISSANCES & RACINES")
+          and a short one ("GREC") reserved the same column width, so short
+          labels either left a dead gap (left-aligned) or shifted the
+          leftover space around (right-aligned, tried first) -- and a
+          group with enough buttons to wrap (FONCTIONS, ENSEMBLES) wrapped
+          its second row UNDER the label column too, breaking the very
+          alignment the fixed width was meant to guarantee. Stacking
+          removes the column entirely: every group's toolbar starts at the
+          container's own left edge and wraps freely, so there's nothing
+          left to misalign, confirmed directly (a real rendered gap/
+          alignment complaint, twice) rather than assumed fixed by a
+          narrower patch. A bordered card + hairline dividers between
+          groups (divide-y) read as one coherent reference panel instead
+          of a loose stack of rows floating on the page background. */}
+      <div className="mt-5 rounded-xl border border-rule bg-paper-raised/70 p-4">
+        <div className="flex flex-col divide-y divide-rule">
+          {SYMBOL_GROUPS.map((group) => (
+            <div key={group.title} className="py-3 first:pt-0 last:pb-0">
+              <p className="mb-2 font-mono text-[0.7rem] font-bold uppercase tracking-widest text-ink-faint">
+                {group.title}
+              </p>
+              <div role="toolbar" aria-label={group.title} className="flex flex-wrap items-center gap-1.5">
               {group.title === "Matrices" && (
                 <div style={{ position: "relative" }}>
                   <button
@@ -579,9 +576,10 @@ export default function MathInput({ id, value, onChange, placeholder }: MathInpu
                   {symbol.glyph}
                 </button>
               ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
