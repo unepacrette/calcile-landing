@@ -1595,7 +1595,7 @@ export default function Solve() {
                 <button
                   type="submit"
                   disabled={status === "loading"}
-                  className="w-full flex-none whitespace-nowrap rounded-xl bg-mark px-7 text-sm font-semibold text-paper-raised shadow-sm transition duration-150 hover:bg-mark-strong active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100 sm:w-auto"
+                  className="w-full flex-none whitespace-nowrap rounded-xl bg-mark px-6 text-sm font-semibold text-paper-raised shadow-sm transition duration-150 hover:bg-mark-strong active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100 sm:w-auto"
                 >
                   {status === "loading" ? t.solve.submitLoading : t.solve.submit}
                 </button>

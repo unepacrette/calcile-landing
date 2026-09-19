@@ -347,13 +347,19 @@ export default function MathInput({ id, value, onChange, placeholder, trailingAc
             background: "var(--color-paper-raised)",
             // A single central bar (WolframAlpha-style) reads as *the*
             // control on the page only if it's unmistakably legible --
-            // explicit high-contrast ink color (not left to inheritance)
-            // plus generous size, instead of the small, easy-to-miss field
-            // this replaced ("on ne voit pas bien ce qui est écrit").
+            // explicit high-contrast ink color (not left to inheritance),
+            // instead of the small, easy-to-miss field this replaced ("on
+            // ne voit pas bien ce qui est écrit"). Size dialed back from
+            // an earlier, much larger pass ("le bouton calcule... et donc
+            // la barre de calcul est trop grosse") -- MathLive auto-sizes
+            // nested content (fractions, exponents) off this same
+            // font-size, so a smaller base keeps a genuinely complex
+            // formula from ballooning the bar's height, not just the
+            // simple-input case.
             color: "var(--color-ink)",
-            padding: "1.1rem 1.35rem",
-            fontSize: "1.5rem",
-            minHeight: "3.5rem",
+            padding: "0.7rem 1.05rem",
+            fontSize: "1.15rem",
+            minHeight: "2.75rem",
             boxShadow: focused
               ? "0 2px 12px 0 rgb(0 0 0 / 0.10)"
               : "0 1px 2px 0 rgb(0 0 0 / 0.05)",
