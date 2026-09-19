@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import dynamic from "next/dynamic";
@@ -1047,6 +1047,20 @@ export default function Solve() {
   const [errorDetail, setErrorDetail] = useState<string | null>(null);
   const [result, setResult] = useState<Result | null>(null);
   const [plotResult, setPlotResult] = useState<PlotApiResponse | null>(null);
+  // Scrolls the result card into view once a computation actually
+  // finishes -- "une fois la reflexion fini il amene directement la vue
+  // du site sur les etapes plutot que de rester fixe". A useEffect keyed
+  // on result/plotResult (not called inline from handleSubmit) so it
+  // only fires after React has actually committed the new result to the
+  // DOM -- scrolling to a ref immediately after setResult() would still
+  // target the *previous* render's layout, since state updates aren't
+  // synchronous.
+  const resultRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (result || plotResult) {
+      resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [result, plotResult]);
   // Indices of alternative methods currently expanded (collapsed by
   // default — showing every alternative's full steps at once would be
   // visually overwhelming).
@@ -1664,7 +1678,10 @@ export default function Solve() {
           )}
 
           {(result || plotResult) && (
-            <div className="mt-10 rounded-2xl border border-rule bg-paper-raised p-6 shadow-md sm:p-8">
+            <div
+              ref={resultRef}
+              className="mt-10 scroll-mt-6 rounded-2xl border border-rule bg-paper-raised p-6 shadow-md sm:p-8"
+            >
               {plotResult ? (
                 <>
                   {plotResult.input_latex && (
