@@ -946,6 +946,26 @@ function PlotChart({
   );
 }
 
+// A handful of real, verified-working inputs spanning the tool's actual
+// breadth -- fills the space below the (now collapsed-by-default)
+// formula sheet with something genuinely useful instead of empty page
+// background, and doubles as discoverability for features a new user
+// wouldn't otherwise think to type (a chained inequality, an abstract
+// set expression, a matrix transpose). Each one verified directly
+// against this file's own detectOperation/extract* functions before
+// being hardcoded here -- language-neutral (real math notation), only
+// the chip label goes through t.solve.examples.
+const QUICK_EXAMPLES: { id: string; latex: string }[] = [
+  { id: "equation", latex: "x^2-4=0" },
+  { id: "derivative", latex: "\\frac{d}{dx}(x^3+2x)" },
+  { id: "integral", latex: "\\int x^2 dx" },
+  { id: "limit", latex: "\\lim_{x\\to0}\\frac{\\sin(x)}{x}" },
+  { id: "inequality", latex: "1\\le x\\le5" },
+  { id: "sets", latex: "A\\cup(B\\cap C)" },
+  { id: "matrix", latex: "\\begin{pmatrix}1&2\\\\3&4\\end{pmatrix}^{T}" },
+  { id: "series", latex: "taylor(\\sin(x),0,5)" },
+];
+
 export default function Solve() {
   const { t } = useLanguage();
   const router = useRouter();
@@ -1830,6 +1850,24 @@ export default function Solve() {
         </div>
 
         <FormulaSheet />
+
+        <div className="mt-4 rounded-xl border border-rule bg-paper-raised p-4">
+          <p className="font-mono text-[0.7rem] font-bold uppercase tracking-widest text-ink-faint">
+            {t.solve.examplesHeading}
+          </p>
+          <div className="mt-2.5 flex flex-col gap-1.5">
+            {QUICK_EXAMPLES.map((example) => (
+              <button
+                key={example.id}
+                type="button"
+                onClick={() => setEquation(example.latex)}
+                className="rounded-lg px-2 py-1.5 text-left text-sm text-ink-soft transition duration-150 hover:bg-paper active:scale-[0.99]"
+              >
+                {t.solve.examples[example.id as keyof typeof t.solve.examples]}
+              </button>
+            ))}
+          </div>
+        </div>
         </div>
       </main>
     </>

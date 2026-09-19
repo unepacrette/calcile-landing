@@ -199,8 +199,16 @@ const SYMBOL_GROUPS: { title: string; items: QuickSymbol[] }[] = [
     // computed set literals here too -- e.g. \mathbb{Z}\cap[0,10].
     title: "Ensembles",
     items: [
-      { glyph: "∪", latex: "\\{#0\\}\\cup\\{#0\\}", label: "Union" },
-      { glyph: "∩", latex: "\\{#0\\}\\cap\\{#0\\}", label: "Intersection" },
+      // The concrete, braced "\cup"/"\cap" skeleton buttons (union,
+      // intersection) were removed -- a real user reported them as
+      // "doesn't work" repeatedly: filling their placeholders with
+      // letters (A, B, ...) rather than numbers computes a literal,
+      // unhelpful one-element-per-letter set instead of the abstract
+      // simplification the A∪B/A∩B buttons below actually give, and
+      // that's overwhelmingly what people reach for when they see ∪/∩.
+      // ∖/∆ (difference/symmetric difference) are kept here since they
+      // have no symbolic-mode equivalent in the palette yet to collide
+      // with in the same way.
       { glyph: "∖", latex: "\\{#0\\}\\setminus\\{#0\\}", label: "Différence" },
       { glyph: "∆", latex: "\\{#0\\}\\triangle\\{#0\\}", label: "Différence symétrique" },
       // The braces above always mean "literal set with explicit elements"
