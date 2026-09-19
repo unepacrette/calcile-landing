@@ -42,8 +42,8 @@ export const translations = {
           title: "Profs",
           description:
             "Automatise la correction d'exercices. Économise 3 à 4h par semaine.",
-          price: "50€/mois",
-          annualNote: "ou 450€/an en annuel",
+          price: "25€/mois",
+          annualNote: "ou 199€/an en annuel",
         },
         {
           title: "Labs/Universités",
@@ -83,8 +83,8 @@ export const translations = {
         },
         {
           name: "Prof",
-          price: "50€/mois",
-          annualNote: "ou 450€/an (37,50€/mois) en facturation annuelle",
+          price: "25€/mois",
+          annualNote: "ou 199€/an (16,58€/mois) en facturation annuelle",
           description: "Pour automatiser la correction d'exercices.",
           features: [
             "Tout ce qui est inclus dans Student",
@@ -170,8 +170,8 @@ export const translations = {
           studentMonthlyPrice: "4,90€/mois",
           studentYearlyPrice: "39€/an",
           profName: "Prof",
-          profMonthlyPrice: "50€/mois",
-          profYearlyPrice: "450€/an",
+          profMonthlyPrice: "25€/mois",
+          profYearlyPrice: "199€/an",
           labName: "Lab",
           labPrice: "Sur devis",
           labContact: "Nous contacter",
@@ -429,7 +429,7 @@ export const translations = {
         "Calcile est une API et une interface de calcul symbolique (résolution d'équations, dérivées, intégrales) avec des explications pas à pas, actuellement en bêta fermée sur invitation, avec des formules payantes optionnelles (Student, Prof, Lab).",
       pricingHeading: "Tarifs, abonnement et paiement",
       pricingBody:
-        "Calcile propose trois formules par abonnement : Student (4,90€/mois ou 39€/an), Prof (50€/mois ou 450€/an), et Lab (sur devis, contrat spécifique). Les tarifs affichés sont nets, toutes taxes comprises : Calcile bénéficie de la franchise en base de TVA (article 293 B du Code général des impôts), la TVA n'est donc pas applicable et n'apparaît pas sur les factures. Le paiement est traité par notre prestataire Stripe ; Calcile ne voit ni ne stocke jamais ton numéro de carte bancaire.",
+        "Calcile propose trois formules par abonnement : Student (4,90€/mois ou 39€/an), Prof (25€/mois ou 199€/an), et Lab (sur devis, contrat spécifique). Les tarifs affichés sont nets, toutes taxes comprises : Calcile bénéficie de la franchise en base de TVA (article 293 B du Code général des impôts), la TVA n'est donc pas applicable et n'apparaît pas sur les factures. Le paiement est traité par notre prestataire Stripe ; Calcile ne voit ni ne stocke jamais ton numéro de carte bancaire.",
       renewalHeading: "Durée, renouvellement automatique et résiliation",
       renewalBody:
         "Les abonnements Student et Prof sont à renouvellement automatique : sauf résiliation avant la fin de la période en cours, l'abonnement est reconduit pour une durée identique (mensuelle ou annuelle selon la formule choisie) et le montant correspondant est prélevé automatiquement. Tu peux résilier à tout moment depuis ton espace client (bouton « Gérer mon abonnement », qui ouvre le portail de facturation Stripe) : la résiliation prend effet à la fin de la période déjà payée, sans reconduction ultérieure, et l'accès à Calcile reste actif jusqu'à cette date. Sauf exercice du droit de rétractation décrit ci-dessous, les sommes déjà versées pour une période en cours ne sont pas remboursées au prorata.",
@@ -523,8 +523,8 @@ export const translations = {
           title: "Professors",
           description:
             "Automate exercise grading. Save 3 to 4 hours a week.",
-          price: "€50/month",
-          annualNote: "or €450/year billed annually",
+          price: "€25/month",
+          annualNote: "or €199/year billed annually",
         },
         {
           title: "Labs/Universities",
@@ -564,8 +564,8 @@ export const translations = {
         },
         {
           name: "Prof",
-          price: "€50/month",
-          annualNote: "or €450/year (€37.50/month) billed annually",
+          price: "€25/month",
+          annualNote: "or €199/year (€16.58/month) billed annually",
           description: "Automate exercise grading.",
           features: [
             "Everything in Student",
@@ -651,8 +651,8 @@ export const translations = {
           studentMonthlyPrice: "€4.90/month",
           studentYearlyPrice: "€39/year",
           profName: "Prof",
-          profMonthlyPrice: "€50/month",
-          profYearlyPrice: "€450/year",
+          profMonthlyPrice: "€25/month",
+          profYearlyPrice: "€199/year",
           labName: "Lab",
           labPrice: "Custom pricing",
           labContact: "Contact us",
@@ -906,7 +906,7 @@ export const translations = {
         "Calcile is a symbolic computation API and UI (solving equations, derivatives, integrals) with step-by-step explanations, currently in closed beta by invitation, with optional paid plans (Student, Prof, Lab).",
       pricingHeading: "Pricing, subscription, and payment",
       pricingBody:
-        "Calcile offers three subscription plans: Student (€4.90/month or €39/year), Prof (€50/month or €450/year), and Lab (custom pricing, dedicated contract). Displayed prices are net, all taxes included: Calcile is under the French VAT exemption scheme (\"franchise en base de TVA\", article 293 B of the General Tax Code), so VAT does not apply and does not appear on invoices. Payment is processed by our provider, Stripe; Calcile never sees or stores your card number.",
+        "Calcile offers three subscription plans: Student (€4.90/month or €39/year), Prof (€25/month or €199/year), and Lab (custom pricing, dedicated contract). Displayed prices are net, all taxes included: Calcile is under the French VAT exemption scheme (\"franchise en base de TVA\", article 293 B of the General Tax Code), so VAT does not apply and does not appear on invoices. Payment is processed by our provider, Stripe; Calcile never sees or stores your card number.",
       renewalHeading: "Duration, automatic renewal, and cancellation",
       renewalBody:
         "Student and Prof subscriptions renew automatically: unless canceled before the end of the current period, the subscription renews for the same duration (monthly or yearly, depending on the plan) and the corresponding amount is charged automatically. You can cancel at any time from your account (the \"Manage subscription\" button, which opens the Stripe billing portal): cancellation takes effect at the end of the period already paid for, with no further renewal, and access to Calcile stays active until that date. Except where the right of withdrawal described below applies, amounts already paid for a current period are not refunded pro rata.",
