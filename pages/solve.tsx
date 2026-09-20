@@ -33,7 +33,8 @@ type Operation =
   | "sets"
   | "sets-symbolic"
   | "vectors"
-  | "plot";
+  | "plot"
+  | "exercise-check";
 type Status = "idle" | "loading" | "error";
 type LimitDirection = "both" | "left" | "right";
 type MatrixOperation = "determinant" | "inverse" | "eigenvalues" | "transpose";
@@ -165,6 +166,26 @@ type PlotApiResponse = {
   points: PlotPointApi[];
   y_min: number;
   y_max: number;
+};
+
+// /api/exercise/check's shape (Prof/Lab tier only): a results table, not a
+// single result -- no method/steps/alternative_methods/glossary, its own
+// dedicated view instead of the shared Result type below, same reasoning
+// as PlotApiResponse just above.
+type AnswerCheckApi = {
+  raw_answer: string;
+  parsed_values: string[];
+  correct: boolean;
+  error: string | null;
+};
+
+type ExerciseCheckApiResponse = {
+  equation: string;
+  variable: string;
+  real_roots: string[];
+  input_latex: string;
+  result_latex: string;
+  results: AnswerCheckApi[];
 };
 
 type AlternativeMethod = {
@@ -989,6 +1010,38 @@ export default function Solve() {
     setToken(stored);
   }, [router]);
 
+  // Prof/Lab-tier gate for the exercise-check entry point below -- same
+  // GET /api/billing/status fetch pages/profile.tsx already uses, kept as
+  // its own small local copy rather than a shared hook for a single reuse
+  // (see this repo's "no abstraction beyond what's needed" convention;
+  // extract one if a third use case shows up later). solve.tsx never
+  // needed to know the user's tier before this feature.
+  const [profTier, setProfTier] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!token) return;
+    let cancelled = false;
+
+    async function loadTier() {
+      try {
+        const response = await fetch(`${API_URL}/api/billing/status`, {
+          headers: authHeaders(token as string),
+        });
+        if (!response.ok) return;
+        const body = (await response.json()) as { tier: string };
+        if (cancelled) return;
+        setProfTier(body.tier);
+      } catch (err) {
+        console.error("[solve] échec du chargement du tier :", err);
+      }
+    }
+
+    loadTier();
+    return () => {
+      cancelled = true;
+    };
+  }, [token]);
+
   const [operation, setOperation] = useState<Operation>("solve");
   const [equation, setEquation] = useState("");
   // The inner expression once an operator wrapper (\frac{d}{dx}, \int,
@@ -1047,6 +1100,20 @@ export default function Solve() {
   const [errorDetail, setErrorDetail] = useState<string | null>(null);
   const [result, setResult] = useState<Result | null>(null);
   const [plotResult, setPlotResult] = useState<PlotApiResponse | null>(null);
+  // --- Exercise check (Prof/Lab tier: batch answer-checking) ---
+  // Its own equation/answers state, deliberately separate from the shared
+  // `equation`/MathInput bar above: the main bar's auto-detect useEffect
+  // (detectOperation, keyed on `equation` changing) would otherwise
+  // immediately flip `operation` away from "exercise-check" the moment
+  // its value changed. Keeping this mode's input fully separate means the
+  // main bar is simply not rendered while in this mode, so its state
+  // never changes and never fights the auto-detect logic.
+  const [exerciseCheckEquation, setExerciseCheckEquation] = useState("");
+  const [exerciseCheckAnswers, setExerciseCheckAnswers] = useState("");
+  const [exerciseCheckResult, setExerciseCheckResult] =
+    useState<ExerciseCheckApiResponse | null>(null);
+  const [showExerciseCheckLocked, setShowExerciseCheckLocked] = useState(false);
+  const isProf = profTier === "prof" || profTier === "lab";
   // Scrolls the result card into view once a computation actually
   // finishes -- "une fois la reflexion fini il amene directement la vue
   // du site sur les etapes plutot que de rester fixe". A useEffect keyed
@@ -1057,10 +1124,10 @@ export default function Solve() {
   // synchronous.
   const resultRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    if (result || plotResult) {
+    if (result || plotResult || exerciseCheckResult) {
       resultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-  }, [result, plotResult]);
+  }, [result, plotResult, exerciseCheckResult]);
   // Indices of alternative methods currently expanded (collapsed by
   // default — showing every alternative's full steps at once would be
   // visually overwhelming).
@@ -1083,6 +1150,31 @@ export default function Solve() {
   function handleLogout() {
     clearStoredToken();
     router.replace("/login");
+  }
+
+  // Entry point for the always-visible "Correction par lot" button below
+  // the examples row: an authorized tier switches straight into the
+  // dedicated exercise-check form; anyone else toggles the locked notice
+  // (upgrade message + link to /profile) instead of the feature itself --
+  // never hidden, per explicit product direction.
+  function handleExerciseCheckEntryClick() {
+    if (isProf) {
+      setResult(null);
+      setPlotResult(null);
+      setExerciseCheckResult(null);
+      setStatus("idle");
+      setErrorDetail(null);
+      setOperation("exercise-check");
+    } else {
+      setShowExerciseCheckLocked((current) => !current);
+    }
+  }
+
+  function exitExerciseCheckMode() {
+    setOperation(detectOperation(equation));
+    setExerciseCheckResult(null);
+    setStatus("idle");
+    setErrorDetail(null);
   }
 
   // Runs the one-bar auto-detection (see detectOperation & friends above)
@@ -1190,7 +1282,18 @@ export default function Solve() {
     // element, but its participation in native HTML5 `required` validation
     // isn't something to assume -- unlike a plain <input required>, which
     // this field replaced. Checked explicitly instead of relying on it.
-    if (equation.trim() === "") {
+    // exercise-check uses its own separate equation field (see its state
+    // declaration above), never the shared `equation` -- validated below
+    // instead.
+    if (operation !== "exercise-check" && equation.trim() === "") {
+      return;
+    }
+    if (
+      operation === "exercise-check" &&
+      (exerciseCheckEquation.trim() === "" || exerciseCheckAnswers.trim() === "")
+    ) {
+      setStatus("error");
+      setErrorDetail(null);
       return;
     }
     if (operation === "matrix" && matrixCells === null) {
@@ -1218,6 +1321,7 @@ export default function Solve() {
     setStatus("loading");
     setResult(null);
     setPlotResult(null);
+    setExerciseCheckResult(null);
     setErrorDetail(null);
     setOpenAlternatives(new Set());
 
@@ -1351,6 +1455,19 @@ export default function Solve() {
             expression: derivedExpression,
             variable: plotVariable,
           }),
+        });
+      } else if (operation === "exercise-check") {
+        // One proposed answer per non-empty line -- same \n-join/split
+        // convention as "system" just below, a single line may itself
+        // hold several comma-separated values (e.g. "2, -2").
+        const answers = exerciseCheckAnswers
+          .split("\n")
+          .map((line) => line.trim())
+          .filter((line) => line.length > 0);
+        response = await fetch(`${API_URL}/api/exercise/check`, {
+          method: "POST",
+          headers: authHeaders(token),
+          body: JSON.stringify({ equation: exerciseCheckEquation, answers }),
         });
       } else {
         // system: one equation per non-empty line.
@@ -1486,6 +1603,9 @@ export default function Solve() {
       } else if (operation === "plot") {
         const body = (await response.json()) as PlotApiResponse;
         setPlotResult(body);
+      } else if (operation === "exercise-check") {
+        const body = (await response.json()) as ExerciseCheckApiResponse;
+        setExerciseCheckResult(body);
       } else {
         // derivative, integral, limit, series, inequality, sum, product,
         // sets-symbolic: same {result, method, input_latex, result_latex,
@@ -1551,6 +1671,7 @@ export default function Solve() {
     { key: "sum", label: t.solve.tabSum, glyph: "Σ" },
     { key: "product", label: t.solve.tabProduct, glyph: "Π" },
     { key: "plot", label: t.solve.tabPlot, glyph: "f(x)" },
+    { key: "exercise-check", label: t.solve.tabExerciseCheck, glyph: "✓/✗" },
   ];
 
   const equationPlaceholder =
@@ -1611,65 +1732,157 @@ export default function Solve() {
           </p>
 
           <form onSubmit={handleSubmit} className="mt-2">
-            <label htmlFor="solve-equation" className="sr-only">
-              {t.solve.equationLabel}
-            </label>
-            <MathInput
-              id="solve-equation"
-              value={equation}
-              onChange={setEquation}
-              placeholder={equationPlaceholder}
-              trailingAction={
-                // Beside the field, not below the whole symbol palette --
-                // "le bouton calculer devrait etre a cote de la barre de
-                // calcul si possible". Stretches to the field's own
-                // height via the parent's items-stretch; stacks full-width
-                // below the field on narrow screens instead of squeezing
-                // both into one cramped row.
-                <button
-                  type="submit"
-                  disabled={status === "loading"}
-                  className="w-full flex-none whitespace-nowrap rounded-xl bg-mark px-6 text-sm font-semibold text-paper-raised shadow-sm transition duration-150 hover:bg-mark-strong active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100 sm:w-auto"
-                >
-                  {status === "loading" ? t.solve.submitLoading : t.solve.submit}
-                </button>
-              }
-            />
-            {/* Real math symbols form as you type (fractions, exponents,
-                roots) via MathLive -- typing "x^2" live-renders a
-                superscript instead of showing raw "x^2" as flat text.
-                One bar, no operation picker: what gets computed is
-                detected from what's typed (see detectOperation) --
-                an equation solves, \frac{d}{dx}(...) differentiates,
-                \int...dx integrates, \lim_{x\to a} takes a limit,
-                \sum/\prod sums or multiplies, <,> solves an inequality,
-                a matrix environment computes a determinant, and
-                multiple equations separated by ";" solve as a system.
-                Enter (not Shift+Enter) inside the field also submits --
-                see MathInput's own onKeyDown -- so this button is the
-                explicit affordance, not the only way to submit. */}
+            {operation === "exercise-check" ? (
+              // First real <textarea> in this app (confirmed none existed
+              // before this feature) -- a batch of proposed answers is a
+              // genuinely different input shape from every other operation
+              // here, all of which are inferred from the one MathLive bar.
+              // This mode uses its own separate equation field/state (see
+              // exerciseCheckEquation's declaration above) rather than the
+              // shared bar, so it never fights detectOperation.
+              <div className="space-y-3">
+                <div>
+                  <label htmlFor="exercise-check-equation" className="sr-only">
+                    {t.solve.exerciseCheckEquationLabel}
+                  </label>
+                  <MathInput
+                    id="exercise-check-equation"
+                    value={exerciseCheckEquation}
+                    onChange={setExerciseCheckEquation}
+                    placeholder={t.solve.exerciseCheckEquationPlaceholder}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="exercise-check-answers"
+                    className="mb-1 block text-xs font-medium text-ink-soft"
+                  >
+                    {t.solve.exerciseCheckAnswersLabel}
+                  </label>
+                  <textarea
+                    id="exercise-check-answers"
+                    value={exerciseCheckAnswers}
+                    onChange={(event) => setExerciseCheckAnswers(event.target.value)}
+                    placeholder={t.solve.exerciseCheckAnswersPlaceholder}
+                    rows={6}
+                    className={`${inputClass} font-mono text-sm`}
+                  />
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <button
+                    type="button"
+                    onClick={exitExerciseCheckMode}
+                    className="text-xs font-medium text-ink-faint hover:text-ink-soft"
+                  >
+                    {t.solve.exerciseCheckBack}
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={status === "loading"}
+                    className="flex-none whitespace-nowrap rounded-xl bg-mark px-6 py-3 text-sm font-semibold text-paper-raised shadow-sm transition duration-150 hover:bg-mark-strong active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100"
+                  >
+                    {status === "loading" ? t.solve.submitLoading : t.solve.exerciseCheckSubmit}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <label htmlFor="solve-equation" className="sr-only">
+                  {t.solve.equationLabel}
+                </label>
+                <MathInput
+                  id="solve-equation"
+                  value={equation}
+                  onChange={setEquation}
+                  placeholder={equationPlaceholder}
+                  trailingAction={
+                    // Beside the field, not below the whole symbol palette --
+                    // "le bouton calculer devrait etre a cote de la barre de
+                    // calcul si possible". Stretches to the field's own
+                    // height via the parent's items-stretch; stacks full-width
+                    // below the field on narrow screens instead of squeezing
+                    // both into one cramped row.
+                    <button
+                      type="submit"
+                      disabled={status === "loading"}
+                      className="w-full flex-none whitespace-nowrap rounded-xl bg-mark px-6 text-sm font-semibold text-paper-raised shadow-sm transition duration-150 hover:bg-mark-strong active:scale-95 disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100 sm:w-auto"
+                    >
+                      {status === "loading" ? t.solve.submitLoading : t.solve.submit}
+                    </button>
+                  }
+                />
+                {/* Real math symbols form as you type (fractions, exponents,
+                    roots) via MathLive -- typing "x^2" live-renders a
+                    superscript instead of showing raw "x^2" as flat text.
+                    One bar, no operation picker: what gets computed is
+                    detected from what's typed (see detectOperation) --
+                    an equation solves, \frac{d}{dx}(...) differentiates,
+                    \int...dx integrates, \lim_{x\to a} takes a limit,
+                    \sum/\prod sums or multiplies, <,> solves an inequality,
+                    a matrix environment computes a determinant, and
+                    multiple equations separated by ";" solve as a system.
+                    Enter (not Shift+Enter) inside the field also submits --
+                    see MathInput's own onKeyDown -- so this button is the
+                    explicit affordance, not the only way to submit. */}
+              </>
+            )}
           </form>
 
-          {/* Right under the bar/form itself -- "la section essayer un
-              exemple... on pourrait la mettre juste en dessous de
-              formulaire" (the calculation form, not the formula
-              reference sheet it was sitting under before, in the
-              easy-to-miss sidebar column). A horizontal row of chips
-              fits the bar's own full width better than the vertical
-              list that made sense in the narrower sidebar. */}
-          <div className="mt-3 flex flex-wrap items-center gap-x-1 gap-y-1.5 text-sm">
-            <span className="mr-1 text-ink-faint">{t.solve.examplesHeading} :</span>
-            {QUICK_EXAMPLES.map((example) => (
-              <button
-                key={example.id}
-                type="button"
-                onClick={() => setEquation(example.latex)}
-                className="rounded-full border border-rule px-3 py-1 text-ink-soft transition duration-150 hover:border-rule-strong hover:bg-paper active:scale-95"
-              >
-                {t.solve.examples[example.id as keyof typeof t.solve.examples]}
-              </button>
-            ))}
-          </div>
+          {operation !== "exercise-check" && (
+            <>
+              {/* Right under the bar/form itself -- "la section essayer un
+                  exemple... on pourrait la mettre juste en dessous de
+                  formulaire" (the calculation form, not the formula
+                  reference sheet it was sitting under before, in the
+                  easy-to-miss sidebar column). A horizontal row of chips
+                  fits the bar's own full width better than the vertical
+                  list that made sense in the narrower sidebar. */}
+              <div className="mt-3 flex flex-wrap items-center gap-x-1 gap-y-1.5 text-sm">
+                <span className="mr-1 text-ink-faint">{t.solve.examplesHeading} :</span>
+                {QUICK_EXAMPLES.map((example) => (
+                  <button
+                    key={example.id}
+                    type="button"
+                    onClick={() => setEquation(example.latex)}
+                    className="rounded-full border border-rule px-3 py-1 text-ink-soft transition duration-150 hover:border-rule-strong hover:bg-paper active:scale-95"
+                  >
+                    {t.solve.examples[example.id as keyof typeof t.solve.examples]}
+                  </button>
+                ))}
+              </div>
+
+              {/* Always visible, whatever the tier -- an authorized tier
+                  switches straight into the exercise-check form; anyone
+                  else sees a locked notice (never hidden) with a link to
+                  /profile. This is the app's first tier-gated feature; the
+                  actual access control is server-side (403 on
+                  POST /api/exercise/check for a non prof/lab tier) -- this
+                  is upsell, not the real protection. */}
+              <div className="mt-4">
+                <button
+                  type="button"
+                  onClick={handleExerciseCheckEntryClick}
+                  className="inline-flex items-center gap-2 rounded-full border border-rule px-3 py-1.5 text-sm text-ink-soft transition duration-150 hover:border-rule-strong hover:bg-paper active:scale-95"
+                >
+                  <span aria-hidden>✓/✗</span>
+                  <span>{t.solve.tabExerciseCheck}</span>
+                  {!isProf && <span aria-hidden>🔒</span>}
+                </button>
+                {showExerciseCheckLocked && !isProf && (
+                  <div className="mt-2 max-w-md rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800">
+                    <p className="font-semibold">{t.solve.exerciseCheckLockedTitle}</p>
+                    <p className="mt-1">{t.solve.exerciseCheckLockedMessage}</p>
+                    <Link
+                      href="/profile"
+                      className="mt-1 inline-block font-medium underline underline-offset-2"
+                    >
+                      {t.solve.exerciseCheckLockedCta}
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
 
           {status === "error" && (
             <p className="mt-4 text-sm font-medium text-mark-strong">
@@ -1677,12 +1890,55 @@ export default function Solve() {
             </p>
           )}
 
-          {(result || plotResult) && (
+          {(result || plotResult || exerciseCheckResult) && (
             <div
               ref={resultRef}
               className="mt-10 scroll-mt-6 rounded-2xl border border-rule bg-paper-raised p-6 shadow-md sm:p-8"
             >
-              {plotResult ? (
+              {exerciseCheckResult ? (
+                <>
+                  <div className="overflow-x-auto rounded-lg bg-paper px-4 py-3 text-center text-base text-ink-soft">
+                    <MathRender latex={exerciseCheckResult.input_latex} />
+                  </div>
+                  <div className="mt-6 space-y-2">
+                    {exerciseCheckResult.results.map((answer, index) => (
+                      <div
+                        key={index}
+                        className="flex flex-wrap items-center gap-3 rounded-lg border border-rule px-4 py-3"
+                      >
+                        <span
+                          className={`inline-flex flex-none items-center rounded-full px-3 py-1 text-xs font-bold tracking-wide ${
+                            answer.correct
+                              ? "bg-check-soft text-check"
+                              : "bg-mark-soft text-mark-strong"
+                          }`}
+                        >
+                          {answer.correct
+                            ? t.solve.exerciseCheckCorrect
+                            : t.solve.exerciseCheckIncorrect}
+                        </span>
+                        <span className="font-mono text-sm text-ink">
+                          {answer.raw_answer}
+                        </span>
+                        {answer.error && (
+                          <span className="text-xs text-ink-faint">{answer.error}</span>
+                        )}
+                        {!answer.correct && !answer.error && (
+                          <span className="flex items-center gap-2 text-sm text-ink-soft">
+                            {t.solve.exerciseCheckRealSolutionLabel} :
+                            <span className="overflow-x-auto">
+                              <MathRender
+                                latex={exerciseCheckResult.result_latex}
+                                displayMode={false}
+                              />
+                            </span>
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : plotResult ? (
                 <>
                   {plotResult.input_latex && (
                     <div className="overflow-x-auto rounded-lg bg-paper px-4 py-3 text-center text-base text-ink-soft">
