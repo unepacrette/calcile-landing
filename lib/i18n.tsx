@@ -302,6 +302,25 @@ export const translations = {
       error: "Une erreur est survenue, réessaie dans un instant.",
       logout: "Se déconnecter",
       profileLink: "Mon profil",
+      historyLink: "Historique",
+    },
+    history: {
+      heading: "Historique",
+      backLink: "Retour au calculateur",
+      exerciseChecksHeading: "Corrections par lot",
+      exerciseChecksEmpty: "Aucune correction par lot pour le moment.",
+      exerciseChecksLockedTitle: "Fonctionnalité réservée au tier Prof",
+      exerciseChecksLockedMessage:
+        "Vérifie en un lot les réponses de toute une classe à un exercice donné.",
+      exerciseChecksLockedCta: "Voir les formules",
+      exerciseCheckAnswersCount: "réponse(s)",
+      calculationsHeading: "Historique des calculs",
+      calculationsEmpty: "Aucun calcul pour le moment.",
+      calculationsLockedTitle: "Fonctionnalité réservée aux formules payantes",
+      calculationsLockedMessage:
+        "Consulte et recharge tes calculs précédents, tous types confondus.",
+      calculationsLockedCta: "Voir les formules",
+      calculationReload: "Recharger",
     },
     formulaSheet: {
       heading: "Formulaire",
@@ -794,6 +813,25 @@ export const translations = {
       error: "Something went wrong, try again in a moment.",
       logout: "Log out",
       profileLink: "My profile",
+      historyLink: "History",
+    },
+    history: {
+      heading: "History",
+      backLink: "Back to calculator",
+      exerciseChecksHeading: "Batch grading",
+      exerciseChecksEmpty: "No batch grading yet.",
+      exerciseChecksLockedTitle: "Prof plan feature",
+      exerciseChecksLockedMessage:
+        "Check a whole class's answers to one exercise in a single batch.",
+      exerciseChecksLockedCta: "See plans",
+      exerciseCheckAnswersCount: "answer(s)",
+      calculationsHeading: "Calculation history",
+      calculationsEmpty: "No calculations yet.",
+      calculationsLockedTitle: "Paid plan feature",
+      calculationsLockedMessage:
+        "Browse and reload your past calculations, every type included.",
+      calculationsLockedCta: "See plans",
+      calculationReload: "Reload",
     },
     formulaSheet: {
       heading: "Reference sheet",

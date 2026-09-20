@@ -335,7 +335,13 @@ export default function Profile() {
         <title>{t.auth.profile.heading} — Calcile</title>
       </Head>
 
-      <div className="fixed right-4 top-4 z-50">
+      <div className="fixed right-4 top-4 z-50 flex items-center gap-3">
+        <Link
+          href="/history"
+          className="text-xs font-medium text-ink-faint hover:text-ink-soft"
+        >
+          {t.solve.historyLink}
+        </Link>
         <LanguageSwitcher />
       </div>
 

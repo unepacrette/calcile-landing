@@ -1147,6 +1147,50 @@ export default function Solve() {
     });
   }
 
+  // Set by the reload effect below when kind === "matrix_eigenvalues";
+  // applied by the second effect further down, which fires *after* the
+  // [equation]-keyed auto-detect effect has already run and set
+  // matrixOperation itself -- calling setMatrixOperation directly from
+  // the reload effect would just be overwritten by that later auto-
+  // detect pass in the same flush, since no bar notation ever produces
+  // "eigenvalues" on its own (a pre-existing gap, not introduced here).
+  const [pendingEigenvaluesOverride, setPendingEigenvaluesOverride] = useState(false);
+
+  // Reload-from-history: /history links here with ?reload=<client_input>
+  // (+ &kind=system or &kind=matrix_eigenvalues for the two shapes that
+  // can't go through the shared bar's own auto-detection). For every
+  // other kind, setEquation alone is enough -- the existing [equation]-
+  // keyed auto-detect effect below does the rest, exactly the same
+  // mechanism the QUICK_EXAMPLES chips already use. Query params are
+  // stripped right after so a page refresh doesn't repeat the reload.
+  useEffect(() => {
+    if (!router.isReady) return;
+    const reload = router.query.reload;
+    if (typeof reload !== "string" || reload.length === 0) return;
+
+    const kind = typeof router.query.kind === "string" ? router.query.kind : null;
+    if (kind === "system") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setSystemEquations(reload);
+      setOperation("system");
+    } else {
+      setEquation(reload);
+      if (kind === "matrix_eigenvalues") {
+        setPendingEigenvaluesOverride(true);
+      }
+    }
+    router.replace("/solve", undefined, { shallow: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.isReady, router.query.reload, router.query.kind]);
+
+  useEffect(() => {
+    if (pendingEigenvaluesOverride && operation === "matrix") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setMatrixOperation("eigenvalues");
+      setPendingEigenvaluesOverride(false);
+    }
+  }, [pendingEigenvaluesOverride, operation, matrixCells]);
+
   function handleLogout() {
     clearStoredToken();
     router.replace("/login");
@@ -1332,7 +1376,7 @@ export default function Solve() {
         response = await fetch(`${API_URL}/api/solve`, {
           method: "POST",
           headers: authHeaders(token),
-          body: JSON.stringify({ equation }),
+          body: JSON.stringify({ equation, client_input: equation }),
         });
       } else if (operation === "derivative") {
         const parsedOrder = order.trim() === "" ? undefined : Number(order);
@@ -1342,6 +1386,7 @@ export default function Solve() {
           body: JSON.stringify({
             equation: derivedExpression,
             ...(parsedOrder !== undefined ? { order: parsedOrder } : {}),
+            client_input: equation,
           }),
         });
       } else if (operation === "integral") {
@@ -1358,6 +1403,7 @@ export default function Solve() {
             ...(bothProvided
               ? { lower_bound: lower, upper_bound: upper }
               : {}),
+            client_input: equation,
           }),
         });
       } else if (operation === "limit") {
@@ -1368,13 +1414,14 @@ export default function Solve() {
             expression: derivedExpression,
             point: limitPoint,
             direction: limitDirection,
+            client_input: equation,
           }),
         });
       } else if (operation === "inequality") {
         response = await fetch(`${API_URL}/api/inequality`, {
           method: "POST",
           headers: authHeaders(token),
-          body: JSON.stringify({ inequality: equation }),
+          body: JSON.stringify({ inequality: equation, client_input: equation }),
         });
       } else if (operation === "sum" || operation === "product") {
         response = await fetch(
@@ -1387,6 +1434,7 @@ export default function Solve() {
               variable: sumProductVariable,
               lower: sumProductLower,
               upper: sumProductUpper,
+              client_input: equation,
             }),
           }
         );
@@ -1394,7 +1442,7 @@ export default function Solve() {
         response = await fetch(`${API_URL}/api/matrix/${matrixOperation}`, {
           method: "POST",
           headers: authHeaders(token),
-          body: JSON.stringify({ matrix: currentMatrixCells() }),
+          body: JSON.stringify({ matrix: currentMatrixCells(), client_input: equation }),
         });
       } else if (operation === "sets") {
         response =
@@ -1402,12 +1450,17 @@ export default function Solve() {
             ? await fetch(`${API_URL}/api/sets/expression`, {
                 method: "POST",
                 headers: authHeaders(token),
-                body: JSON.stringify({ steps: setsExpressionSteps }),
+                body: JSON.stringify({ steps: setsExpressionSteps, client_input: equation }),
               })
             : await fetch(`${API_URL}/api/sets`, {
                 method: "POST",
                 headers: authHeaders(token),
-                body: JSON.stringify({ operator: setsOperator, left: setsLeft, right: setsRight }),
+                body: JSON.stringify({
+                  operator: setsOperator,
+                  left: setsLeft,
+                  right: setsRight,
+                  client_input: equation,
+                }),
               });
       } else if (operation === "sets-symbolic") {
         // The whole expression forwarded as one string -- unlike the
@@ -1425,6 +1478,7 @@ export default function Solve() {
           headers: authHeaders(token),
           body: JSON.stringify({
             expression: toSymbolicSetExpression(equation) ?? equation,
+            client_input: equation,
           }),
         });
       } else if (operation === "vectors") {
@@ -1435,6 +1489,7 @@ export default function Solve() {
             operator: vectorOperator,
             left: vectorLeft,
             ...(vectorRight !== null ? { right: vectorRight } : {}),
+            client_input: equation,
           }),
         });
       } else if (operation === "series") {
@@ -1445,6 +1500,7 @@ export default function Solve() {
             expression: derivedExpression,
             point: seriesPoint,
             order: Number(seriesOrder),
+            client_input: equation,
           }),
         });
       } else if (operation === "plot") {
@@ -1454,6 +1510,7 @@ export default function Solve() {
           body: JSON.stringify({
             expression: derivedExpression,
             variable: plotVariable,
+            client_input: equation,
           }),
         });
       } else if (operation === "exercise-check") {
@@ -1478,7 +1535,7 @@ export default function Solve() {
         response = await fetch(`${API_URL}/api/system-solve`, {
           method: "POST",
           headers: authHeaders(token),
-          body: JSON.stringify({ equations }),
+          body: JSON.stringify({ equations, client_input: equation }),
         });
       }
 
@@ -1690,6 +1747,12 @@ export default function Solve() {
       </Head>
 
       <div className="fixed right-4 top-4 z-50 flex items-center gap-3">
+        <Link
+          href="/history"
+          className="text-xs font-medium text-ink-faint hover:text-ink-soft"
+        >
+          {t.solve.historyLink}
+        </Link>
         <Link
           href="/profile"
           className="text-xs font-medium text-ink-faint hover:text-ink-soft"
