@@ -244,8 +244,8 @@ export const translations = {
       exerciseCheckEquationLabel: "Équation de l'exercice",
       exerciseCheckEquationPlaceholder: "x^2 - 4 = 0",
       exerciseCheckAnswersLabel:
-        "Réponses des élèves (une par ligne, valeurs séparées par des virgules)",
-      exerciseCheckAnswersPlaceholder: "2, -2\n3\n-2,2",
+        "Réponses des élèves (une par ligne — équation : valeurs séparées par des virgules ; inéquation : intervalles séparés par des points-virgules, ex. ]2,+oo[;]-oo,-2[)",
+      exerciseCheckAnswersPlaceholder: "2, -2\n3\n]2,+oo[;]-oo,-2[",
       exerciseCheckSubmit: "Vérifier les réponses",
       exerciseCheckBack: "Retour au calculateur",
       exerciseCheckCorrect: "Correct",
@@ -737,8 +737,8 @@ export const translations = {
       exerciseCheckEquationLabel: "Exercise equation",
       exerciseCheckEquationPlaceholder: "x^2 - 4 = 0",
       exerciseCheckAnswersLabel:
-        "Student answers (one per line, comma-separated for multiple values)",
-      exerciseCheckAnswersPlaceholder: "2, -2\n3\n-2,2",
+        "Student answers (one per line — equation: comma-separated values; inequality: semicolon-separated intervals, e.g. ]2,+oo[;]-oo,-2[)",
+      exerciseCheckAnswersPlaceholder: "2, -2\n3\n]2,+oo[;]-oo,-2[",
       exerciseCheckSubmit: "Check answers",
       exerciseCheckBack: "Back to calculator",
       exerciseCheckCorrect: "Correct",

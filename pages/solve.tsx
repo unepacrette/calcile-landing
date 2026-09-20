@@ -182,7 +182,7 @@ type AnswerCheckApi = {
 type ExerciseCheckApiResponse = {
   equation: string;
   variable: string;
-  real_roots: string[];
+  real_solution: string[];
   input_latex: string;
   result_latex: string;
   results: AnswerCheckApi[];
