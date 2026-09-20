@@ -41,7 +41,7 @@ export const translations = {
         {
           title: "Profs",
           description:
-            "Automatise la correction d'exercices. Économise 3 à 4h par semaine.",
+            "Vérifie en un lot les réponses de toute une classe à un exercice donné.",
           price: "25€/mois",
           annualNote: "ou 199€/an en annuel",
         },
@@ -85,10 +85,10 @@ export const translations = {
           name: "Prof",
           price: "25€/mois",
           annualNote: "ou 199€/an (16,58€/mois) en facturation annuelle",
-          description: "Pour automatiser la correction d'exercices.",
+          description: "Pour vérifier les réponses de ta classe en un lot.",
           features: [
             "Tout ce qui est inclus dans Student",
-            "Corrige un exercice en quelques secondes — économise 3 à 4h par semaine",
+            "Vérifie les réponses de toute une classe à un exercice, en un seul lot",
             "Support prioritaire",
           ],
         },
@@ -371,7 +371,7 @@ export const translations = {
         {
           title: "Des outils de correction pour les profs",
           description:
-            "Automatiser la correction d'exercices, gagner plusieurs heures par semaine — un usage que SymPy seul ne couvre pas.",
+            "Vérifie en un lot les réponses de toute une classe à un exercice donné — un usage que SymPy seul ne couvre pas.",
         },
       ],
       transparencyHeading: "Notre position sur l'open-source",
@@ -522,7 +522,7 @@ export const translations = {
         {
           title: "Professors",
           description:
-            "Automate exercise grading. Save 3 to 4 hours a week.",
+            "Check a whole class's answers to one exercise in a single batch.",
           price: "€25/month",
           annualNote: "or €199/year billed annually",
         },
@@ -566,10 +566,10 @@ export const translations = {
           name: "Prof",
           price: "€25/month",
           annualNote: "or €199/year (€16.58/month) billed annually",
-          description: "Automate exercise grading.",
+          description: "Check your class's answers in a batch.",
           features: [
             "Everything in Student",
-            "Grade an exercise in seconds — save 3 to 4 hours a week",
+            "Check a whole class's answers to one exercise, in a single batch",
             "Priority support",
           ],
         },
@@ -848,7 +848,7 @@ export const translations = {
         {
           title: "Grading tools for teachers",
           description:
-            "Automate exercise grading and save hours a week — a use case SymPy alone doesn't cover.",
+            "Check a whole class's answers to one exercise in a single batch — a use case SymPy alone doesn't cover.",
         },
       ],
       transparencyHeading: "Where we stand on open source",
