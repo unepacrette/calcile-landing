@@ -36,3 +36,6 @@ AGENTS.md
 # --- graphify (regenerated build cache; graph.json/html/report ARE tracked) ---
 graphify-out/cache/
 graphify-out/.rebuild.lock
+# dated pre-overwrite snapshots graphify takes of a curated graph (export.backup_if_protected);
+# redundant here since graph.json is versioned in git
+graphify-out/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]/
