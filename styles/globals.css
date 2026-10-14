@@ -16,7 +16,8 @@
   --color-paper-raised: #fbfcf9;
   --color-ink: #1c2740;
   --color-ink-soft: #5b6478;
-  --color-ink-faint: #8b93a3;
+  /* WCAG AA: >= 4.5:1 on paper (4.88) and paper-raised (5.19). */
+  --color-ink-faint: #636b7d;
   --color-mark: #b8442d;
   --color-mark-soft: #f3e3dc;
   --color-mark-strong: #9c3620;
@@ -37,7 +38,8 @@
     --color-paper-raised: #1f2d28;
     --color-ink: #eee9dd;
     --color-ink-soft: #b3bcae;
-    --color-ink-faint: #7c8a80;
+    /* WCAG AA: >= 4.5:1 on paper (5.58) and paper-raised (5.00). */
+    --color-ink-faint: #8e9c92;
     --color-mark: #e2794f;
     --color-mark-soft: #33261e;
     --color-mark-strong: #f0916a;

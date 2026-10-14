@@ -52,12 +52,27 @@ export default function Terms() {
         <p className="mt-3 text-base leading-relaxed text-ink-soft">
           {t.terms.withdrawalBody}
         </p>
+        <p className="mt-3">
+          <Link
+            href="/retractation"
+            className="text-sm font-semibold text-mark-strong hover:underline"
+          >
+            {t.terms.withdrawalLinkLabel} →
+          </Link>
+        </p>
 
         <h2 className="mt-10 text-lg font-display font-semibold text-ink">
           {t.terms.accuracyHeading}
         </h2>
         <p className="mt-3 text-base leading-relaxed text-ink-soft">
           {t.terms.accuracyBody}
+        </p>
+
+        <h2 className="mt-10 text-lg font-display font-semibold text-ink">
+          {t.terms.warrantyHeading}
+        </h2>
+        <p className="mt-3 text-base leading-relaxed text-ink-soft">
+          {t.terms.warrantyBody}
         </p>
 
         <h2 className="mt-10 text-lg font-display font-semibold text-ink">
@@ -72,6 +87,13 @@ export default function Terms() {
         </h2>
         <p className="mt-3 text-base leading-relaxed text-ink-soft">
           {t.terms.lawBody}
+        </p>
+
+        <h2 className="mt-10 text-lg font-display font-semibold text-ink">
+          {t.terms.mediationHeading}
+        </h2>
+        <p className="mt-3 text-base leading-relaxed text-ink-soft">
+          {t.terms.mediationBody}
         </p>
 
         <h2 className="mt-10 text-lg font-display font-semibold text-ink">

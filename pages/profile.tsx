@@ -3,6 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import PrivacyNotice from "@/components/PrivacyNotice";
 import { useLanguage } from "@/lib/i18n";
 import {
   API_URL,
@@ -74,7 +75,7 @@ function TierCheckoutCard({
   monthlyPrice: string;
   yearlyPrice: string;
   // True while a checkout request is in flight, or while the mandatory
-  // withdrawal-right consent checkbox hasn't been checked yet (see
+  // immediate-performance request checkbox hasn't been checked yet (see
   // Profile()) — either way, subscribing isn't allowed right now.
   disabled: boolean;
   onSubscribe: (tier: BillingTier, cycle: BillingCycle) => void;
@@ -157,10 +158,9 @@ export default function Profile() {
   const [billingError, setBillingError] = useState<string | null>(null);
   const [checkoutNotice, setCheckoutNotice] = useState<"success" | "cancel" | null>(null);
   // Required before Stripe Checkout can be opened for Student/Prof: an
-  // unchecked-by-default, explicit waiver of the 14-day withdrawal right
-  // (Code de la consommation, art. L221-28 13°) -- access is granted
-  // immediately on payment, so the right is only lost if the user
-  // expressly asks for immediate performance and expressly waives it.
+  // unchecked-by-default, express request for immediate performance
+  // (Code de la consommation, art. L221-25) -- access is granted on
+  // payment, and a withdrawal within 14 days is refunded pro rata.
   const [withdrawalConsent, setWithdrawalConsent] = useState(false);
 
   useEffect(() => {
@@ -408,7 +408,7 @@ export default function Profile() {
               <p className="text-sm font-medium text-mark-strong">{error}</p>
             )}
             {success && (
-              <p className="text-sm font-medium text-green-600">
+              <p className="text-sm font-medium text-check">
                 {t.auth.profile.success}
               </p>
             )}
@@ -422,6 +422,7 @@ export default function Profile() {
                 ? t.auth.profile.submitLoading
                 : t.auth.profile.submit}
             </button>
+            <PrivacyNotice text={t.privacyNotice.password} />
           </form>
 
           <section className="mt-10 border-t border-rule pt-8">
@@ -463,13 +464,23 @@ export default function Profile() {
 
                 {billingTier === "free" && (
                   <div className="mt-4 space-y-3">
+                    <p className="text-xs leading-relaxed text-ink-soft">
+                      {t.auth.profile.billing.withdrawalInfoPrefix}{" "}
+                      <Link
+                        href="/retractation"
+                        className="font-semibold text-mark-strong hover:underline"
+                      >
+                        {t.auth.profile.billing.withdrawalInfoLink}
+                      </Link>
+                    </p>
                     {/* Required before either "Subscribe" button below can
-                        be used: an explicit, unchecked-by-default waiver
-                        of the 14-day withdrawal right (Code de la
-                        consommation, art. L221-28 13°) -- access starts
-                        immediately on payment, so the right is only lost
-                        if the user expressly asks for that and expressly
-                        waives it. */}
+                        be used: an explicit, unchecked-by-default request
+                        for immediate performance (Code de la consommation,
+                        art. L221-25) -- access starts on payment, so a
+                        withdrawal within 14 days is refunded minus the
+                        pro-rata share already provided. Calcile is a
+                        digital service, not digital content, so the right
+                        itself is not waived (no L221-28 13°). */}
                     <div className="flex items-start gap-2 rounded-lg bg-paper p-3">
                       <input
                         id="withdrawal-consent"

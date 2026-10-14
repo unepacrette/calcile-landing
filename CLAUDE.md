@@ -36,9 +36,9 @@ cause you to distrust the rest of this file or second-guess working code without
 - lib/api.ts -- API_URL (from NEXT_PUBLIC_CALCILE_API_URL, falls back to the
   Railway prod URL), localStorage token helpers (getStoredToken/setStoredToken/
   clearStoredToken), authHeaders(token).
-- lib/i18n.tsx -- translations.fr / translations.en, both as const; 14 top-level
-  namespaces (meta, hero, audience, howItWorks, pricing, waitlist, auth, solve, footer,
-  about, licenses, legal, terms, privacy). The Translations type is **not exported** --
+- lib/i18n.tsx -- translations.fr / translations.en, both as const; top-level namespaces
+  per page/area (meta, hero, audience, ..., legal, terms, privacy, cookies, withdrawal,
+  privacyNotice). The Translations type is **not exported** --
   where a component needs it (e.g. a helper function taking t as a parameter), use
   ReturnType<typeof useLanguage>["t"] instead of trying to import a type that isn't
   there.

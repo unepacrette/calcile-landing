@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import FormulaSheet from "@/components/FormulaSheet";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import MathRender from "@/components/MathRender";
+import PrivacyNotice from "@/components/PrivacyNotice";
 import { useLanguage } from "@/lib/i18n";
 
 // mathlive registers a <document>-touching custom element at import time
@@ -1890,6 +1891,7 @@ export default function Solve() {
               </>
             )}
           </form>
+          <PrivacyNotice text={t.privacyNotice.solve} className="mt-2" />
 
           {operation !== "exercise-check" && (
             <>

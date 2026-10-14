@@ -179,8 +179,11 @@ export const translations = {
             "Merci ! Ton abonnement est en cours d'activation.",
           checkoutCancelNotice:
             "Paiement annulé — aucun changement n'a été effectué.",
+          withdrawalInfoPrefix:
+            "Tu disposes d'un droit de rétractation de 14 jours, avec remboursement au prorata du service déjà fourni :",
+          withdrawalInfoLink: "conditions et formulaire de rétractation",
           withdrawalConsentLabel:
-            "Je demande l'exécution immédiate du service dès la validation du paiement, et je renonce expressément à mon droit de rétractation de 14 jours (article L221-28 13° du Code de la consommation). J'accepte les",
+            "Je demande l'exécution immédiate du service dès la validation du paiement. Je reconnais que si j'exerce mon droit de rétractation dans les 14 jours, je serai remboursé du montant payé, déduction faite de la part correspondant au service déjà fourni (article L221-25 du Code de la consommation). J'accepte les",
           withdrawalConsentTermsLink:
             "Conditions générales de vente et d'utilisation.",
         },
@@ -377,8 +380,10 @@ export const translations = {
       licenseNote: "sous licence BSD 3-Clause",
       licensesLinkLabel: "Voir notre page Licences",
       aboutLinkLabel: "À propos",
-      termsLinkLabel: "Conditions d'utilisation",
+      termsLinkLabel: "CGV / CGU",
       privacyLinkLabel: "Confidentialité",
+      cookiesLinkLabel: "Cookies",
+      withdrawalLinkLabel: "Rétractation",
       legalLinkLabel: "Mentions légales",
     },
     about: {
@@ -437,51 +442,46 @@ export const translations = {
       metaTitle: "Mentions légales — Calcile",
       metaDescription: "Identité de l'éditeur et de l'hébergeur du site Calcile.",
       heading: "Mentions légales",
-      lastUpdated: "Dernière mise à jour : 11 septembre 2026",
+      lastUpdated: "Dernière mise à jour : 14 octobre 2026",
       publisherHeading: "Éditeur du site",
-      publisherBody:
-        "Calcile est édité par Amaury Le Roux, entrepreneur individuel (micro-entreprise), domicilié au 30 ch de l'espérance, Appt D, 25000 Besançon, France. SIREN : 109 935 692. TVA non applicable, article 293 B du Code général des impôts. Contact : contact@calcile.fr.",
+      publisherBody: "Calcile est édité par Amaury Le Roux, entrepreneur individuel (micro-entreprise), domicilié au 30 ch de l'espérance, Appt D, 25000 Besançon, France. SIREN : 109 935 692. TVA non applicable, article 293 B du Code général des impôts. Contact : contact@calcile.fr — téléphone : [À REMPLIR].",
       publicationDirectorHeading: "Directeur de la publication",
       publicationDirectorBody: "Amaury Le Roux, en sa qualité d'éditeur du site.",
       hostHeading: "Hébergement",
-      hostBody:
-        "Le site calcile.fr est hébergé par Vercel Inc., 440 N Barranca Avenue #4133, Covina, CA 91723, États-Unis (vercel.com). L'API et la base de données du service sont hébergées séparément par Railway Corporation — voir notre politique de confidentialité pour le détail des sous-traitants et des transferts de données associés.",
+      hostBody: "Le site calcile.fr est hébergé par Vercel Inc., 440 N Barranca Avenue #4133, Covina, CA 91723, États-Unis (vercel.com) — contact : privacy@vercel.com. L'API et la base de données du service sont hébergées par Railway Corporation, 548 Market St Suite 68956, San Francisco, CA 94104, États-Unis (railway.com) — téléphone : (415) 707-7675. Voir notre politique de confidentialité pour le détail des sous-traitants et des transferts de données associés.",
+      mediationHeading: "Médiation de la consommation",
+      mediationBody: "Médiateur de la consommation compétent pour Calcile : [À REMPLIR : nom du médiateur], [À REMPLIR : adresse postale], [À REMPLIR : site web]. Conditions de recours : voir nos conditions générales de vente.",
       ipHeading: "Propriété intellectuelle",
-      ipBody:
-        "Le code source, l'interface et les contenus propres à Calcile sont la propriété d'Amaury Le Roux, sauf mention contraire (voir notre page Licences pour les dépendances open-source utilisées). Toute reproduction non autorisée est interdite.",
+      ipBody: "Le code source, l'interface et les contenus propres à Calcile sont la propriété d'Amaury Le Roux, sauf mention contraire (voir notre page Licences pour les dépendances open-source utilisées). Toute reproduction non autorisée est interdite.",
       licensesLinkLabel: "Voir la page Licences",
     },
     terms: {
       metaTitle: "Conditions générales de vente et d'utilisation — Calcile",
       metaDescription: "Conditions générales de vente et d'utilisation du service Calcile.",
       heading: "Conditions générales de vente et d'utilisation",
-      lastUpdated: "Dernière mise à jour : 11 septembre 2026",
-      intro:
-        "En utilisant Calcile, tu acceptes les conditions suivantes. Ce document sera complété au fur et à mesure de l'évolution du service. Pour l'identité de l'éditeur et de l'hébergeur, voir nos Mentions légales.",
+      lastUpdated: "Dernière mise à jour : 14 octobre 2026",
+      intro: "Les présentes conditions générales de vente et d'utilisation s'appliquent au service Calcile, édité et vendu par Amaury Le Roux, entrepreneur individuel (EI), SIREN 109 935 692, 30 ch de l'espérance, Appt D, 25000 Besançon, France — contact@calcile.fr. En utilisant Calcile, tu acceptes ces conditions. Pour l'identité complète de l'éditeur et de l'hébergeur, voir nos Mentions légales.",
       serviceHeading: "Le service",
-      serviceBody:
-        "Calcile est une API et une interface de calcul symbolique (résolution d'équations, dérivées, intégrales) avec des explications pas à pas, actuellement en bêta fermée sur invitation, avec des formules payantes optionnelles (Student, Prof, Lab).",
+      serviceBody: "Calcile est une API et une interface de calcul symbolique (résolution d'équations, dérivées, intégrales) avec des explications pas à pas, actuellement en bêta fermée sur invitation, avec des formules payantes optionnelles (Student, Prof, Lab).",
       pricingHeading: "Tarifs, abonnement et paiement",
-      pricingBody:
-        "Calcile propose trois formules par abonnement : Student (4,90€/mois ou 39€/an), Prof (25€/mois ou 199€/an), et Lab (sur devis, contrat spécifique). Les tarifs affichés sont nets, toutes taxes comprises : Calcile bénéficie de la franchise en base de TVA (article 293 B du Code général des impôts), la TVA n'est donc pas applicable et n'apparaît pas sur les factures. Le paiement est traité par notre prestataire Stripe ; Calcile ne voit ni ne stocke jamais ton numéro de carte bancaire.",
+      pricingBody: "Calcile propose trois formules par abonnement : Student (4,90€/mois ou 39€/an), Prof (25€/mois ou 199€/an), et Lab (sur devis, contrat spécifique). Les tarifs affichés sont nets, toutes taxes comprises : Calcile bénéficie de la franchise en base de TVA (article 293 B du Code général des impôts), la TVA n'est donc pas applicable et n'apparaît pas sur les factures. Le paiement est traité par notre prestataire Stripe ; Calcile ne voit ni ne stocke jamais ton numéro de carte bancaire.",
       renewalHeading: "Durée, renouvellement automatique et résiliation",
-      renewalBody:
-        "Les abonnements Student et Prof sont à renouvellement automatique : sauf résiliation avant la fin de la période en cours, l'abonnement est reconduit pour une durée identique (mensuelle ou annuelle selon la formule choisie) et le montant correspondant est prélevé automatiquement. Tu peux résilier à tout moment depuis ton espace client (bouton « Gérer mon abonnement », qui ouvre le portail de facturation Stripe) : la résiliation prend effet à la fin de la période déjà payée, sans reconduction ultérieure, et l'accès à Calcile reste actif jusqu'à cette date. Sauf exercice du droit de rétractation décrit ci-dessous, les sommes déjà versées pour une période en cours ne sont pas remboursées au prorata.",
+      renewalBody: "Les abonnements Student et Prof sont à renouvellement automatique : sauf résiliation avant la fin de la période en cours, l'abonnement est reconduit pour une durée identique (mensuelle ou annuelle selon la formule choisie) et le montant correspondant est prélevé automatiquement. Tu peux résilier à tout moment depuis ton espace client (bouton « Gérer mon abonnement », qui ouvre le portail de facturation Stripe) : la résiliation prend effet à la fin de la période déjà payée, sans reconduction ultérieure, et l'accès à Calcile reste actif jusqu'à cette date. Sauf exercice du droit de rétractation décrit ci-dessous, les sommes déjà versées pour une période en cours ne sont pas remboursées au prorata.",
       withdrawalHeading: "Droit de rétractation",
-      withdrawalBody:
-        "Conformément aux articles L221-18 et suivants du Code de la consommation, tu disposes en principe d'un délai de 14 jours pour te rétracter d'un abonnement souscrit en ligne, sans avoir à te justifier. L'accès à Calcile est toutefois fourni immédiatement après le paiement : conformément à l'article L221-28 13° du même code, en cochant la case de confirmation présentée avant le paiement, tu demandes expressément l'exécution immédiate du service et tu renonces expressément à ton droit de rétractation. Une fois cette case cochée et le paiement effectué, tu ne peux donc plus te rétracter pour la période en cours. Si tu n'as pas coché cette case, ou si l'exécution immédiate n'a pas commencé, tu conserves ton droit de rétractation dans les conditions de droit commun ; contacte-nous à contact@calcile.fr pour l'exercer.",
+      withdrawalBody: "Conformément aux articles L221-18 et suivants du Code de la consommation, tu disposes d'un délai de 14 jours à compter de la souscription pour te rétracter, sans avoir à te justifier ni à payer de pénalité. Calcile étant un service numérique fourni dès le paiement, tu demandes expressément, en cochant la case présentée avant le paiement, que son exécution commence immédiatement. Si tu te rétractes ensuite dans le délai de 14 jours, tu es remboursé du montant payé, déduction faite d'un montant proportionnel au service fourni jusqu'à la communication de ta décision, calculé au prorata des jours écoulés (article L221-25). Le remboursement intervient au plus tard 14 jours après réception de ta décision, avec le même moyen de paiement (article L221-24). Pour te rétracter, écris-nous à contact@calcile.fr, en utilisant si tu le souhaites le formulaire type de notre page Rétractation et remboursement.",
+      withdrawalLinkLabel: "Voir la page Rétractation et remboursement",
       accuracyHeading: "Justesse des résultats",
-      accuracyBody:
-        "Calcile utilise SymPy (bibliothèque open-source, sympy.org) comme moteur de calcul. Comme tout logiciel, SymPy peut contenir des bugs ou des cas limites mal gérés. On ne peut donc pas garantir une exactitude à 100% des résultats et des étapes affichées. Vérifie les résultats importants, en particulier pour un usage académique noté ou professionnel.",
+      accuracyBody: "Calcile utilise SymPy (bibliothèque open-source, sympy.org) comme moteur de calcul. Comme tout logiciel, SymPy peut contenir des bugs ou des cas limites mal gérés. On ne peut donc pas garantir une exactitude à 100% des résultats et des étapes affichées. Vérifie les résultats importants, en particulier pour un usage académique noté ou professionnel.",
+      warrantyHeading: "Garantie légale de conformité",
+      warrantyBody: "En tant que consommateur, tu bénéficies de la garantie légale de conformité des contenus et services numériques (articles L224-25-12 et suivants du Code de la consommation) pendant toute la durée de ton abonnement. En cas de défaut de conformité, tu peux obtenir la mise en conformité du service ou, à défaut, une réduction du prix ou la résolution du contrat, dans les conditions prévues par ces articles. La section « Justesse des résultats » ci-dessus ne limite pas cette garantie. Signale-nous tout défaut à contact@calcile.fr.",
       accountsHeading: "Comptes",
-      accountsBody:
-        "L'accès se fait sur invitation. Tu es responsable de la confidentialité de ton mot de passe et de l'activité sur ton compte.",
+      accountsBody: "L'accès se fait sur invitation. Tu es responsable de la confidentialité de ton mot de passe et de l'activité sur ton compte. Tu peux demander la suppression de ton compte à tout moment en écrivant à contact@calcile.fr.",
       lawHeading: "Droit applicable et litiges",
-      lawBody:
-        "Les présentes conditions sont soumises au droit français. En cas de litige, contacte-nous d'abord à contact@calcile.fr pour une résolution amiable ; à défaut, les tribunaux français compétents seront saisis, dans le respect des règles impératives de protection des consommateurs applicables à ta situation.",
+      lawBody: "Les présentes conditions sont soumises au droit français. En cas de litige, contacte-nous d'abord à contact@calcile.fr pour une résolution amiable ; à défaut, les tribunaux français compétents seront saisis, dans le respect des règles impératives de protection des consommateurs applicables à ta situation.",
+      mediationHeading: "Médiation de la consommation",
+      mediationBody: "Conformément aux articles L611-1 et suivants du Code de la consommation, si un litige n'a pas pu être résolu après une réclamation écrite adressée à contact@calcile.fr, tu peux recourir gratuitement au médiateur de la consommation suivant : [À REMPLIR : nom du médiateur], [À REMPLIR : adresse postale], [À REMPLIR : site web].",
       changesHeading: "Modifications",
-      changesBody:
-        "On peut faire évoluer ces conditions ; les changements importants seront communiqués par email.",
+      changesBody: "On peut faire évoluer ces conditions ; les changements importants seront communiqués par email.",
       contactHeading: "Contact",
       contactBody: "Une question ? Écris-nous à contact@calcile.fr.",
       legalLinkLabel: "Voir les Mentions légales",
@@ -490,32 +490,106 @@ export const translations = {
       metaTitle: "Confidentialité — Calcile",
       metaDescription: "Politique de confidentialité de Calcile.",
       heading: "Politique de confidentialité",
-      lastUpdated: "Dernière mise à jour : 11 septembre 2026",
-      intro:
-        "Cette page explique quelles données Calcile collecte, pourquoi, et comment elles sont utilisées — pour le site calcile.fr et l'API qui le fait fonctionner.",
+      lastUpdated: "Dernière mise à jour : 14 octobre 2026",
+      intro: "Cette page explique quelles données Calcile collecte, pourquoi, et comment elles sont utilisées — pour le site calcile.fr et l'API qui le fait fonctionner.",
+      controllerHeading: "Responsable du traitement",
+      controllerBody: "Le responsable du traitement est Amaury Le Roux, entrepreneur individuel (EI), SIREN 109 935 692, 30 ch de l'espérance, Appt D, 25000 Besançon, France, éditeur de Calcile. Pour toute question sur tes données : contact@calcile.fr.",
       dataHeading: "Données collectées",
-      dataBody:
-        "On collecte ton email (pour la waitlist et ton compte), ton mot de passe (haché, jamais en clair), l'historique de tes calculs (pour te permettre de les retrouver), et — si tu souscris un abonnement payant — les données de facturation gérées par Stripe (identifiant client Stripe, statut de l'abonnement, formule choisie). Calcile ne voit ni ne stocke jamais ton numéro de carte bancaire : il est saisi directement sur la page de paiement sécurisée de Stripe. On ne collecte pas plus que nécessaire au fonctionnement du service.",
-      legalBasisHeading: "Base légale du traitement",
-      legalBasisBody:
-        "Le traitement de tes données repose sur l'exécution du contrat qui nous lie (article 6.1.b du RGPD) : te fournir l'accès au service, faire fonctionner ton compte, gérer ton abonnement le cas échéant. Les données de facturation sont en plus traitées pour respecter nos obligations légales et comptables (article 6.1.c du RGPD).",
+      dataBody: "On collecte uniquement : ton email et, si tu l'indiques, la formule qui t'intéresse (liste d'attente) ; ton email, ton mot de passe (haché, jamais en clair) et ta formule (compte) ; l'historique de tes calculs et de tes corrections d'exercices (pour te permettre de les retrouver) ; si tu souscris un abonnement payant, les données de facturation gérées par Stripe (identifiant client Stripe, statut de l'abonnement, formule choisie) ; et ton adresse IP, utilisée pour protéger le service contre les abus (limitation du nombre de requêtes). Calcile ne voit ni ne stocke jamais ton numéro de carte bancaire : il est saisi directement sur la page de paiement sécurisée de Stripe.",
+      legalBasisHeading: "Finalités et bases légales",
+      legalBasisBody: "Fournir le service, faire fonctionner ton compte et ton historique, gérer ton abonnement : exécution du contrat (article 6.1.b du RGPD). Conserver les données de facturation : respect de nos obligations légales et comptables (article 6.1.c). Te prévenir de l'ouverture de Calcile si tu t'inscris à la liste d'attente : ton consentement (article 6.1.a), donné en t'inscrivant et retirable à tout moment via le lien de désinscription de l'email ou en nous écrivant. Protéger le service contre les abus et assurer sa sécurité (adresse IP, journaux techniques) : notre intérêt légitime (article 6.1.f).",
       useHeading: "Utilisation des données",
-      useBody:
-        "Tes données servent à faire fonctionner ton compte et le service (authentification, historique, gestion de l'abonnement, emails transactionnels via Resend). On ne vend pas tes données et on ne les partage pas à des fins publicitaires.",
+      useBody: "Tes données servent uniquement aux finalités ci-dessus (authentification, historique, gestion de l'abonnement, emails transactionnels). La liste d'attente sert seulement à t'annoncer l'ouverture de Calcile : aucune newsletter ni offre commerciale n'y est envoyée. On ne vend pas tes données et on ne les partage pas à des fins publicitaires.",
       retentionHeading: "Durée de conservation",
-      retentionBody:
-        "Tes données de compte et ton historique de calculs sont conservés tant que ton compte est actif, puis effacés dans un délai raisonnable après suppression du compte — sauf obligation légale de conservation plus longue, notamment pour les documents comptables et de facturation, conservés 10 ans conformément aux obligations comptables applicables aux entreprises.",
-      thirdPartyHeading: "Prestataires et transferts hors UE",
-      thirdPartyBody:
-        "Calcile utilise SymPy, une bibliothèque open-source (voir notre page Licences), qui s'exécute sur nos propres serveurs — aucune donnée n'est envoyée à SymPy ou à un tiers pour effectuer les calculs. On fait par ailleurs appel aux prestataires suivants, chacun agissant comme sous-traitant au sens du RGPD : Railway (hébergement de l'API et de la base de données), Stripe (paiement et gestion des abonnements — Stripe Payments Europe Limited pour les utilisateurs européens), et Resend (envoi d'emails transactionnels). Ces prestataires peuvent traiter des données en dehors de l'Union européenne, notamment aux États-Unis ; ces transferts sont encadrés par des clauses contractuelles types de la Commission européenne et/ou une certification au Data Privacy Framework UE-États-Unis, selon le prestataire.",
+      retentionBody: "Compte et historique de calculs : conservés tant que ton compte est actif, puis supprimés après 3 ans d'inactivité, ou dès que tu demandes la suppression de ton compte. Liste d'attente : 3 ans après notre dernier contact avec toi, ou jusqu'à ta désinscription. Données de facturation et pièces comptables : 10 ans (article L123-22 du Code de commerce). Adresse IP utilisée pour la limitation des requêtes : uniquement dans des compteurs temporaires, jamais enregistrée dans notre base de données. Journaux techniques de nos hébergeurs (Vercel, Railway) : conservés pour la durée de rétention propre à chaque hébergeur, uniquement à des fins de sécurité et de diagnostic, puis supprimés automatiquement par eux.",
+      thirdPartyHeading: "Destinataires, sous-traitants et transferts hors UE",
+      thirdPartyBody: "Tes données ne sont accessibles qu'à l'éditeur de Calcile et aux prestataires suivants, chacun agissant comme sous-traitant au sens du RGPD : Vercel (hébergement du site calcile.fr), Railway (hébergement de l'API et de la base de données), Stripe (paiement et gestion des abonnements — Stripe Payments Europe Limited pour les utilisateurs européens), Resend (envoi d'emails transactionnels, comme la réinitialisation du mot de passe) et Mailchimp, un service d'Intuit (gestion de la liste d'attente). Les calculs eux-mêmes sont effectués par SymPy, une bibliothèque open-source (voir notre page Licences), sur nos propres serveurs — aucune donnée n'est envoyée à un tiers pour calculer. Ces prestataires peuvent traiter des données en dehors de l'Union européenne, notamment aux États-Unis ; ces transferts sont encadrés par des clauses contractuelles types de la Commission européenne et/ou une certification au Data Privacy Framework UE-États-Unis, selon le prestataire.",
       cookiesHeading: "Cookies et stockage local",
-      cookiesBody:
-        "Calcile n'utilise aucun cookie publicitaire ni outil d'analyse d'audience. Le site utilise uniquement le stockage local de ton navigateur (localStorage) pour deux usages strictement nécessaires au fonctionnement du service : garder ta session connectée, et mémoriser ta préférence de langue. Ces usages sont exemptés de consentement préalable au regard des recommandations de la CNIL sur les traceurs, car strictement nécessaires à la fourniture du service que tu demandes.",
+      cookiesBody: "Calcile ne dépose aucun cookie et n'utilise aucun outil d'analyse d'audience ni de publicité. Seul le stockage local de ton navigateur est utilisé, pour des usages strictement nécessaires et exemptés de consentement.",
+      cookiesLinkLabel: "Voir la politique cookies",
       rightsHeading: "Tes droits",
-      rightsBody:
-        "Tu peux demander l'accès à tes données, leur correction, leur suppression, ou leur portabilité (récupération dans un format réutilisable) à tout moment en écrivant à contact@calcile.fr. Si tu estimes que tes droits ne sont pas respectés, tu peux aussi adresser une réclamation à la CNIL (cnil.fr).",
+      rightsBody: "Tu disposes d'un droit d'accès, de rectification, d'effacement, de limitation, de portabilité et d'opposition (pour les traitements fondés sur notre intérêt légitime), ainsi que du droit de retirer à tout moment ton consentement à la liste d'attente. Tu peux aussi définir des directives sur le sort de tes données après ton décès. Pour exercer ces droits, écris à contact@calcile.fr : on te répond dans un délai d'un mois. Si tu estimes que tes droits ne sont pas respectés, tu peux adresser une réclamation à la CNIL (www.cnil.fr, 3 place de Fontenoy, TSA 80715, 75334 Paris Cedex 07).",
       licensesLinkLabel: "Voir la page Licences",
       legalLinkLabel: "Voir les Mentions légales",
+    },
+    cookies: {
+      metaTitle: "Politique cookies — Calcile",
+      metaDescription: "Les cookies, le stockage local et les services tiers utilisés par calcile.fr.",
+      heading: "Politique cookies",
+      lastUpdated: "Dernière mise à jour : 14 octobre 2026",
+      intro: "Cette page liste tout ce que calcile.fr enregistre sur ton appareil, et les services tiers qu'il utilise.",
+      sections: [
+        {
+          heading: "Aucun cookie, aucun script tiers",
+          body: "Calcile ne dépose aucun cookie : ni mesure d'audience, ni publicité, ni réseau social. Aucun script tiers n'est chargé : les polices et les bibliothèques d'affichage des formules (KaTeX, MathLive) sont servies directement par calcile.fr.",
+        },
+        {
+          heading: "Le stockage local utilisé",
+          body: "Le site utilise le stockage local de ton navigateur (localStorage) pour deux éléments seulement : « calcile_token », ton jeton de connexion, qui garde ta session ouverte et est effacé quand tu te déconnectes ; et « calcile-lang », qui mémorise la langue que tu as choisie.",
+        },
+        {
+          heading: "Pourquoi il n'y a pas de bandeau",
+          body: "Ces deux éléments sont strictement nécessaires au service que tu demandes (rester connecté) ou mémorisent un choix que tu as fait toi-même (la langue). D'après les lignes directrices de la CNIL sur les traceurs, ils sont exemptés de consentement : c'est pourquoi Calcile n'affiche pas de bandeau cookies. Si un traceur soumis à consentement était ajouté un jour, un bandeau te permettrait de l'accepter ou de le refuser avant tout dépôt.",
+        },
+        {
+          heading: "Sites externes",
+          body: "Le paiement se fait sur la page sécurisée de Stripe, et la prise de rendez-vous de démonstration sur Calendly. Ces sites appliquent leur propre politique cookies une fois que tu y es redirigé ; Calcile ne charge aucun de leurs scripts sur ses propres pages.",
+        },
+        {
+          heading: "Effacer ces données",
+          body: "Tu peux supprimer le stockage local à tout moment depuis les réglages de ton navigateur (données de site pour calcile.fr). Tu seras alors déconnecté et la langue reviendra au français.",
+        },
+      ],
+      privacyLinkLabel: "Voir la politique de confidentialité",
+    },
+    withdrawal: {
+      metaTitle: "Rétractation et remboursement — Calcile",
+      metaDescription: "Ton droit de rétractation de 14 jours, le remboursement au prorata et le formulaire type de rétractation.",
+      heading: "Rétractation et remboursement",
+      lastUpdated: "Dernière mise à jour : 14 octobre 2026",
+      sections: [
+        {
+          heading: "Ton droit de rétractation",
+          body: "Si tu souscris un abonnement Calcile en tant que consommateur, tu disposes d'un délai de 14 jours à compter de la souscription pour te rétracter, sans avoir à te justifier ni à payer de pénalité (articles L221-18 et suivants du Code de la consommation).",
+        },
+        {
+          heading: "Accès immédiat et remboursement au prorata",
+          body: "Avant le paiement, tu demandes expressément que le service commence immédiatement, en cochant la case prévue à cet effet. Si tu te rétractes ensuite dans les 14 jours, tu es remboursé du montant payé, déduction faite d'un montant proportionnel au service déjà fourni jusqu'à ce que tu nous communiques ta décision, calculé au prorata des jours écoulés sur la période payée (article L221-25). Si cette demande expresse n'a pas été recueillie, aucune somme ne reste à ta charge : tu es remboursé intégralement.",
+        },
+        {
+          heading: "Comment te rétracter",
+          body: "Avant la fin du délai de 14 jours, envoie-nous le formulaire type ci-dessous, ou toute autre déclaration sans ambiguïté exprimant ta volonté de te rétracter, par email à contact@calcile.fr ou par courrier à l'adresse indiquée dans le formulaire. On t'envoie un accusé de réception par email.",
+        },
+        {
+          heading: "Délai et mode de remboursement",
+          body: "Le remboursement intervient au plus tard 14 jours après réception de ta décision, avec le même moyen de paiement que celui utilisé lors de la souscription, sans frais pour toi (article L221-24). Ton abonnement est arrêté à la même date.",
+        },
+        {
+          heading: "Après 14 jours",
+          body: "Passé ce délai, tu peux toujours résilier ton abonnement à tout moment depuis ton espace client : la résiliation prend effet à la fin de la période en cours, sans remboursement de la période déjà commencée (voir nos conditions générales de vente).",
+        },
+      ],
+      formHeading: "Formulaire type de rétractation",
+      formIntro: "(Annexe à l'article R221-1 du Code de la consommation. Veuillez compléter et renvoyer le présent formulaire uniquement si vous souhaitez vous rétracter du contrat.)",
+      formLines: [
+        "À l'attention d'Amaury Le Roux (Calcile), 30 ch de l'espérance, Appt D, 25000 Besançon, France — contact@calcile.fr :",
+        "Je/Nous (*) vous notifie/notifions (*) par la présente ma/notre (*) rétractation du contrat portant sur la vente du bien (*)/pour la prestation de services (*) ci-dessous :",
+        "Commandé le (*)/reçu le (*) :",
+        "Nom du (des) consommateur(s) :",
+        "Adresse du (des) consommateur(s) :",
+        "Signature du (des) consommateur(s) (uniquement en cas de notification du présent formulaire sur papier) :",
+        "Date :",
+      ],
+      formFootnote: "(*) Rayez la mention inutile.",
+      termsLinkLabel: "Voir les conditions générales de vente",
+    },
+    privacyNotice: {
+      linkLabel: "Politique de confidentialité",
+      waitlist: "Ton email sert uniquement à te prévenir de l'ouverture de Calcile. Il est géré via Mailchimp et tu peux te désinscrire à tout moment. En savoir plus :",
+      login: "Tes identifiants servent uniquement à te connecter à ton compte. En savoir plus :",
+      resetRequest: "Ton email sert uniquement à t'envoyer le lien de réinitialisation. En savoir plus :",
+      password: "Ton mot de passe est stocké haché, jamais en clair. En savoir plus :",
+      solve: "Tes calculs et corrections sont enregistrés dans ton historique pour que tu puisses les retrouver. N'y saisis pas de données personnelles (par exemple les noms de tes élèves). En savoir plus :",
     },
   },
   en: {
@@ -692,8 +766,11 @@ export const translations = {
           labContact: "Contact us",
           checkoutSuccessNotice: "Thanks! Your subscription is being activated.",
           checkoutCancelNotice: "Payment canceled — nothing was changed.",
+          withdrawalInfoPrefix:
+            "You have a 14-day right of withdrawal, with a refund minus the service already provided, pro rata:",
+          withdrawalInfoLink: "withdrawal terms and form",
           withdrawalConsentLabel:
-            "I request immediate performance of the service as soon as payment is confirmed, and I expressly waive my 14-day right of withdrawal (article L221-28 13° of the French Consumer Code). I agree to the",
+            "I request immediate performance of the service as soon as payment is confirmed. I acknowledge that if I exercise my 14-day right of withdrawal, I will be refunded the amount paid, minus the share corresponding to the service already provided (article L221-25 of the French Consumer Code). I agree to the",
           withdrawalConsentTermsLink: "Terms of Sale and Use.",
         },
       },
@@ -888,8 +965,10 @@ export const translations = {
       licenseNote: "licensed under BSD 3-Clause",
       licensesLinkLabel: "See our Licenses page",
       aboutLinkLabel: "About",
-      termsLinkLabel: "Terms of use",
+      termsLinkLabel: "Terms of sale & use",
       privacyLinkLabel: "Privacy",
+      cookiesLinkLabel: "Cookies",
+      withdrawalLinkLabel: "Withdrawal",
       legalLinkLabel: "Legal notice",
     },
     about: {
@@ -948,51 +1027,46 @@ export const translations = {
       metaTitle: "Legal Notice — Calcile",
       metaDescription: "Identity of Calcile's publisher and host.",
       heading: "Legal Notice",
-      lastUpdated: "Last updated: September 11, 2026",
+      lastUpdated: "Last updated: October 14, 2026",
       publisherHeading: "Site publisher",
-      publisherBody:
-        "Calcile is published by Amaury Le Roux, sole trader (French \"micro-entreprise\"), based at 30 ch de l'espérance, Appt D, 25000 Besançon, France. SIREN: 109 935 692. VAT not applicable, article 293 B of the French General Tax Code. Contact: contact@calcile.fr.",
+      publisherBody: "Calcile is published by Amaury Le Roux, sole trader (French \"micro-entreprise\"), based at 30 ch de l'espérance, Appt D, 25000 Besançon, France. SIREN: 109 935 692. VAT not applicable, article 293 B of the French General Tax Code. Contact: contact@calcile.fr — phone: [À REMPLIR].",
       publicationDirectorHeading: "Publication director",
       publicationDirectorBody: "Amaury Le Roux, as the site's publisher.",
       hostHeading: "Hosting",
-      hostBody:
-        "The calcile.fr site is hosted by Vercel Inc., 440 N Barranca Avenue #4133, Covina, CA 91723, USA (vercel.com). The service's API and database are hosted separately by Railway Corporation — see our privacy policy for the full list of subprocessors and related data transfers.",
+      hostBody: "The calcile.fr site is hosted by Vercel Inc., 440 N Barranca Avenue #4133, Covina, CA 91723, USA (vercel.com) — contact: privacy@vercel.com. The service's API and database are hosted by Railway Corporation, 548 Market St Suite 68956, San Francisco, CA 94104, USA (railway.com) — phone: (415) 707-7675. See our privacy policy for the full list of subprocessors and related data transfers.",
+      mediationHeading: "Consumer mediation",
+      mediationBody: "Consumer mediator for Calcile: [À REMPLIR : nom du médiateur], [À REMPLIR : adresse postale], [À REMPLIR : site web]. How to refer a dispute: see our terms of sale.",
       ipHeading: "Intellectual property",
-      ipBody:
-        "Calcile's source code, interface, and own content belong to Amaury Le Roux, except where noted otherwise (see our Licenses page for the open-source dependencies used). Unauthorized reproduction is prohibited.",
+      ipBody: "Calcile's source code, interface, and own content belong to Amaury Le Roux, except where noted otherwise (see our Licenses page for the open-source dependencies used). Unauthorized reproduction is prohibited.",
       licensesLinkLabel: "See the Licenses page",
     },
     terms: {
       metaTitle: "Terms of Sale and Use — Calcile",
       metaDescription: "Terms of sale and use for the Calcile service.",
       heading: "Terms of Sale and Use",
-      lastUpdated: "Last updated: September 11, 2026",
-      intro:
-        "By using Calcile, you agree to the following terms. This document will be expanded as the service evolves. For the publisher's and host's identity, see our Legal Notice.",
+      lastUpdated: "Last updated: October 14, 2026",
+      intro: "These terms of sale and use apply to the Calcile service, published and sold by Amaury Le Roux, sole trader (French \"entrepreneur individuel\", EI), SIREN 109 935 692, 30 ch de l'espérance, Appt D, 25000 Besançon, France — contact@calcile.fr. By using Calcile, you agree to these terms. For the publisher's and host's full identity, see our Legal Notice.",
       serviceHeading: "The service",
-      serviceBody:
-        "Calcile is a symbolic computation API and UI (solving equations, derivatives, integrals) with step-by-step explanations, currently in closed beta by invitation, with optional paid plans (Student, Prof, Lab).",
+      serviceBody: "Calcile is a symbolic computation API and UI (solving equations, derivatives, integrals) with step-by-step explanations, currently in closed beta by invitation, with optional paid plans (Student, Prof, Lab).",
       pricingHeading: "Pricing, subscription, and payment",
-      pricingBody:
-        "Calcile offers three subscription plans: Student (€4.90/month or €39/year), Prof (€25/month or €199/year), and Lab (custom pricing, dedicated contract). Displayed prices are net, all taxes included: Calcile is under the French VAT exemption scheme (\"franchise en base de TVA\", article 293 B of the General Tax Code), so VAT does not apply and does not appear on invoices. Payment is processed by our provider, Stripe; Calcile never sees or stores your card number.",
+      pricingBody: "Calcile offers three subscription plans: Student (€4.90/month or €39/year), Prof (€25/month or €199/year), and Lab (custom pricing, dedicated contract). Displayed prices are net, all taxes included: Calcile is under the French VAT exemption scheme (\"franchise en base de TVA\", article 293 B of the General Tax Code), so VAT does not apply and does not appear on invoices. Payment is processed by our provider, Stripe; Calcile never sees or stores your card number.",
       renewalHeading: "Duration, automatic renewal, and cancellation",
-      renewalBody:
-        "Student and Prof subscriptions renew automatically: unless canceled before the end of the current period, the subscription renews for the same duration (monthly or yearly, depending on the plan) and the corresponding amount is charged automatically. You can cancel at any time from your account (the \"Manage subscription\" button, which opens the Stripe billing portal): cancellation takes effect at the end of the period already paid for, with no further renewal, and access to Calcile stays active until that date. Except where the right of withdrawal described below applies, amounts already paid for a current period are not refunded pro rata.",
+      renewalBody: "Student and Prof subscriptions renew automatically: unless canceled before the end of the current period, the subscription renews for the same duration (monthly or yearly, depending on the plan) and the corresponding amount is charged automatically. You can cancel at any time from your account (the \"Manage subscription\" button, which opens the Stripe billing portal): cancellation takes effect at the end of the period already paid for, with no further renewal, and access to Calcile stays active until that date. Except where the right of withdrawal described below applies, amounts already paid for a current period are not refunded pro rata.",
       withdrawalHeading: "Right of withdrawal",
-      withdrawalBody:
-        "Under articles L221-18 et seq. of the French Consumer Code, you generally have 14 days to withdraw from a subscription entered into online, without needing to justify it. Access to Calcile is however granted immediately after payment: under article L221-28 13° of the same code, by checking the confirmation box shown before payment, you expressly request immediate performance of the service and expressly waive your right of withdrawal. Once that box is checked and payment is made, you can no longer withdraw for the current period. If you did not check that box, or if immediate performance hasn't started, you keep your right of withdrawal under ordinary conditions; contact us at contact@calcile.fr to exercise it.",
+      withdrawalBody: "Under articles L221-18 et seq. of the French Consumer Code, you have 14 days from subscribing to withdraw, without giving a reason or paying any penalty. Since Calcile is a digital service provided as soon as payment is made, by checking the box shown before payment you expressly request that it start immediately. If you then withdraw within the 14 days, you are refunded the amount paid, minus an amount proportionate to the service provided until you informed us of your decision, calculated pro rata to the days elapsed (article L221-25). The refund is made no later than 14 days after we receive your decision, using the same payment method (article L221-24). To withdraw, write to contact@calcile.fr, using the model withdrawal form on our Withdrawal and refunds page if you wish.",
+      withdrawalLinkLabel: "See the Withdrawal and refunds page",
       accuracyHeading: "Accuracy of results",
-      accuracyBody:
-        "Calcile uses SymPy (an open-source library, sympy.org) as its computation engine. Like any software, SymPy can contain bugs or poorly-handled edge cases. We therefore cannot guarantee 100% accuracy of the results and steps shown. Verify important results yourself, especially for graded academic or professional use.",
+      accuracyBody: "Calcile uses SymPy (an open-source library, sympy.org) as its computation engine. Like any software, SymPy can contain bugs or poorly-handled edge cases. We therefore cannot guarantee 100% accuracy of the results and steps shown. Verify important results yourself, especially for graded academic or professional use.",
+      warrantyHeading: "Legal guarantee of conformity",
+      warrantyBody: "As a consumer, you benefit from the legal guarantee of conformity for digital content and services (articles L224-25-12 et seq. of the French Consumer Code) for the whole duration of your subscription. If the service is not in conformity, you can have it brought into conformity or, failing that, obtain a price reduction or terminate the contract, under the conditions set by those articles. The \"Accuracy of results\" section above does not limit this guarantee. Report any defect to contact@calcile.fr.",
       accountsHeading: "Accounts",
-      accountsBody:
-        "Access is by invitation. You're responsible for keeping your password confidential and for activity on your account.",
+      accountsBody: "Access is by invitation. You're responsible for keeping your password confidential and for activity on your account. You can ask for your account to be deleted at any time by writing to contact@calcile.fr.",
       lawHeading: "Governing law and disputes",
-      lawBody:
-        "These terms are governed by French law. In the event of a dispute, contact us first at contact@calcile.fr for an amicable resolution; failing that, the competent French courts will have jurisdiction, subject to the mandatory consumer-protection rules applicable to your situation.",
+      lawBody: "These terms are governed by French law. In the event of a dispute, contact us first at contact@calcile.fr for an amicable resolution; failing that, the competent French courts will have jurisdiction, subject to the mandatory consumer-protection rules applicable to your situation.",
+      mediationHeading: "Consumer mediation",
+      mediationBody: "Under articles L611-1 et seq. of the French Consumer Code, if a dispute could not be resolved after a written complaint sent to contact@calcile.fr, you can refer it free of charge to the following consumer mediator: [À REMPLIR : nom du médiateur], [À REMPLIR : adresse postale], [À REMPLIR : site web].",
       changesHeading: "Changes",
-      changesBody:
-        "We may update these terms; significant changes will be communicated by email.",
+      changesBody: "We may update these terms; significant changes will be communicated by email.",
       contactHeading: "Contact",
       contactBody: "Questions? Reach out at contact@calcile.fr.",
       legalLinkLabel: "See the Legal Notice",
@@ -1001,32 +1075,106 @@ export const translations = {
       metaTitle: "Privacy — Calcile",
       metaDescription: "Calcile's privacy policy.",
       heading: "Privacy Policy",
-      lastUpdated: "Last updated: September 11, 2026",
-      intro:
-        "This page explains what data Calcile collects, why, and how it's used — for the calcile.fr site and the API behind it.",
+      lastUpdated: "Last updated: October 14, 2026",
+      intro: "This page explains what data Calcile collects, why, and how it's used — for the calcile.fr site and the API behind it.",
+      controllerHeading: "Data controller",
+      controllerBody: "The data controller is Amaury Le Roux, sole trader (French \"entrepreneur individuel\", EI), SIREN 109 935 692, 30 ch de l'espérance, Appt D, 25000 Besançon, France, publisher of Calcile. For any question about your data: contact@calcile.fr.",
       dataHeading: "Data we collect",
-      dataBody:
-        "We collect your email (for the waitlist and your account), your password (hashed, never stored in plain text), your calculation history (so you can find your past work), and — if you subscribe to a paid plan — the billing data managed by Stripe (Stripe customer id, subscription status, chosen plan). Calcile never sees or stores your card number: it's entered directly on Stripe's own secure payment page. We don't collect more than the service needs to run.",
-      legalBasisHeading: "Legal basis for processing",
-      legalBasisBody:
-        "Processing your data relies on the performance of our contract with you (GDPR article 6.1.b): providing access to the service, running your account, managing your subscription where applicable. Billing data is additionally processed to meet our legal and accounting obligations (GDPR article 6.1.c).",
+      dataBody: "We only collect: your email and, if you pick one, the plan you're interested in (waitlist); your email, your password (hashed, never stored in plain text) and your plan (account); your calculation and exercise-check history (so you can find your past work); if you subscribe to a paid plan, the billing data managed by Stripe (Stripe customer id, subscription status, chosen plan); and your IP address, used to protect the service against abuse (request rate limiting). Calcile never sees or stores your card number: it's entered directly on Stripe's own secure payment page.",
+      legalBasisHeading: "Purposes and legal bases",
+      legalBasisBody: "Providing the service, running your account and history, managing your subscription: performance of our contract (GDPR article 6.1.b). Keeping billing records: our legal and accounting obligations (article 6.1.c). Telling you when Calcile opens if you join the waitlist: your consent (article 6.1.a), given by signing up and withdrawable at any time through the unsubscribe link in the email or by writing to us. Protecting the service against abuse and keeping it secure (IP address, technical logs): our legitimate interest (article 6.1.f).",
       useHeading: "How we use your data",
-      useBody:
-        "Your data is used to run your account and the service (authentication, history, subscription management, transactional emails via Resend). We don't sell your data or share it for advertising purposes.",
+      useBody: "Your data is only used for the purposes above (authentication, history, subscription management, transactional emails). The waitlist is only used to announce Calcile's opening: no newsletter or commercial offer is sent to it. We don't sell your data or share it for advertising purposes.",
       retentionHeading: "Data retention",
-      retentionBody:
-        "Your account data and calculation history are kept as long as your account is active, then deleted within a reasonable delay after account deletion — except where a longer legal retention period applies, notably for accounting and billing records, kept for 10 years under the accounting obligations applicable to businesses.",
-      thirdPartyHeading: "Providers and transfers outside the EU",
-      thirdPartyBody:
-        "Calcile uses SymPy, an open-source library (see our Licenses page), which runs on our own servers — no data is sent to SymPy or a third party to perform calculations. We also use the following providers, each acting as a processor under the GDPR: Railway (API and database hosting), Stripe (payment and subscription management — Stripe Payments Europe Limited for European users), and Resend (transactional emails). These providers may process data outside the European Union, notably in the United States; such transfers are governed by the European Commission's Standard Contractual Clauses and/or certification under the EU-US Data Privacy Framework, depending on the provider.",
+      retentionBody: "Account and calculation history: kept while your account is active, then deleted after 3 years of inactivity, or as soon as you ask for your account to be deleted. Waitlist: 3 years after our last contact with you, or until you unsubscribe. Billing data and accounting records: 10 years (article L123-22 of the French Commercial Code). IP address used for rate limiting: only held in temporary counters, never stored in our database. Our hosts' technical logs (Vercel, Railway): kept for each host's own retention period, only for security and troubleshooting purposes, then automatically deleted by them.",
+      thirdPartyHeading: "Recipients, processors, and transfers outside the EU",
+      thirdPartyBody: "Your data is only accessible to Calcile's publisher and to the following providers, each acting as a processor under the GDPR: Vercel (calcile.fr site hosting), Railway (API and database hosting), Stripe (payment and subscription management — Stripe Payments Europe Limited for European users), Resend (transactional emails, such as password resets) and Mailchimp, an Intuit service (waitlist management). Calculations themselves are performed by SymPy, an open-source library (see our Licenses page), on our own servers — no data is sent to a third party to compute. These providers may process data outside the European Union, notably in the United States; such transfers are governed by the European Commission's Standard Contractual Clauses and/or certification under the EU-US Data Privacy Framework, depending on the provider.",
       cookiesHeading: "Cookies and local storage",
-      cookiesBody:
-        "Calcile uses no advertising cookies and no audience-analytics tool. The site only uses your browser's local storage (localStorage) for two uses strictly necessary to run the service: keeping you signed in, and remembering your language preference. Under CNIL's (the French data protection authority's) guidance on trackers, these uses are exempt from prior consent, since they're strictly necessary to provide the service you're requesting.",
+      cookiesBody: "Calcile sets no cookies and uses no audience-analytics or advertising tool. Only your browser's local storage is used, for strictly necessary purposes that are exempt from consent.",
+      cookiesLinkLabel: "See the cookie policy",
       rightsHeading: "Your rights",
-      rightsBody:
-        "You can request access to, correction of, deletion of, or portability of (retrieval in a reusable format) your data at any time by writing to contact@calcile.fr. If you believe your rights aren't being respected, you can also file a complaint with the CNIL (cnil.fr).",
+      rightsBody: "You have the right to access, rectify, erase, restrict, and port your data, and to object (for processing based on our legitimate interest), as well as the right to withdraw your waitlist consent at any time. You can also set instructions for what happens to your data after your death. To exercise these rights, write to contact@calcile.fr: we reply within one month. If you believe your rights aren't being respected, you can file a complaint with the CNIL, the French data protection authority (www.cnil.fr, 3 place de Fontenoy, TSA 80715, 75334 Paris Cedex 07).",
       licensesLinkLabel: "See the Licenses page",
       legalLinkLabel: "See the Legal Notice",
+    },
+    cookies: {
+      metaTitle: "Cookie policy — Calcile",
+      metaDescription: "The cookies, local storage, and third-party services used by calcile.fr.",
+      heading: "Cookie policy",
+      lastUpdated: "Last updated: October 14, 2026",
+      intro: "This page lists everything calcile.fr stores on your device, and the third-party services it uses.",
+      sections: [
+        {
+          heading: "No cookies, no third-party scripts",
+          body: "Calcile sets no cookies: no analytics, no advertising, no social media. No third-party script is loaded: the fonts and the formula-rendering libraries (KaTeX, MathLive) are served directly by calcile.fr.",
+        },
+        {
+          heading: "Local storage used",
+          body: "The site uses your browser's local storage (localStorage) for two items only: \"calcile_token\", your sign-in token, which keeps you signed in and is cleared when you sign out; and \"calcile-lang\", which remembers the language you picked.",
+        },
+        {
+          heading: "Why there is no banner",
+          body: "Both items are strictly necessary for the service you're asking for (staying signed in) or remember a choice you made yourself (the language). Under the CNIL's guidelines on trackers, they are exempt from consent — which is why Calcile shows no cookie banner. If a tracker requiring consent were ever added, a banner would let you accept or refuse it before anything is stored.",
+        },
+        {
+          heading: "External sites",
+          body: "Payment happens on Stripe's secure page, and demo booking on Calendly. Those sites apply their own cookie policies once you're redirected there; Calcile loads none of their scripts on its own pages.",
+        },
+        {
+          heading: "Clearing this data",
+          body: "You can clear local storage at any time from your browser settings (site data for calcile.fr). You'll then be signed out and the language will reset to French.",
+        },
+      ],
+      privacyLinkLabel: "See the privacy policy",
+    },
+    withdrawal: {
+      metaTitle: "Withdrawal and refunds — Calcile",
+      metaDescription: "Your 14-day right of withdrawal, pro-rata refunds, and the model withdrawal form.",
+      heading: "Withdrawal and refunds",
+      lastUpdated: "Last updated: October 14, 2026",
+      sections: [
+        {
+          heading: "Your right of withdrawal",
+          body: "If you subscribe to Calcile as a consumer, you have 14 days from subscribing to withdraw, without giving a reason or paying any penalty (articles L221-18 et seq. of the French Consumer Code).",
+        },
+        {
+          heading: "Immediate access and pro-rata refund",
+          body: "Before payment, you expressly request that the service start immediately by checking the box provided. If you then withdraw within the 14 days, you are refunded the amount paid, minus an amount proportionate to the service provided until you informed us of your decision, calculated pro rata to the days elapsed in the paid period (article L221-25). If that express request was not collected, you owe nothing: you get a full refund.",
+        },
+        {
+          heading: "How to withdraw",
+          body: "Before the 14 days are up, send us the model form below, or any other unambiguous statement of your decision to withdraw, by email to contact@calcile.fr or by post to the address given in the form. We'll acknowledge receipt by email.",
+        },
+        {
+          heading: "Refund timing and method",
+          body: "The refund is made no later than 14 days after we receive your decision, using the same payment method you used to subscribe, at no cost to you (article L221-24). Your subscription ends on the same date.",
+        },
+        {
+          heading: "After 14 days",
+          body: "After that period, you can still cancel your subscription at any time from your account: cancellation takes effect at the end of the current period, with no refund for the period already started (see our terms of sale).",
+        },
+      ],
+      formHeading: "Model withdrawal form",
+      formIntro: "(Annex to article R221-1 of the French Consumer Code. Complete and return this form only if you wish to withdraw from the contract.)",
+      formLines: [
+        "To: Amaury Le Roux (Calcile), 30 ch de l'espérance, Appt D, 25000 Besançon, France — contact@calcile.fr:",
+        "I/We (*) hereby give notice that I/We (*) withdraw from my/our (*) contract of sale of the following goods (*)/for the provision of the following service (*):",
+        "Ordered on (*)/received on (*):",
+        "Name of consumer(s):",
+        "Address of consumer(s):",
+        "Signature of consumer(s) (only if this form is notified on paper):",
+        "Date:",
+      ],
+      formFootnote: "(*) Delete as appropriate.",
+      termsLinkLabel: "See the terms of sale",
+    },
+    privacyNotice: {
+      linkLabel: "Privacy policy",
+      waitlist: "Your email is only used to tell you when Calcile opens. It's managed through Mailchimp and you can unsubscribe at any time. Learn more:",
+      login: "Your credentials are only used to sign you in to your account. Learn more:",
+      resetRequest: "Your email is only used to send you the reset link. Learn more:",
+      password: "Your password is stored hashed, never in plain text. Learn more:",
+      solve: "Your calculations and checks are saved to your history so you can find them again. Don't enter personal data (such as your students' names). Learn more:",
     },
   },
 } as const;
@@ -1069,6 +1217,13 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       // ignore
     }
   }
+
+  // _document.tsx renders <html lang="fr"> statically; keep it in sync with
+  // the active language so screen readers pronounce English text correctly
+  // (WCAG 3.1.1).
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
 
   return (
     <LanguageContext.Provider value={{ lang, setLang, t: translations[lang] }}>

@@ -18,16 +18,15 @@ export default function Footer() {
           <Link href="/privacy" className="hover:text-ink-soft">
             {t.footer.privacyLinkLabel}
           </Link>
+          <Link href="/cookies" className="hover:text-ink-soft">
+            {t.footer.cookiesLinkLabel}
+          </Link>
+          <Link href="/retractation" className="hover:text-ink-soft">
+            {t.footer.withdrawalLinkLabel}
+          </Link>
           <Link href="/mentions-legales" className="hover:text-ink-soft">
             {t.footer.legalLinkLabel}
           </Link>
-          {/* Placeholders : à remplacer par les vrais comptes une fois créés */}
-          <a href="#" className="hover:text-ink-soft">
-            Twitter
-          </a>
-          <a href="#" className="hover:text-ink-soft">
-            Reddit
-          </a>
         </div>
       </div>
       <div className="border-t border-rule">

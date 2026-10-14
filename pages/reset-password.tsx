@@ -3,6 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import PrivacyNotice from "@/components/PrivacyNotice";
 import { useLanguage } from "@/lib/i18n";
 import { API_URL } from "@/lib/api";
 
@@ -52,7 +53,7 @@ function RequestForm() {
 
   if (success) {
     return (
-      <p className="mt-8 text-center text-sm font-medium text-green-600">
+      <p className="mt-8 text-center text-sm font-medium text-check">
         {t.auth.passwordReset.requestSuccess}
       </p>
     );
@@ -86,6 +87,7 @@ function RequestForm() {
           ? t.auth.passwordReset.requestSubmitLoading
           : t.auth.passwordReset.requestSubmit}
       </button>
+      <PrivacyNotice text={t.privacyNotice.resetRequest} />
     </form>
   );
 }
@@ -142,7 +144,7 @@ function ConfirmForm({ token }: { token: string }) {
 
   if (success) {
     return (
-      <p className="mt-8 text-center text-sm font-medium text-green-600">
+      <p className="mt-8 text-center text-sm font-medium text-check">
         {t.auth.passwordReset.confirmSuccess}
       </p>
     );
@@ -196,6 +198,7 @@ function ConfirmForm({ token }: { token: string }) {
           ? t.auth.passwordReset.confirmSubmitLoading
           : t.auth.passwordReset.confirmSubmit}
       </button>
+      <PrivacyNotice text={t.privacyNotice.password} />
     </form>
   );
 }

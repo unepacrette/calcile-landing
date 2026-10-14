@@ -3,6 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
+import PrivacyNotice from "@/components/PrivacyNotice";
 import { useLanguage } from "@/lib/i18n";
 import { API_URL, setStoredToken } from "@/lib/api";
 
@@ -112,6 +113,7 @@ export default function Login() {
                 ? t.auth.loginSubmitLoading
                 : t.auth.loginSubmit}
             </button>
+            <PrivacyNotice text={t.privacyNotice.login} />
           </form>
 
           <p className="mt-4 text-center text-sm">

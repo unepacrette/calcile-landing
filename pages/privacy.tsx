@@ -28,6 +28,13 @@ export default function Privacy() {
         </p>
 
         <h2 className="mt-10 text-lg font-display font-semibold text-ink">
+          {t.privacy.controllerHeading}
+        </h2>
+        <p className="mt-3 text-base leading-relaxed text-ink-soft">
+          {t.privacy.controllerBody}
+        </p>
+
+        <h2 className="mt-10 text-lg font-display font-semibold text-ink">
           {t.privacy.dataHeading}
         </h2>
         <p className="mt-3 text-base leading-relaxed text-ink-soft">
@@ -67,6 +74,14 @@ export default function Privacy() {
         </h2>
         <p className="mt-3 text-base leading-relaxed text-ink-soft">
           {t.privacy.cookiesBody}
+        </p>
+        <p className="mt-3">
+          <Link
+            href="/cookies"
+            className="text-sm font-semibold text-mark-strong hover:underline"
+          >
+            {t.privacy.cookiesLinkLabel} →
+          </Link>
         </p>
 
         <h2 className="mt-10 text-lg font-display font-semibold text-ink">

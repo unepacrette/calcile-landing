@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import PrivacyNotice from "@/components/PrivacyNotice";
 import { useLanguage } from "@/lib/i18n";
 
 type Status = "idle" | "loading" | "success" | "alreadySubscribed" | "error";
@@ -111,6 +112,7 @@ export default function WaitlistForm({
             {status === "loading" ? t.waitlist.submitLoading : t.waitlist.submit}
           </button>
         </form>
+        <PrivacyNotice text={t.privacyNotice.waitlist} tone="dark" className="mx-auto mt-4 max-w-md" />
 
         {status === "success" && (
           <p className="mt-4 text-sm font-medium text-paper-raised">

@@ -44,6 +44,13 @@ export default function MentionsLegales() {
         </p>
 
         <h2 className="mt-10 text-lg font-display font-semibold text-ink">
+          {t.legal.mediationHeading}
+        </h2>
+        <p className="mt-3 text-base leading-relaxed text-ink-soft">
+          {t.legal.mediationBody}
+        </p>
+
+        <h2 className="mt-10 text-lg font-display font-semibold text-ink">
           {t.legal.ipHeading}
         </h2>
         <p className="mt-3 text-base leading-relaxed text-ink-soft">
