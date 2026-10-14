@@ -60,9 +60,9 @@
     "semantic_hash": "c3d2029da0cf9d33a7fe99ce15d2fe38"
   },
   "lib/i18n.tsx": {
-    "mtime": 1791937400.6989179,
-    "seen": 1791937425.707683,
-    "ast_hash": "3bc63bc8e321d7b467c96657ebe75253",
+    "mtime": 1791937699.2777514,
+    "seen": 1791937713.1126552,
+    "ast_hash": "d90c68c23a9ac60d50a653174fc724aa",
     "semantic_hash": ""
   },
   "next-env.d.ts": {
@@ -126,9 +126,9 @@
     "semantic_hash": ""
   },
   "pages/mentions-legales.tsx": {
-    "mtime": 1789240819.5222135,
-    "seen": 1790887792.81875,
-    "ast_hash": "977b27737648d1c4420cd42f254c30e7",
+    "mtime": 1791937503.6656609,
+    "seen": 1791937682.168546,
+    "ast_hash": "d3d47b9d717a3bb9900c4eb8b722e0d7",
     "semantic_hash": ""
   },
   "pages/privacy.tsx": {

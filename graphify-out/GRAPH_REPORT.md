@@ -1,7 +1,7 @@
 # Graph Report - calcile-landing  (2026-10-14)
 
 ## Corpus Check
-- 42 files · ~37,318 words
+- 42 files · ~37,446 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `134bde4d`
+- Built from commit: `a5b45f49`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 

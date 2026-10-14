@@ -40,7 +40,7 @@
       "file_type": "code",
       "norm_label": "languagecontextvalue",
       "source_file": "lib/i18n.tsx",
-      "source_location": "L1183"
+      "source_location": "L1187"
     },
     {
       "id": "lib_i18n_translations",
@@ -735,7 +735,7 @@
       "file_type": "code",
       "norm_label": "uselanguage()",
       "source_file": "lib/i18n.tsx",
-      "source_location": "L1231"
+      "source_location": "L1235"
     },
     {
       "id": "pages_about_about",
@@ -1359,7 +1359,7 @@
       "file_type": "code",
       "norm_label": "languageprovider()",
       "source_file": "lib/i18n.tsx",
-      "source_location": "L1191"
+      "source_location": "L1195"
     },
     {
       "id": "lib_i18n_languageprovider_setlang",
@@ -1371,7 +1371,7 @@
       "file_type": "code",
       "norm_label": "setlang()",
       "source_file": "lib/i18n.tsx",
-      "source_location": "L1208"
+      "source_location": "L1212"
     },
     {
       "id": "pages_app_app",
@@ -1904,7 +1904,7 @@
       "file_type": "code",
       "norm_label": "languagecontext",
       "source_file": "lib/i18n.tsx",
-      "source_location": "L1189"
+      "source_location": "L1193"
     },
     {
       "id": "pages_about",
@@ -7578,7 +7578,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lib/i18n.tsx",
-      "source_location": "L1181",
+      "source_location": "L1185",
       "weight": 1.0
     },
     {
@@ -7589,7 +7589,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lib/i18n.tsx",
-      "source_location": "L1183",
+      "source_location": "L1187",
       "weight": 1.0
     },
     {
@@ -7600,7 +7600,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lib/i18n.tsx",
-      "source_location": "L1189",
+      "source_location": "L1193",
       "weight": 1.0
     },
     {
@@ -7611,7 +7611,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lib/i18n.tsx",
-      "source_location": "L1191",
+      "source_location": "L1195",
       "weight": 1.0
     },
     {
@@ -7622,7 +7622,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lib/i18n.tsx",
-      "source_location": "L1231",
+      "source_location": "L1235",
       "weight": 1.0
     },
     {
@@ -9425,10 +9425,10 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "lib/i18n.tsx",
-      "source_location": "L1225",
+      "source_location": "L1229",
       "weight": 1.0
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "134bde4d3d4612ce70ac78ffa2bc4d70d01c4959"
+  "built_at_commit": "a5b45f49ccd2228ed6ef358effd40fc32fd9815a"
 }
