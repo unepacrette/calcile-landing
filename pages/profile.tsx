@@ -221,7 +221,13 @@ export default function Profile() {
       const response = await fetch(`${API_URL}/api/billing/checkout`, {
         method: "POST",
         headers: authHeaders(token),
-        body: JSON.stringify({ tier, cycle }),
+        // Recorded server-side with a timestamp (art. L221-25) -- the API
+        // rejects a checkout without it (422), checkbox or not.
+        body: JSON.stringify({
+          tier,
+          cycle,
+          immediate_performance_consent: withdrawalConsent,
+        }),
       });
       if (response.status === 401) {
         clearStoredToken();

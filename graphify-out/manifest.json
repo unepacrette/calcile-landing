@@ -6,8 +6,8 @@
     "semantic_hash": ""
   },
   "components/Footer.tsx": {
-    "mtime": 1791937365.611983,
-    "seen": 1791937425.707672,
+    "mtime": 1791937843.5374448,
+    "seen": 1791937844.3447108,
     "ast_hash": "fe3d1d888cf42c15052cc068ff409694",
     "semantic_hash": ""
   },
@@ -42,8 +42,8 @@
     "semantic_hash": ""
   },
   "components/WaitlistForm.tsx": {
-    "mtime": 1791937389.4359393,
-    "seen": 1791937425.70768,
+    "mtime": 1791937843.5382998,
+    "seen": 1791937844.3447208,
     "ast_hash": "c1265fe2b7df3d60d99abaeebb81098d",
     "semantic_hash": ""
   },
@@ -60,8 +60,8 @@
     "semantic_hash": "c3d2029da0cf9d33a7fe99ce15d2fe38"
   },
   "lib/i18n.tsx": {
-    "mtime": 1791937699.2777514,
-    "seen": 1791937713.1126552,
+    "mtime": 1791937843.542302,
+    "seen": 1791937844.344724,
     "ast_hash": "d90c68c23a9ac60d50a653174fc724aa",
     "semantic_hash": ""
   },
@@ -120,44 +120,44 @@
     "semantic_hash": ""
   },
   "pages/login.tsx": {
-    "mtime": 1791937389.436504,
-    "seen": 1791937425.7076921,
+    "mtime": 1791937843.5428264,
+    "seen": 1791937844.344733,
     "ast_hash": "e4a39306f56fb3ffa805d264ac8aee71",
     "semantic_hash": ""
   },
   "pages/mentions-legales.tsx": {
-    "mtime": 1791937503.6656609,
-    "seen": 1791937682.168546,
+    "mtime": 1791937843.543001,
+    "seen": 1791937844.344734,
     "ast_hash": "d3d47b9d717a3bb9900c4eb8b722e0d7",
     "semantic_hash": ""
   },
   "pages/privacy.tsx": {
-    "mtime": 1791937350.9239142,
-    "seen": 1791937425.707693,
+    "mtime": 1791937843.5432916,
+    "seen": 1791937844.344734,
     "ast_hash": "1d2754f875b3eba5b9387a4d9e9170d5",
     "semantic_hash": ""
   },
   "pages/profile.tsx": {
-    "mtime": 1791937400.6984143,
-    "seen": 1791937425.707693,
-    "ast_hash": "b8941d61c5f35d131fa8bec602a1821f",
+    "mtime": 1791938223.3399148,
+    "seen": 1791938634.960337,
+    "ast_hash": "b3af054a00a504b276ad2de2b295ee84",
     "semantic_hash": ""
   },
   "pages/reset-password.tsx": {
-    "mtime": 1791937400.698255,
-    "seen": 1791937425.707694,
+    "mtime": 1791937843.5437984,
+    "seen": 1791937844.344735,
     "ast_hash": "18fd7f107df2907827cf195a5f957306",
     "semantic_hash": ""
   },
   "pages/solve.tsx": {
-    "mtime": 1791937392.9654198,
-    "seen": 1791937425.707695,
+    "mtime": 1791937843.5445938,
+    "seen": 1791937844.344736,
     "ast_hash": "d8c5b2aadcf222e88ec9a4d998ac82df",
     "semantic_hash": ""
   },
   "pages/terms.tsx": {
-    "mtime": 1791937350.924315,
-    "seen": 1791937425.7076962,
+    "mtime": 1791937843.5453174,
+    "seen": 1791937844.344737,
     "ast_hash": "de0895b451c170450a17a445d3e66fde",
     "semantic_hash": ""
   },
@@ -216,8 +216,8 @@
     "semantic_hash": ""
   },
   "CLAUDE.md": {
-    "mtime": 1791937424.7195382,
-    "seen": 1791937425.707699,
+    "mtime": 1791937843.5372374,
+    "seen": 1791937844.3447459,
     "ast_hash": "324efef391614a50e007e46a3944a635",
     "semantic_hash": ""
   },
@@ -234,20 +234,20 @@
     "semantic_hash": ""
   },
   "components/PrivacyNotice.tsx": {
-    "mtime": 1791937389.4002528,
-    "seen": 1791937425.707679,
+    "mtime": 1791937843.5378177,
+    "seen": 1791937844.34472,
     "ast_hash": "54eb7273b9ce9b001a5d65b2baed3105",
     "semantic_hash": ""
   },
   "pages/cookies.tsx": {
-    "mtime": 1791937365.5773895,
-    "seen": 1791937425.707689,
+    "mtime": 1791937843.542583,
+    "seen": 1791937844.3447301,
     "ast_hash": "a254c567700e9d6f83fb1721a0fdeb1a",
     "semantic_hash": ""
   },
   "pages/retractation.tsx": {
-    "mtime": 1791937365.5861955,
-    "seen": 1791937425.707695,
+    "mtime": 1791937843.5439916,
+    "seen": 1791937844.344736,
     "ast_hash": "38222174817dcd3fda5ca72942963d45",
     "semantic_hash": ""
   }

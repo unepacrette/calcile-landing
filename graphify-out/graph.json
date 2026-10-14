@@ -1527,7 +1527,7 @@
       "file_type": "code",
       "norm_label": "handlemanagesubscription()",
       "source_file": "pages/profile.tsx",
-      "source_location": "L245"
+      "source_location": "L251"
     },
     {
       "id": "pages_profile_profile_handlesubmit",
@@ -1539,7 +1539,7 @@
       "file_type": "code",
       "norm_label": "handlesubmit()",
       "source_file": "pages/profile.tsx",
-      "source_location": "L274"
+      "source_location": "L280"
     },
     {
       "id": "pages_profile_profile_handlesubscribe",
@@ -3882,7 +3882,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "pages/profile.tsx",
-      "source_location": "L449",
+      "source_location": "L455",
       "weight": 1.0
     },
     {
@@ -3894,7 +3894,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "pages/profile.tsx",
-      "source_location": "L451",
+      "source_location": "L457",
       "weight": 1.0
     },
     {
@@ -3906,7 +3906,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "pages/profile.tsx",
-      "source_location": "L253",
+      "source_location": "L259",
       "weight": 1.0
     },
     {
@@ -3918,7 +3918,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "pages/profile.tsx",
-      "source_location": "L256",
+      "source_location": "L262",
       "weight": 1.0
     },
     {
@@ -3930,7 +3930,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "pages/profile.tsx",
-      "source_location": "L295",
+      "source_location": "L301",
       "weight": 1.0
     },
     {
@@ -3954,7 +3954,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "pages/profile.tsx",
-      "source_location": "L227",
+      "source_location": "L233",
       "weight": 1.0
     },
     {
@@ -8381,7 +8381,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "pages/profile.tsx",
-      "source_location": "L245",
+      "source_location": "L251",
       "weight": 1.0
     },
     {
@@ -8392,7 +8392,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "pages/profile.tsx",
-      "source_location": "L274",
+      "source_location": "L280",
       "weight": 1.0
     },
     {
@@ -9430,5 +9430,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "a5b45f49ccd2228ed6ef358effd40fc32fd9815a"
+  "built_at_commit": "1fe2b4194bdcba24b01fa9745ccc5f772fb59da5"
 }
