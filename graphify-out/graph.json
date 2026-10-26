@@ -17,6 +17,58 @@
       "source_location": "L3"
     },
     {
+      "id": "components_privacynotice_privacynoticeprops",
+      "label": "PrivacyNoticeProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "useLanguage",
+      "file_type": "code",
+      "norm_label": "privacynoticeprops",
+      "source_file": "components/PrivacyNotice.tsx",
+      "source_location": "L4"
+    },
+    {
+      "id": "components_waitlistform_status",
+      "label": "Status",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "useLanguage",
+      "file_type": "code",
+      "norm_label": "status",
+      "source_file": "components/WaitlistForm.tsx",
+      "source_location": "L5"
+    },
+    {
+      "id": "components_waitlistform_waitlistapiresponse",
+      "label": "WaitlistApiResponse",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "useLanguage",
+      "file_type": "code",
+      "norm_label": "waitlistapiresponse",
+      "source_file": "components/WaitlistForm.tsx",
+      "source_location": "L11"
+    },
+    {
+      "id": "components_waitlistform_waitlistformprops",
+      "label": "WaitlistFormProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "useLanguage",
+      "file_type": "code",
+      "norm_label": "waitlistformprops",
+      "source_file": "components/WaitlistForm.tsx",
+      "source_location": "L15"
+    },
+    {
       "id": "lib_i18n_lang",
       "label": "Lang",
       "_callable": true,
@@ -40,7 +92,7 @@
       "file_type": "code",
       "norm_label": "languagecontextvalue",
       "source_file": "lib/i18n.tsx",
-      "source_location": "L1187"
+      "source_location": "L1185"
     },
     {
       "id": "lib_i18n_translations",
@@ -54,6 +106,32 @@
       "norm_label": "translations",
       "source_file": "lib/i18n.tsx",
       "source_location": "L5"
+    },
+    {
+      "id": "pages_login_loginsuccess",
+      "label": "LoginSuccess",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "useLanguage",
+      "file_type": "code",
+      "norm_label": "loginsuccess",
+      "source_file": "pages/login.tsx",
+      "source_location": "L12"
+    },
+    {
+      "id": "pages_login_status",
+      "label": "Status",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "useLanguage",
+      "file_type": "code",
+      "norm_label": "status",
+      "source_file": "pages/login.tsx",
+      "source_location": "L10"
     },
     {
       "id": "pages_reset_password_status",
@@ -482,7 +560,7 @@
       "file_type": "code",
       "norm_label": "mailchimpconfig",
       "source_file": "pages/api/waitlist.ts",
-      "source_location": "L25"
+      "source_location": "L33"
     },
     {
       "id": "pages_api_waitlist_mailchimperrorbody",
@@ -495,7 +573,20 @@
       "file_type": "code",
       "norm_label": "mailchimperrorbody",
       "source_file": "pages/api/waitlist.ts",
-      "source_location": "L20"
+      "source_location": "L28"
+    },
+    {
+      "id": "pages_api_waitlist_waitlisthandlerdeps",
+      "label": "WaitlistHandlerDeps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "waitlist.ts",
+      "file_type": "code",
+      "norm_label": "waitlisthandlerdeps",
+      "source_file": "pages/api/waitlist.ts",
+      "source_location": "L81"
     },
     {
       "id": "pages_api_waitlist_waitlistresponse",
@@ -508,84 +599,19 @@
       "file_type": "code",
       "norm_label": "waitlistresponse",
       "source_file": "pages/api/waitlist.ts",
-      "source_location": "L4"
-    },
-    {
-      "id": "components_privacynotice_privacynoticeprops",
-      "label": "PrivacyNoticeProps",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "login.tsx",
-      "file_type": "code",
-      "norm_label": "privacynoticeprops",
-      "source_file": "components/PrivacyNotice.tsx",
-      "source_location": "L4"
-    },
-    {
-      "id": "components_waitlistform_status",
-      "label": "Status",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "login.tsx",
-      "file_type": "code",
-      "norm_label": "status",
-      "source_file": "components/WaitlistForm.tsx",
-      "source_location": "L5"
-    },
-    {
-      "id": "components_waitlistform_waitlistapiresponse",
-      "label": "WaitlistApiResponse",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "login.tsx",
-      "file_type": "code",
-      "norm_label": "waitlistapiresponse",
-      "source_file": "components/WaitlistForm.tsx",
-      "source_location": "L7"
-    },
-    {
-      "id": "components_waitlistform_waitlistformprops",
-      "label": "WaitlistFormProps",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "login.tsx",
-      "file_type": "code",
-      "norm_label": "waitlistformprops",
-      "source_file": "components/WaitlistForm.tsx",
-      "source_location": "L11"
-    },
-    {
-      "id": "pages_login_loginsuccess",
-      "label": "LoginSuccess",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 6,
-      "community_name": "login.tsx",
-      "file_type": "code",
-      "norm_label": "loginsuccess",
-      "source_file": "pages/login.tsx",
       "source_location": "L12"
     },
     {
-      "id": "pages_login_status",
-      "label": "Status",
+      "id": "tests_waitlist_test_fetchcall",
+      "label": "FetchCall",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
-      "community": 6,
-      "community_name": "login.tsx",
+      "community": 5,
+      "community_name": "waitlist.ts",
       "file_type": "code",
-      "norm_label": "status",
-      "source_file": "pages/login.tsx",
+      "norm_label": "fetchcall",
+      "source_file": "tests/waitlist.test.ts",
       "source_location": "L10"
     },
     {
@@ -595,7 +621,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 8,
-      "community_name": "react",
+      "community_name": "FormulaSheet.tsx",
       "file_type": "code",
       "norm_label": "formulacategoryid",
       "source_file": "lib/formulaSheet.ts",
@@ -608,7 +634,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 8,
-      "community_name": "react",
+      "community_name": "FormulaSheet.tsx",
       "file_type": "code",
       "norm_label": "formulaid",
       "source_file": "lib/formulaSheet.ts",
@@ -726,6 +752,66 @@
       "source_location": "L7"
     },
     {
+      "id": "components_privacynotice_privacynotice",
+      "label": "PrivacyNotice()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "useLanguage",
+      "file_type": "code",
+      "norm_label": "privacynotice()",
+      "source_file": "components/PrivacyNotice.tsx",
+      "source_location": "L14"
+    },
+    {
+      "id": "components_waitlistform_waitlistform",
+      "label": "WaitlistForm()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "useLanguage",
+      "file_type": "code",
+      "norm_label": "waitlistform()",
+      "source_file": "components/WaitlistForm.tsx",
+      "source_location": "L20"
+    },
+    {
+      "id": "components_waitlistform_waitlistform_handlecleartier",
+      "label": "handleClearTier()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "useLanguage",
+      "file_type": "code",
+      "norm_label": "handlecleartier()",
+      "source_file": "components/WaitlistForm.tsx",
+      "source_location": "L33"
+    },
+    {
+      "id": "components_waitlistform_waitlistform_handlesubmit",
+      "label": "handleSubmit()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "useLanguage",
+      "file_type": "code",
+      "norm_label": "handlesubmit()",
+      "source_file": "components/WaitlistForm.tsx",
+      "source_location": "L37"
+    },
+    {
+      "id": "lib_api_setstoredtoken",
+      "label": "setStoredToken()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "useLanguage",
+      "file_type": "code",
+      "norm_label": "setstoredtoken()",
+      "source_file": "lib/api.ts",
+      "source_location": "L18"
+    },
+    {
       "id": "lib_i18n_uselanguage",
       "label": "useLanguage()",
       "_callable": true,
@@ -735,7 +821,7 @@
       "file_type": "code",
       "norm_label": "uselanguage()",
       "source_file": "lib/i18n.tsx",
-      "source_location": "L1235"
+      "source_location": "L1233"
     },
     {
       "id": "pages_about_about",
@@ -783,7 +869,7 @@
       "file_type": "code",
       "norm_label": "deptable()",
       "source_file": "pages/licenses.tsx",
-      "source_location": "L67"
+      "source_location": "L71"
     },
     {
       "id": "pages_licenses_licenses",
@@ -795,7 +881,31 @@
       "file_type": "code",
       "norm_label": "licenses()",
       "source_file": "pages/licenses.tsx",
-      "source_location": "L98"
+      "source_location": "L102"
+    },
+    {
+      "id": "pages_login_login",
+      "label": "Login()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "useLanguage",
+      "file_type": "code",
+      "norm_label": "login()",
+      "source_file": "pages/login.tsx",
+      "source_location": "L14"
+    },
+    {
+      "id": "pages_login_login_handlesubmit",
+      "label": "handleSubmit()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "useLanguage",
+      "file_type": "code",
+      "norm_label": "handlesubmit()",
+      "source_file": "pages/login.tsx",
+      "source_location": "L22"
     },
     {
       "id": "pages_mentions_legales_mentionslegales",
@@ -1290,18 +1400,6 @@
       "source_location": "L1205"
     },
     {
-      "id": "pages_solve_solve_handlelogout",
-      "label": "handleLogout()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 1,
-      "community_name": "solve.tsx",
-      "file_type": "code",
-      "norm_label": "handlelogout()",
-      "source_file": "pages/solve.tsx",
-      "source_location": "L1195"
-    },
-    {
       "id": "pages_solve_solve_handlesubmit",
       "label": "handleSubmit()",
       "_callable": true,
@@ -1359,7 +1457,7 @@
       "file_type": "code",
       "norm_label": "languageprovider()",
       "source_file": "lib/i18n.tsx",
-      "source_location": "L1195"
+      "source_location": "L1193"
     },
     {
       "id": "lib_i18n_languageprovider_setlang",
@@ -1371,7 +1469,7 @@
       "file_type": "code",
       "norm_label": "setlang()",
       "source_file": "lib/i18n.tsx",
-      "source_location": "L1212"
+      "source_location": "L1210"
     },
     {
       "id": "pages_app_app",
@@ -1602,6 +1700,18 @@
       "source_location": "L29"
     },
     {
+      "id": "pages_solve_solve_handlelogout",
+      "label": "handleLogout()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "profile.tsx",
+      "file_type": "code",
+      "norm_label": "handlelogout()",
+      "source_file": "pages/solve.tsx",
+      "source_location": "L1195"
+    },
+    {
       "id": "pages_solve_solve_loadtier",
       "label": "loadTier()",
       "_callable": true,
@@ -1614,6 +1724,42 @@
       "source_location": "L1026"
     },
     {
+      "id": "lib_rate_limit_createwaitlistlimiter",
+      "label": "createWaitlistLimiter()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "waitlist.ts",
+      "file_type": "code",
+      "norm_label": "createwaitlistlimiter()",
+      "source_file": "lib/rate-limit.ts",
+      "source_location": "L120"
+    },
+    {
+      "id": "lib_rate_limit_getclientip",
+      "label": "getClientIp()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "waitlist.ts",
+      "file_type": "code",
+      "norm_label": "getclientip()",
+      "source_file": "lib/rate-limit.ts",
+      "source_location": "L22"
+    },
+    {
+      "id": "lib_rate_limit_normalizeipkey",
+      "label": "normalizeIpKey()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "waitlist.ts",
+      "file_type": "code",
+      "norm_label": "normalizeipkey()",
+      "source_file": "lib/rate-limit.ts",
+      "source_location": "L38"
+    },
+    {
       "id": "pages_api_waitlist_basicauthheader",
       "label": "basicAuthHeader()",
       "_callable": true,
@@ -1623,7 +1769,7 @@
       "file_type": "code",
       "norm_label": "basicauthheader()",
       "source_file": "pages/api/waitlist.ts",
-      "source_location": "L31"
+      "source_location": "L39"
     },
     {
       "id": "pages_api_waitlist_count_basicauthheader",
@@ -1650,16 +1796,16 @@
       "source_location": "L21"
     },
     {
-      "id": "pages_api_waitlist_handler",
-      "label": "handler()",
+      "id": "pages_api_waitlist_createwaitlisthandler",
+      "label": "createWaitlistHandler()",
       "_callable": true,
       "_origin": "ast",
       "community": 5,
       "community_name": "waitlist.ts",
       "file_type": "code",
-      "norm_label": "handler()",
+      "norm_label": "createwaitlisthandler()",
       "source_file": "pages/api/waitlist.ts",
-      "source_location": "L69"
+      "source_location": "L88"
     },
     {
       "id": "pages_api_waitlist_tagsubscriberbytier",
@@ -1671,91 +1817,103 @@
       "file_type": "code",
       "norm_label": "tagsubscriberbytier()",
       "source_file": "pages/api/waitlist.ts",
-      "source_location": "L38"
+      "source_location": "L46"
     },
     {
-      "id": "components_privacynotice_privacynotice",
-      "label": "PrivacyNotice()",
+      "id": "tests_rate_limit_test_reqwithheaders",
+      "label": "reqWithHeaders()",
       "_callable": true,
       "_origin": "ast",
-      "community": 6,
-      "community_name": "login.tsx",
+      "community": 5,
+      "community_name": "waitlist.ts",
       "file_type": "code",
-      "norm_label": "privacynotice()",
-      "source_file": "components/PrivacyNotice.tsx",
-      "source_location": "L14"
+      "norm_label": "reqwithheaders()",
+      "source_file": "tests/rate-limit.test.ts",
+      "source_location": "L6"
     },
     {
-      "id": "components_waitlistform_waitlistform",
-      "label": "WaitlistForm()",
+      "id": "tests_waitlist_test_allowall",
+      "label": "allowAll()",
       "_callable": true,
       "_origin": "ast",
-      "community": 6,
-      "community_name": "login.tsx",
+      "community": 5,
+      "community_name": "waitlist.ts",
       "file_type": "code",
-      "norm_label": "waitlistform()",
-      "source_file": "components/WaitlistForm.tsx",
-      "source_location": "L16"
+      "norm_label": "allowall()",
+      "source_file": "tests/waitlist.test.ts",
+      "source_location": "L66"
     },
     {
-      "id": "components_waitlistform_waitlistform_handlecleartier",
-      "label": "handleClearTier()",
+      "id": "tests_waitlist_test_createfetchmock",
+      "label": "createFetchMock()",
       "_callable": true,
       "_origin": "ast",
-      "community": 6,
-      "community_name": "login.tsx",
+      "community": 5,
+      "community_name": "waitlist.ts",
       "file_type": "code",
-      "norm_label": "handlecleartier()",
-      "source_file": "components/WaitlistForm.tsx",
-      "source_location": "L29"
+      "norm_label": "createfetchmock()",
+      "source_file": "tests/waitlist.test.ts",
+      "source_location": "L54"
     },
     {
-      "id": "components_waitlistform_waitlistform_handlesubmit",
-      "label": "handleSubmit()",
+      "id": "tests_waitlist_test_createmockreq",
+      "label": "createMockReq()",
       "_callable": true,
       "_origin": "ast",
-      "community": 6,
-      "community_name": "login.tsx",
+      "community": 5,
+      "community_name": "waitlist.ts",
       "file_type": "code",
-      "norm_label": "handlesubmit()",
-      "source_file": "components/WaitlistForm.tsx",
-      "source_location": "L33"
+      "norm_label": "createmockreq()",
+      "source_file": "tests/waitlist.test.ts",
+      "source_location": "L34"
     },
     {
-      "id": "lib_api_setstoredtoken",
-      "label": "setStoredToken()",
+      "id": "tests_waitlist_test_createmockres",
+      "label": "createMockRes()",
       "_callable": true,
       "_origin": "ast",
-      "community": 6,
-      "community_name": "login.tsx",
+      "community": 5,
+      "community_name": "waitlist.ts",
       "file_type": "code",
-      "norm_label": "setstoredtoken()",
-      "source_file": "lib/api.ts",
-      "source_location": "L18"
+      "norm_label": "createmockres()",
+      "source_file": "tests/waitlist.test.ts",
+      "source_location": "L12"
     },
     {
-      "id": "pages_login_login",
-      "label": "Login()",
+      "id": "tests_waitlist_test_denyall",
+      "label": "denyAll()",
       "_callable": true,
       "_origin": "ast",
-      "community": 6,
-      "community_name": "login.tsx",
+      "community": 5,
+      "community_name": "waitlist.ts",
       "file_type": "code",
-      "norm_label": "login()",
-      "source_file": "pages/login.tsx",
-      "source_location": "L14"
+      "norm_label": "denyall()",
+      "source_file": "tests/waitlist.test.ts",
+      "source_location": "L67"
     },
     {
-      "id": "pages_login_login_handlesubmit",
-      "label": "handleSubmit()",
+      "id": "tests_waitlist_test_mailchimpresponse",
+      "label": "mailchimpResponse()",
       "_callable": true,
       "_origin": "ast",
-      "community": 6,
-      "community_name": "login.tsx",
+      "community": 5,
+      "community_name": "waitlist.ts",
       "file_type": "code",
-      "norm_label": "handlesubmit()",
-      "source_file": "pages/login.tsx",
-      "source_location": "L22"
+      "norm_label": "mailchimpresponse()",
+      "source_file": "tests/waitlist.test.ts",
+      "source_location": "L46"
+    },
+    {
+      "id": "tests_waitlist_test_runhandler",
+      "label": "runHandler()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "waitlist.ts",
+      "file_type": "code",
+      "norm_label": "runhandler()",
+      "source_file": "tests/waitlist.test.ts",
+      "source_location": "L69"
     },
     {
       "id": "components_formulasheet_formulasheet",
@@ -1763,7 +1921,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 8,
-      "community_name": "react",
+      "community_name": "FormulaSheet.tsx",
       "file_type": "code",
       "norm_label": "formulasheet()",
       "source_file": "components/FormulaSheet.tsx",
@@ -1775,7 +1933,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 8,
-      "community_name": "react",
+      "community_name": "FormulaSheet.tsx",
       "file_type": "code",
       "norm_label": "togglecategory()",
       "source_file": "components/FormulaSheet.tsx",
@@ -1787,7 +1945,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 8,
-      "community_name": "react",
+      "community_name": "FormulaSheet.tsx",
       "file_type": "code",
       "norm_label": "mathrender()",
       "source_file": "components/MathRender.tsx",
@@ -1852,6 +2010,28 @@
       "source_location": "L1"
     },
     {
+      "id": "components_hero",
+      "label": "Hero.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "useLanguage",
+      "file_type": "code",
+      "norm_label": "hero.tsx",
+      "source_file": "components/Hero.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "components_hero_demo_steps",
+      "label": "DEMO_STEPS",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "useLanguage",
+      "file_type": "code",
+      "norm_label": "demo_steps",
+      "source_file": "components/Hero.tsx",
+      "source_location": "L17"
+    },
+    {
       "id": "components_howitworks",
       "label": "HowItWorks.tsx",
       "_origin": "ast",
@@ -1885,6 +2065,28 @@
       "source_location": "L1"
     },
     {
+      "id": "components_privacynotice",
+      "label": "PrivacyNotice.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "useLanguage",
+      "file_type": "code",
+      "norm_label": "privacynotice.tsx",
+      "source_file": "components/PrivacyNotice.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "components_waitlistform",
+      "label": "WaitlistForm.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "useLanguage",
+      "file_type": "code",
+      "norm_label": "waitlistform.tsx",
+      "source_file": "components/WaitlistForm.tsx",
+      "source_location": "L1"
+    },
+    {
       "id": "lib_i18n",
       "label": "i18n.tsx",
       "_origin": "ast",
@@ -1904,7 +2106,7 @@
       "file_type": "code",
       "norm_label": "languagecontext",
       "source_file": "lib/i18n.tsx",
-      "source_location": "L1193"
+      "source_location": "L1191"
     },
     {
       "id": "pages_about",
@@ -1973,6 +2175,17 @@
       "source_location": "L35"
     },
     {
+      "id": "pages_login",
+      "label": "login.tsx",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "useLanguage",
+      "file_type": "code",
+      "norm_label": "login.tsx",
+      "source_file": "pages/login.tsx",
+      "source_location": "L1"
+    },
+    {
       "id": "pages_mentions_legales",
       "label": "mentions-legales.tsx",
       "_origin": "ast",
@@ -2026,6 +2239,17 @@
       "norm_label": "terms.tsx",
       "source_file": "pages/terms.tsx",
       "source_location": "L1"
+    },
+    {
+      "id": "ref_react",
+      "label": "react",
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "useLanguage",
+      "file_type": "concept",
+      "norm_label": "react",
+      "source_file": "package.json",
+      "source_location": "L19"
     },
     {
       "id": "pages_solve",
@@ -2355,7 +2579,7 @@
       "file_type": "code",
       "norm_label": "dependencies",
       "source_file": "package.json",
-      "source_location": "L12"
+      "source_location": "L13"
     },
     {
       "id": "package_dependencies_katex",
@@ -2366,7 +2590,7 @@
       "file_type": "code",
       "norm_label": "katex",
       "source_file": "package.json",
-      "source_location": "L13"
+      "source_location": "L16"
     },
     {
       "id": "package_dependencies_mathlive",
@@ -2377,7 +2601,7 @@
       "file_type": "code",
       "norm_label": "mathlive",
       "source_file": "package.json",
-      "source_location": "L14"
+      "source_location": "L17"
     },
     {
       "id": "package_dependencies_next",
@@ -2388,7 +2612,7 @@
       "file_type": "code",
       "norm_label": "next",
       "source_file": "package.json",
-      "source_location": "L15"
+      "source_location": "L18"
     },
     {
       "id": "package_dependencies_react",
@@ -2399,7 +2623,7 @@
       "file_type": "code",
       "norm_label": "react",
       "source_file": "package.json",
-      "source_location": "L16"
+      "source_location": "L19"
     },
     {
       "id": "package_dependencies_react_dom",
@@ -2410,7 +2634,29 @@
       "file_type": "code",
       "norm_label": "react-dom",
       "source_file": "package.json",
-      "source_location": "L17"
+      "source_location": "L20"
+    },
+    {
+      "id": "package_dependencies_upstash_ratelimit",
+      "label": "@upstash/ratelimit",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "package.json",
+      "file_type": "code",
+      "norm_label": "@upstash/ratelimit",
+      "source_file": "package.json",
+      "source_location": "L14"
+    },
+    {
+      "id": "package_dependencies_upstash_redis",
+      "label": "@upstash/redis",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "package.json",
+      "file_type": "code",
+      "norm_label": "@upstash/redis",
+      "source_file": "package.json",
+      "source_location": "L15"
     },
     {
       "id": "package_devdependencies",
@@ -2421,7 +2667,7 @@
       "file_type": "code",
       "norm_label": "devdependencies",
       "source_file": "package.json",
-      "source_location": "L19"
+      "source_location": "L22"
     },
     {
       "id": "package_devdependencies_eslint",
@@ -2432,7 +2678,7 @@
       "file_type": "code",
       "norm_label": "eslint",
       "source_file": "package.json",
-      "source_location": "L24"
+      "source_location": "L27"
     },
     {
       "id": "package_devdependencies_eslint_config_next",
@@ -2443,7 +2689,7 @@
       "file_type": "code",
       "norm_label": "eslint-config-next",
       "source_file": "package.json",
-      "source_location": "L25"
+      "source_location": "L28"
     },
     {
       "id": "package_devdependencies_tailwindcss",
@@ -2454,7 +2700,7 @@
       "file_type": "code",
       "norm_label": "tailwindcss",
       "source_file": "package.json",
-      "source_location": "L26"
+      "source_location": "L29"
     },
     {
       "id": "package_devdependencies_tailwindcss_postcss",
@@ -2465,7 +2711,7 @@
       "file_type": "code",
       "norm_label": "@tailwindcss/postcss",
       "source_file": "package.json",
-      "source_location": "L20"
+      "source_location": "L23"
     },
     {
       "id": "package_devdependencies_types_node",
@@ -2476,7 +2722,7 @@
       "file_type": "code",
       "norm_label": "@types/node",
       "source_file": "package.json",
-      "source_location": "L21"
+      "source_location": "L24"
     },
     {
       "id": "package_devdependencies_types_react",
@@ -2487,7 +2733,7 @@
       "file_type": "code",
       "norm_label": "@types/react",
       "source_file": "package.json",
-      "source_location": "L22"
+      "source_location": "L25"
     },
     {
       "id": "package_devdependencies_types_react_dom",
@@ -2498,7 +2744,7 @@
       "file_type": "code",
       "norm_label": "@types/react-dom",
       "source_file": "package.json",
-      "source_location": "L23"
+      "source_location": "L26"
     },
     {
       "id": "package_devdependencies_typescript",
@@ -2509,7 +2755,7 @@
       "file_type": "code",
       "norm_label": "typescript",
       "source_file": "package.json",
-      "source_location": "L27"
+      "source_location": "L30"
     },
     {
       "id": "package_name",
@@ -2564,7 +2810,7 @@
       "file_type": "code",
       "norm_label": "check-licenses",
       "source_file": "package.json",
-      "source_location": "L10"
+      "source_location": "L11"
     },
     {
       "id": "package_scripts_dev",
@@ -2586,7 +2832,7 @@
       "file_type": "code",
       "norm_label": "lint",
       "source_file": "package.json",
-      "source_location": "L9"
+      "source_location": "L10"
     },
     {
       "id": "package_scripts_start",
@@ -2598,6 +2844,17 @@
       "norm_label": "start",
       "source_file": "package.json",
       "source_location": "L8"
+    },
+    {
+      "id": "package_scripts_test",
+      "label": "test",
+      "_origin": "ast",
+      "community": 2,
+      "community_name": "package.json",
+      "file_type": "code",
+      "norm_label": "test",
+      "source_file": "package.json",
+      "source_location": "L9"
     },
     {
       "id": "package_version",
@@ -2619,7 +2876,7 @@
       "file_type": "concept",
       "norm_label": "eslint",
       "source_file": "package.json",
-      "source_location": "L24"
+      "source_location": "L27"
     },
     {
       "id": "ref_eslint_config_next",
@@ -2630,18 +2887,7 @@
       "file_type": "concept",
       "norm_label": "eslint-config-next",
       "source_file": "package.json",
-      "source_location": "L25"
-    },
-    {
-      "id": "ref_katex",
-      "label": "katex",
-      "_origin": "ast",
-      "community": 2,
-      "community_name": "package.json",
-      "file_type": "concept",
-      "norm_label": "katex",
-      "source_file": "package.json",
-      "source_location": "L13"
+      "source_location": "L28"
     },
     {
       "id": "ref_react_dom",
@@ -2652,7 +2898,7 @@
       "file_type": "concept",
       "norm_label": "react-dom",
       "source_file": "package.json",
-      "source_location": "L17"
+      "source_location": "L20"
     },
     {
       "id": "ref_tailwindcss",
@@ -2663,7 +2909,7 @@
       "file_type": "concept",
       "norm_label": "tailwindcss",
       "source_file": "package.json",
-      "source_location": "L26"
+      "source_location": "L29"
     },
     {
       "id": "ref_tailwindcss_postcss",
@@ -2674,7 +2920,7 @@
       "file_type": "concept",
       "norm_label": "@tailwindcss/postcss",
       "source_file": "package.json",
-      "source_location": "L20"
+      "source_location": "L23"
     },
     {
       "id": "ref_types_node",
@@ -2685,7 +2931,7 @@
       "file_type": "concept",
       "norm_label": "@types/node",
       "source_file": "package.json",
-      "source_location": "L21"
+      "source_location": "L24"
     },
     {
       "id": "ref_types_react",
@@ -2696,7 +2942,7 @@
       "file_type": "concept",
       "norm_label": "@types/react",
       "source_file": "package.json",
-      "source_location": "L22"
+      "source_location": "L25"
     },
     {
       "id": "ref_types_react_dom",
@@ -2707,7 +2953,7 @@
       "file_type": "concept",
       "norm_label": "@types/react-dom",
       "source_file": "package.json",
-      "source_location": "L23"
+      "source_location": "L26"
     },
     {
       "id": "ref_typescript",
@@ -2718,7 +2964,7 @@
       "file_type": "concept",
       "norm_label": "typescript",
       "source_file": "package.json",
-      "source_location": "L27"
+      "source_location": "L30"
     },
     {
       "id": "lib_api",
@@ -2798,6 +3044,17 @@
       "source_location": "L2"
     },
     {
+      "id": "tsconfig_compileroptions_allowimportingtsextensions",
+      "label": "allowImportingTsExtensions",
+      "_origin": "ast",
+      "community": 4,
+      "community_name": "compilerOptions",
+      "file_type": "code",
+      "norm_label": "allowimportingtsextensions",
+      "source_file": "tsconfig.json",
+      "source_location": "L21"
+    },
+    {
       "id": "tsconfig_compileroptions_allowjs",
       "label": "allowJs",
       "_origin": "ast",
@@ -2828,7 +3085,7 @@
       "file_type": "code",
       "norm_label": "incremental",
       "source_file": "tsconfig.json",
-      "source_location": "L19"
+      "source_location": "L23"
     },
     {
       "id": "tsconfig_compileroptions_isolatedmodules",
@@ -2850,7 +3107,7 @@
       "file_type": "code",
       "norm_label": "jsx",
       "source_file": "tsconfig.json",
-      "source_location": "L18"
+      "source_location": "L22"
     },
     {
       "id": "tsconfig_compileroptions_lib",
@@ -2905,7 +3162,7 @@
       "file_type": "code",
       "norm_label": "paths",
       "source_file": "tsconfig.json",
-      "source_location": "L25"
+      "source_location": "L29"
     },
     {
       "id": "tsconfig_compileroptions_plugins",
@@ -2916,7 +3173,7 @@
       "file_type": "code",
       "norm_label": "plugins",
       "source_file": "tsconfig.json",
-      "source_location": "L20"
+      "source_location": "L24"
     },
     {
       "id": "tsconfig_compileroptions_resolvejsonmodule",
@@ -2971,7 +3228,7 @@
       "file_type": "code",
       "norm_label": "exclude",
       "source_file": "tsconfig.json",
-      "source_location": "L37"
+      "source_location": "L41"
     },
     {
       "id": "tsconfig_include",
@@ -2982,7 +3239,18 @@
       "file_type": "code",
       "norm_label": "include",
       "source_file": "tsconfig.json",
-      "source_location": "L31"
+      "source_location": "L35"
+    },
+    {
+      "id": "lib_rate_limit",
+      "label": "rate-limit.ts",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "waitlist.ts",
+      "file_type": "code",
+      "norm_label": "rate-limit.ts",
+      "source_file": "lib/rate-limit.ts",
+      "source_location": "L1"
     },
     {
       "id": "next_config",
@@ -3037,7 +3305,40 @@
       "file_type": "code",
       "norm_label": "tier_tag_map",
       "source_file": "pages/api/waitlist.ts",
-      "source_location": "L14"
+      "source_location": "L22"
+    },
+    {
+      "id": "tests_rate_limit_test",
+      "label": "rate-limit.test.ts",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "waitlist.ts",
+      "file_type": "code",
+      "norm_label": "rate-limit.test.ts",
+      "source_file": "tests/rate-limit.test.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "tests_rate_limit_test_ipv6_cases",
+      "label": "IPV6_CASES",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "waitlist.ts",
+      "file_type": "code",
+      "norm_label": "ipv6_cases",
+      "source_file": "tests/rate-limit.test.ts",
+      "source_location": "L33"
+    },
+    {
+      "id": "tests_waitlist_test",
+      "label": "waitlist.test.ts",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "waitlist.ts",
+      "file_type": "code",
+      "norm_label": "waitlist.test.ts",
+      "source_file": "tests/waitlist.test.ts",
+      "source_location": "L1"
     },
     {
       "id": "docref_rfc_5322",
@@ -3048,7 +3349,18 @@
       "file_type": "concept",
       "norm_label": "rfc-5322",
       "source_file": "pages/api/waitlist.ts",
-      "source_location": "L8"
+      "source_location": "L16"
+    },
+    {
+      "id": "docref_rfc_5952",
+      "label": "RFC-5952",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "waitlist.ts",
+      "file_type": "concept",
+      "norm_label": "rfc-5952",
+      "source_file": "lib/rate-limit.ts",
+      "source_location": "L94"
     },
     {
       "id": "ref_next",
@@ -3059,40 +3371,113 @@
       "file_type": "concept",
       "norm_label": "next",
       "source_file": "package.json",
+      "source_location": "L18"
+    },
+    {
+      "id": "ref_upstash_ratelimit",
+      "label": "@upstash/ratelimit",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "waitlist.ts",
+      "file_type": "concept",
+      "norm_label": "@upstash/ratelimit",
+      "source_file": "package.json",
+      "source_location": "L14"
+    },
+    {
+      "id": "ref_upstash_redis",
+      "label": "@upstash/redis",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "waitlist.ts",
+      "file_type": "concept",
+      "norm_label": "@upstash/redis",
+      "source_file": "package.json",
       "source_location": "L15"
     },
     {
-      "id": "components_privacynotice",
-      "label": "PrivacyNotice.tsx",
+      "id": "agents",
+      "label": "AGENTS.md",
       "_origin": "ast",
       "community": 6,
-      "community_name": "login.tsx",
-      "file_type": "code",
-      "norm_label": "privacynotice.tsx",
-      "source_file": "components/PrivacyNotice.tsx",
+      "community_name": "AGENTS.md \u2014 calcile-landing",
+      "file_type": "document",
+      "node_kind": "page",
+      "norm_label": "agents.md",
+      "source_file": "AGENTS.md",
       "source_location": "L1"
     },
     {
-      "id": "components_waitlistform",
-      "label": "WaitlistForm.tsx",
+      "id": "agents_agents_md_calcile_landing",
+      "label": "AGENTS.md \u2014 calcile-landing",
       "_origin": "ast",
       "community": 6,
-      "community_name": "login.tsx",
-      "file_type": "code",
-      "norm_label": "waitlistform.tsx",
-      "source_file": "components/WaitlistForm.tsx",
+      "community_name": "AGENTS.md \u2014 calcile-landing",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "agents.md \u2014 calcile-landing",
+      "source_file": "AGENTS.md",
       "source_location": "L1"
     },
     {
-      "id": "pages_login",
-      "label": "login.tsx",
+      "id": "agents_fin_de_t\u00e2che",
+      "label": "Fin de t\u00e2che",
       "_origin": "ast",
       "community": 6,
-      "community_name": "login.tsx",
-      "file_type": "code",
-      "norm_label": "login.tsx",
-      "source_file": "pages/login.tsx",
-      "source_location": "L1"
+      "community_name": "AGENTS.md \u2014 calcile-landing",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "fin de tache",
+      "source_file": "AGENTS.md",
+      "source_location": "L27"
+    },
+    {
+      "id": "agents_git_et_d\u00e9ploiement",
+      "label": "Git et d\u00e9ploiement",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "AGENTS.md \u2014 calcile-landing",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "git et deploiement",
+      "source_file": "AGENTS.md",
+      "source_location": "L20"
+    },
+    {
+      "id": "agents_r\u00e8gles_d_ing\u00e9nierie",
+      "label": "R\u00e8gles d'ing\u00e9nierie",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "AGENTS.md \u2014 calcile-landing",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "regles d'ingenierie",
+      "source_file": "AGENTS.md",
+      "source_location": "L14"
+    },
+    {
+      "id": "agents_r\u00e8gles_de_contenu_tout_texte_visible",
+      "label": "R\u00e8gles de contenu (tout texte visible)",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "AGENTS.md \u2014 calcile-landing",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "regles de contenu (tout texte visible)",
+      "source_file": "AGENTS.md",
+      "source_location": "L6"
+    },
+    {
+      "id": "agents_secrets",
+      "label": "Secrets",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "AGENTS.md \u2014 calcile-landing",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "secrets",
+      "source_file": "AGENTS.md",
+      "source_location": "L24"
     },
     {
       "id": "competitive_analysis",
@@ -3339,40 +3724,18 @@
       "label": "FormulaSheet.tsx",
       "_origin": "ast",
       "community": 8,
-      "community_name": "react",
+      "community_name": "FormulaSheet.tsx",
       "file_type": "code",
       "norm_label": "formulasheet.tsx",
       "source_file": "components/FormulaSheet.tsx",
       "source_location": "L1"
     },
     {
-      "id": "components_hero",
-      "label": "Hero.tsx",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "react",
-      "file_type": "code",
-      "norm_label": "hero.tsx",
-      "source_file": "components/Hero.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "components_hero_demo_steps",
-      "label": "DEMO_STEPS",
-      "_origin": "ast",
-      "community": 8,
-      "community_name": "react",
-      "file_type": "code",
-      "norm_label": "demo_steps",
-      "source_file": "components/Hero.tsx",
-      "source_location": "L17"
-    },
-    {
       "id": "components_mathrender",
       "label": "MathRender.tsx",
       "_origin": "ast",
       "community": 8,
-      "community_name": "react",
+      "community_name": "FormulaSheet.tsx",
       "file_type": "code",
       "norm_label": "mathrender.tsx",
       "source_file": "components/MathRender.tsx",
@@ -3383,7 +3746,7 @@
       "label": "formulaSheet.ts",
       "_origin": "ast",
       "community": 8,
-      "community_name": "react",
+      "community_name": "FormulaSheet.tsx",
       "file_type": "code",
       "norm_label": "formulasheet.ts",
       "source_file": "lib/formulaSheet.ts",
@@ -3394,20 +3757,20 @@
       "label": "FORMULA_CATEGORIES",
       "_origin": "ast",
       "community": 8,
-      "community_name": "react",
+      "community_name": "FormulaSheet.tsx",
       "file_type": "code",
       "norm_label": "formula_categories",
       "source_file": "lib/formulaSheet.ts",
       "source_location": "L54"
     },
     {
-      "id": "ref_react",
-      "label": "react",
+      "id": "ref_katex",
+      "label": "katex",
       "_origin": "ast",
       "community": 8,
-      "community_name": "react",
+      "community_name": "FormulaSheet.tsx",
       "file_type": "concept",
-      "norm_label": "react",
+      "norm_label": "katex",
       "source_file": "package.json",
       "source_location": "L16"
     },
@@ -3497,7 +3860,7 @@
       "file_type": "concept",
       "norm_label": "mathlive",
       "source_file": "package.json",
-      "source_location": "L14"
+      "source_location": "L17"
     }
   ],
   "links": [
@@ -3630,7 +3993,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "components/WaitlistForm.tsx",
-      "source_location": "L20",
+      "source_location": "L24",
       "weight": 1.0
     },
     {
@@ -3658,7 +4021,43 @@
       "weight": 1.0
     },
     {
-      "source": "pages_api_waitlist_handler",
+      "source": "pages_api_waitlist_createwaitlisthandler",
+      "target": "lib_rate_limit_createwaitlistlimiter",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "pages/api/waitlist.ts",
+      "source_location": "L107",
+      "weight": 1.0
+    },
+    {
+      "source": "pages_api_waitlist_createwaitlisthandler",
+      "target": "lib_rate_limit_getclientip",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "pages/api/waitlist.ts",
+      "source_location": "L108",
+      "weight": 1.0
+    },
+    {
+      "source": "pages_api_waitlist_createwaitlisthandler",
+      "target": "lib_rate_limit_normalizeipkey",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "pages/api/waitlist.ts",
+      "source_location": "L108",
+      "weight": 1.0
+    },
+    {
+      "source": "pages_api_waitlist_createwaitlisthandler",
       "target": "pages_api_waitlist_basicauthheader",
       "relation": "calls",
       "_origin": "ast",
@@ -3666,11 +4065,11 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "pages/api/waitlist.ts",
-      "source_location": "L111",
+      "source_location": "L152",
       "weight": 1.0
     },
     {
-      "source": "pages_api_waitlist_handler",
+      "source": "pages_api_waitlist_createwaitlisthandler",
       "target": "pages_api_waitlist_tagsubscriberbytier",
       "relation": "calls",
       "_origin": "ast",
@@ -3678,7 +4077,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "pages/api/waitlist.ts",
-      "source_location": "L119",
+      "source_location": "L160",
       "weight": 1.0
     },
     {
@@ -3690,7 +4089,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "pages/api/waitlist.ts",
-      "source_location": "L54",
+      "source_location": "L63",
       "weight": 1.0
     },
     {
@@ -3798,7 +4197,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "pages/licenses.tsx",
-      "source_location": "L99",
+      "source_location": "L103",
       "weight": 1.0
     },
     {
@@ -4666,6 +5065,66 @@
       "weight": 1.0
     },
     {
+      "source": "tests_waitlist_test_runhandler",
+      "target": "tests_waitlist_test_createfetchmock",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "tests/waitlist.test.ts",
+      "source_location": "L74",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_waitlist_test_runhandler",
+      "target": "tests_waitlist_test_mailchimpresponse",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "tests/waitlist.test.ts",
+      "source_location": "L75",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_waitlist_test_runhandler",
+      "target": "tests_waitlist_test_createmockres",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "tests/waitlist.test.ts",
+      "source_location": "L77",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_waitlist_test_runhandler",
+      "target": "pages_api_waitlist_createwaitlisthandler",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "tests/waitlist.test.ts",
+      "source_location": "L78",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_waitlist_test_runhandler",
+      "target": "tests_waitlist_test_createmockreq",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "tests/waitlist.test.ts",
+      "source_location": "L83",
+      "weight": 1.0
+    },
+    {
       "source": "components_formulasheet_formulasheet",
       "target": "components_formulasheet_formulasheet_togglecategory",
       "relation": "contains",
@@ -4968,19 +5427,7 @@
     },
     {
       "source": "package",
-      "target": "ref_katex",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "package.json",
-      "source_location": "L13",
-      "weight": 1.0
-    },
-    {
-      "source": "package",
-      "target": "ref_mathlive",
+      "target": "ref_upstash_ratelimit",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -4992,7 +5439,7 @@
     },
     {
       "source": "package",
-      "target": "ref_next",
+      "target": "ref_upstash_redis",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -5004,7 +5451,7 @@
     },
     {
       "source": "package",
-      "target": "ref_react",
+      "target": "ref_katex",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -5016,7 +5463,7 @@
     },
     {
       "source": "package",
-      "target": "ref_react_dom",
+      "target": "ref_mathlive",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -5028,7 +5475,31 @@
     },
     {
       "source": "package",
-      "target": "ref_tailwindcss_postcss",
+      "target": "ref_next",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "package.json",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "package",
+      "target": "ref_react",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "package.json",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "package",
+      "target": "ref_react_dom",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -5040,31 +5511,7 @@
     },
     {
       "source": "package",
-      "target": "ref_types_node",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "package.json",
-      "source_location": "L21",
-      "weight": 1.0
-    },
-    {
-      "source": "package",
-      "target": "ref_types_react",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "package.json",
-      "source_location": "L22",
-      "weight": 1.0
-    },
-    {
-      "source": "package",
-      "target": "ref_types_react_dom",
+      "target": "ref_tailwindcss_postcss",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -5076,7 +5523,7 @@
     },
     {
       "source": "package",
-      "target": "ref_eslint",
+      "target": "ref_types_node",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -5088,7 +5535,7 @@
     },
     {
       "source": "package",
-      "target": "ref_eslint_config_next",
+      "target": "ref_types_react",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -5100,7 +5547,7 @@
     },
     {
       "source": "package",
-      "target": "ref_tailwindcss",
+      "target": "ref_types_react_dom",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -5112,7 +5559,7 @@
     },
     {
       "source": "package",
-      "target": "ref_typescript",
+      "target": "ref_eslint",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -5120,6 +5567,42 @@
       "context": "import",
       "source_file": "package.json",
       "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "package",
+      "target": "ref_eslint_config_next",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "package.json",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "package",
+      "target": "ref_tailwindcss",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "package.json",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "package",
+      "target": "ref_typescript",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "package.json",
+      "source_location": "L30",
       "weight": 1.0
     },
     {
@@ -5156,6 +5639,42 @@
       "context": "import",
       "source_file": "pages/about.tsx",
       "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "pages_api_waitlist",
+      "target": "lib_rate_limit_createwaitlistlimiter",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "pages/api/waitlist.ts",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "pages_api_waitlist",
+      "target": "lib_rate_limit_getclientip",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "pages/api/waitlist.ts",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "pages_api_waitlist",
+      "target": "lib_rate_limit_normalizeipkey",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "pages/api/waitlist.ts",
+      "source_location": "L6",
       "weight": 1.0
     },
     {
@@ -5867,6 +6386,42 @@
       "weight": 1.0
     },
     {
+      "source": "tests_rate_limit_test",
+      "target": "lib_rate_limit_getclientip",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/rate-limit.test.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_rate_limit_test",
+      "target": "lib_rate_limit_normalizeipkey",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/rate-limit.test.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_waitlist_test",
+      "target": "pages_api_waitlist_createwaitlisthandler",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/waitlist.test.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
       "source": "components_audiencesection",
       "target": "lib_i18n",
       "relation": "imports_from",
@@ -6132,6 +6687,43 @@
       "weight": 1.0
     },
     {
+      "source": "lib_rate_limit",
+      "target": "ref_upstash_ratelimit",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "lib/rate-limit.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_rate_limit",
+      "target": "ref_upstash_redis",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "lib/rate-limit.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_rate_limit",
+      "target": "ref_next",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "lib/rate-limit.ts",
+      "source_location": "L3",
+      "type_only": true,
+      "weight": 1.0
+    },
+    {
       "source": "next_config",
       "target": "ref_next",
       "relation": "imports_from",
@@ -6191,6 +6783,18 @@
       "source_file": "pages/api/waitlist.ts",
       "source_location": "L2",
       "type_only": true,
+      "weight": 1.0
+    },
+    {
+      "source": "pages_api_waitlist",
+      "target": "lib_rate_limit",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "pages/api/waitlist.ts",
+      "source_location": "L6",
       "weight": 1.0
     },
     {
@@ -6867,6 +7471,67 @@
       "weight": 1.0
     },
     {
+      "source": "tests_rate_limit_test",
+      "target": "ref_next",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/rate-limit.test.ts",
+      "source_location": "L3",
+      "type_only": true,
+      "weight": 1.0
+    },
+    {
+      "source": "tests_rate_limit_test",
+      "target": "lib_rate_limit",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/rate-limit.test.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_waitlist_test",
+      "target": "ref_next",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/waitlist.test.ts",
+      "source_location": "L3",
+      "type_only": true,
+      "weight": 1.0
+    },
+    {
+      "source": "tests_waitlist_test",
+      "target": "pages_api_waitlist",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/waitlist.test.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_rate_limit",
+      "target": "docref_rfc_5952",
+      "relation": "cites",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lib/rate-limit.ts",
+      "source_location": "L94",
+      "weight": 1.0
+    },
+    {
       "source": "pages_api_waitlist",
       "target": "docref_rfc_5322",
       "relation": "cites",
@@ -6874,7 +7539,73 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "pages/api/waitlist.ts",
-      "source_location": "L8",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "agents",
+      "target": "agents_agents_md_calcile_landing",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "AGENTS.md",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "agents_agents_md_calcile_landing",
+      "target": "agents_r\u00e8gles_d_ing\u00e9nierie",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "AGENTS.md",
+      "source_location": "L14",
+      "weight": 1.0
+    },
+    {
+      "source": "agents_agents_md_calcile_landing",
+      "target": "agents_git_et_d\u00e9ploiement",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "AGENTS.md",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "agents_agents_md_calcile_landing",
+      "target": "agents_secrets",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "AGENTS.md",
+      "source_location": "L24",
+      "weight": 1.0
+    },
+    {
+      "source": "agents_agents_md_calcile_landing",
+      "target": "agents_fin_de_t\u00e2che",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "AGENTS.md",
+      "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "agents_agents_md_calcile_landing",
+      "target": "agents_r\u00e8gles_de_contenu_tout_texte_visible",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "AGENTS.md",
+      "source_location": "L6",
       "weight": 1.0
     },
     {
@@ -7396,7 +8127,7 @@
     },
     {
       "source": "components_waitlistform",
-      "target": "components_waitlistform_waitlistformprops",
+      "target": "components_waitlistform_waitlistapiresponse",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -7407,13 +8138,24 @@
     },
     {
       "source": "components_waitlistform",
+      "target": "components_waitlistform_waitlistformprops",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "components/WaitlistForm.tsx",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "components_waitlistform",
       "target": "components_waitlistform_waitlistform",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/WaitlistForm.tsx",
-      "source_location": "L16",
+      "source_location": "L20",
       "weight": 1.0
     },
     {
@@ -7428,17 +8170,6 @@
       "weight": 1.0
     },
     {
-      "source": "components_waitlistform",
-      "target": "components_waitlistform_waitlistapiresponse",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "components/WaitlistForm.tsx",
-      "source_location": "L7",
-      "weight": 1.0
-    },
-    {
       "source": "components_waitlistform_waitlistform",
       "target": "components_waitlistform_waitlistform_handlecleartier",
       "relation": "contains",
@@ -7446,7 +8177,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/WaitlistForm.tsx",
-      "source_location": "L29",
+      "source_location": "L33",
       "weight": 1.0
     },
     {
@@ -7457,7 +8188,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "components/WaitlistForm.tsx",
-      "source_location": "L33",
+      "source_location": "L37",
       "weight": 1.0
     },
     {
@@ -7578,7 +8309,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lib/i18n.tsx",
-      "source_location": "L1185",
+      "source_location": "L1183",
       "weight": 1.0
     },
     {
@@ -7589,7 +8320,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lib/i18n.tsx",
-      "source_location": "L1187",
+      "source_location": "L1185",
       "weight": 1.0
     },
     {
@@ -7600,7 +8331,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lib/i18n.tsx",
-      "source_location": "L1193",
+      "source_location": "L1191",
       "weight": 1.0
     },
     {
@@ -7611,7 +8342,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lib/i18n.tsx",
-      "source_location": "L1195",
+      "source_location": "L1193",
       "weight": 1.0
     },
     {
@@ -7622,7 +8353,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "lib/i18n.tsx",
-      "source_location": "L1235",
+      "source_location": "L1233",
       "weight": 1.0
     },
     {
@@ -7634,6 +8365,39 @@
       "confidence_score": 1.0,
       "source_file": "lib/i18n.tsx",
       "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_rate_limit",
+      "target": "lib_rate_limit_createwaitlistlimiter",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lib/rate-limit.ts",
+      "source_location": "L120",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_rate_limit",
+      "target": "lib_rate_limit_getclientip",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lib/rate-limit.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "lib_rate_limit",
+      "target": "lib_rate_limit_normalizeipkey",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "lib/rate-limit.ts",
+      "source_location": "L38",
       "weight": 1.0
     },
     {
@@ -7655,18 +8419,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L12",
-      "weight": 1.0
-    },
-    {
-      "source": "package",
-      "target": "package_devdependencies",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "package.json",
-      "source_location": "L19",
+      "source_location": "L13",
       "weight": 1.0
     },
     {
@@ -7678,6 +8431,17 @@
       "confidence_score": 1.0,
       "source_file": "package.json",
       "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "package",
+      "target": "package_devdependencies",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "package.json",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -7715,18 +8479,7 @@
     },
     {
       "source": "package_dependencies",
-      "target": "package_dependencies_katex",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "package.json",
-      "source_location": "L13",
-      "weight": 1.0
-    },
-    {
-      "source": "package_dependencies",
-      "target": "package_dependencies_mathlive",
+      "target": "package_dependencies_upstash_ratelimit",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -7737,7 +8490,7 @@
     },
     {
       "source": "package_dependencies",
-      "target": "package_dependencies_next",
+      "target": "package_dependencies_upstash_redis",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -7748,7 +8501,7 @@
     },
     {
       "source": "package_dependencies",
-      "target": "package_dependencies_react",
+      "target": "package_dependencies_katex",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -7759,7 +8512,7 @@
     },
     {
       "source": "package_dependencies",
-      "target": "package_dependencies_react_dom",
+      "target": "package_dependencies_mathlive",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -7769,8 +8522,30 @@
       "weight": 1.0
     },
     {
-      "source": "package_devdependencies",
-      "target": "package_devdependencies_tailwindcss_postcss",
+      "source": "package_dependencies",
+      "target": "package_dependencies_next",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "package.json",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "package_dependencies",
+      "target": "package_dependencies_react",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "package.json",
+      "source_location": "L19",
+      "weight": 1.0
+    },
+    {
+      "source": "package_dependencies",
+      "target": "package_dependencies_react_dom",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -7781,29 +8556,7 @@
     },
     {
       "source": "package_devdependencies",
-      "target": "package_devdependencies_types_node",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "package.json",
-      "source_location": "L21",
-      "weight": 1.0
-    },
-    {
-      "source": "package_devdependencies",
-      "target": "package_devdependencies_types_react",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "package.json",
-      "source_location": "L22",
-      "weight": 1.0
-    },
-    {
-      "source": "package_devdependencies",
-      "target": "package_devdependencies_types_react_dom",
+      "target": "package_devdependencies_tailwindcss_postcss",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -7814,7 +8567,7 @@
     },
     {
       "source": "package_devdependencies",
-      "target": "package_devdependencies_eslint",
+      "target": "package_devdependencies_types_node",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -7825,7 +8578,7 @@
     },
     {
       "source": "package_devdependencies",
-      "target": "package_devdependencies_eslint_config_next",
+      "target": "package_devdependencies_types_react",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -7836,7 +8589,7 @@
     },
     {
       "source": "package_devdependencies",
-      "target": "package_devdependencies_tailwindcss",
+      "target": "package_devdependencies_types_react_dom",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -7847,13 +8600,57 @@
     },
     {
       "source": "package_devdependencies",
-      "target": "package_devdependencies_typescript",
+      "target": "package_devdependencies_eslint",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
       "source_location": "L27",
+      "weight": 1.0
+    },
+    {
+      "source": "package_devdependencies",
+      "target": "package_devdependencies_eslint_config_next",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "package.json",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "package_devdependencies",
+      "target": "package_devdependencies_tailwindcss",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "package.json",
+      "source_location": "L29",
+      "weight": 1.0
+    },
+    {
+      "source": "package_devdependencies",
+      "target": "package_devdependencies_typescript",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "package.json",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "package_scripts",
+      "target": "package_scripts_lint",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "package.json",
+      "source_location": "L10",
       "weight": 1.0
     },
     {
@@ -7864,7 +8661,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "package.json",
-      "source_location": "L10",
+      "source_location": "L11",
       "weight": 1.0
     },
     {
@@ -7902,7 +8699,7 @@
     },
     {
       "source": "package_scripts",
-      "target": "package_scripts_lint",
+      "target": "package_scripts_test",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -7924,13 +8721,24 @@
     },
     {
       "source": "pages_api_waitlist",
+      "target": "pages_api_waitlist_waitlistresponse",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "pages/api/waitlist.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "pages_api_waitlist",
       "target": "pages_api_waitlist_tier_tag_map",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "pages/api/waitlist.ts",
-      "source_location": "L14",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -7941,7 +8749,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "pages/api/waitlist.ts",
-      "source_location": "L20",
+      "source_location": "L28",
       "weight": 1.0
     },
     {
@@ -7952,7 +8760,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "pages/api/waitlist.ts",
-      "source_location": "L25",
+      "source_location": "L33",
       "weight": 1.0
     },
     {
@@ -7963,7 +8771,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "pages/api/waitlist.ts",
-      "source_location": "L31",
+      "source_location": "L39",
       "weight": 1.0
     },
     {
@@ -7974,29 +8782,29 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "pages/api/waitlist.ts",
-      "source_location": "L38",
+      "source_location": "L46",
       "weight": 1.0
     },
     {
       "source": "pages_api_waitlist",
-      "target": "pages_api_waitlist_waitlistresponse",
+      "target": "pages_api_waitlist_waitlisthandlerdeps",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "pages/api/waitlist.ts",
-      "source_location": "L4",
+      "source_location": "L81",
       "weight": 1.0
     },
     {
       "source": "pages_api_waitlist",
-      "target": "pages_api_waitlist_handler",
+      "target": "pages_api_waitlist_createwaitlisthandler",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "pages/api/waitlist.ts",
-      "source_location": "L69",
+      "source_location": "L88",
       "weight": 1.0
     },
     {
@@ -8155,6 +8963,17 @@
     },
     {
       "source": "pages_licenses",
+      "target": "pages_licenses_licenses",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "pages/licenses.tsx",
+      "source_location": "L102",
+      "weight": 1.0
+    },
+    {
+      "source": "pages_licenses",
       "target": "pages_licenses_python_deps",
       "relation": "contains",
       "_origin": "ast",
@@ -8183,18 +9002,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "pages/licenses.tsx",
-      "source_location": "L67",
-      "weight": 1.0
-    },
-    {
-      "source": "pages_licenses",
-      "target": "pages_licenses_licenses",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "pages/licenses.tsx",
-      "source_location": "L98",
+      "source_location": "L71",
       "weight": 1.0
     },
     {
@@ -9199,6 +10007,116 @@
       "weight": 1.0
     },
     {
+      "source": "tests_rate_limit_test",
+      "target": "tests_rate_limit_test_ipv6_cases",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/rate-limit.test.ts",
+      "source_location": "L33",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_rate_limit_test",
+      "target": "tests_rate_limit_test_reqwithheaders",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/rate-limit.test.ts",
+      "source_location": "L6",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_waitlist_test",
+      "target": "tests_waitlist_test_fetchcall",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/waitlist.test.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_waitlist_test",
+      "target": "tests_waitlist_test_createmockres",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/waitlist.test.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_waitlist_test",
+      "target": "tests_waitlist_test_createmockreq",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/waitlist.test.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_waitlist_test",
+      "target": "tests_waitlist_test_mailchimpresponse",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/waitlist.test.ts",
+      "source_location": "L46",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_waitlist_test",
+      "target": "tests_waitlist_test_createfetchmock",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/waitlist.test.ts",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_waitlist_test",
+      "target": "tests_waitlist_test_allowall",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/waitlist.test.ts",
+      "source_location": "L66",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_waitlist_test",
+      "target": "tests_waitlist_test_denyall",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/waitlist.test.ts",
+      "source_location": "L67",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_waitlist_test",
+      "target": "tests_waitlist_test_runhandler",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/waitlist.test.ts",
+      "source_location": "L69",
+      "weight": 1.0
+    },
+    {
       "source": "tsconfig",
       "target": "tsconfig_compileroptions",
       "relation": "contains",
@@ -9217,7 +10135,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tsconfig.json",
-      "source_location": "L31",
+      "source_location": "L35",
       "weight": 1.0
     },
     {
@@ -9228,7 +10146,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tsconfig.json",
-      "source_location": "L37",
+      "source_location": "L41",
       "weight": 1.0
     },
     {
@@ -9321,13 +10239,24 @@
     },
     {
       "source": "tsconfig_compileroptions",
+      "target": "tsconfig_compileroptions_allowimportingtsextensions",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tsconfig.json",
+      "source_location": "L21",
+      "weight": 1.0
+    },
+    {
+      "source": "tsconfig_compileroptions",
       "target": "tsconfig_compileroptions_jsx",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tsconfig.json",
-      "source_location": "L18",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -9338,7 +10267,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tsconfig.json",
-      "source_location": "L19",
+      "source_location": "L23",
       "weight": 1.0
     },
     {
@@ -9349,7 +10278,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tsconfig.json",
-      "source_location": "L20",
+      "source_location": "L24",
       "weight": 1.0
     },
     {
@@ -9360,7 +10289,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tsconfig.json",
-      "source_location": "L25",
+      "source_location": "L29",
       "weight": 1.0
     },
     {
@@ -9425,10 +10354,10 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "lib/i18n.tsx",
-      "source_location": "L1229",
+      "source_location": "L1227",
       "weight": 1.0
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "1fe2b4194bdcba24b01fa9745ccc5f772fb59da5"
+  "built_at_commit": "f40bece8c12c178c0f607dff82915d9e7c5b445b"
 }

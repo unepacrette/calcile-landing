@@ -62,6 +62,10 @@ const NPM_DEPS: Array<[string, string]> = [
   // field on /solve, real symbols forming as you type instead of a
   // plain-text box.
   ["mathlive", "MIT"],
+  // Server-side rate limiting for POST /api/waitlist: Upstash Redis over
+  // HTTP -- the counters must live outside Vercel's ephemeral functions.
+  ["@upstash/ratelimit", "MIT"],
+  ["@upstash/redis", "MIT"],
 ];
 
 function DepTable({

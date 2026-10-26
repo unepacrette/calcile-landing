@@ -2,10 +2,14 @@ import { useState, type FormEvent } from "react";
 import PrivacyNotice from "@/components/PrivacyNotice";
 import { useLanguage } from "@/lib/i18n";
 
-type Status = "idle" | "loading" | "success" | "alreadySubscribed" | "error";
+type Status = "idle" | "loading" | "success" | "error";
 
+// The API deliberately returns the exact same {success: true} shape for a
+// fresh signup and for an email that is already on the waitlist (audit
+// finding L-1): distinguishing the two would let anyone probe whether an
+// arbitrary email is subscribed.
 type WaitlistApiResponse =
-  | { success: true; alreadySubscribed?: boolean }
+  | { success: true }
   | { success: false; error: string };
 
 type WaitlistFormProps = {
@@ -48,7 +52,7 @@ export default function WaitlistForm({
         return;
       }
 
-      setStatus(body.alreadySubscribed ? "alreadySubscribed" : "success");
+      setStatus("success");
       setEmail("");
     } catch (error) {
       console.error("[waitlist] échec de l'inscription :", error);
@@ -117,11 +121,6 @@ export default function WaitlistForm({
         {status === "success" && (
           <p className="mt-4 text-sm font-medium text-paper-raised">
             {t.waitlist.success}
-          </p>
-        )}
-        {status === "alreadySubscribed" && (
-          <p className="mt-4 text-sm font-medium text-paper-raised">
-            {t.waitlist.alreadySubscribed}
           </p>
         )}
         {status === "error" && (

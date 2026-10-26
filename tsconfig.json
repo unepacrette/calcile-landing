@@ -15,6 +15,10 @@
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
+    // Lets tests/ (run by node --test, which needs explicit extensions) and
+    // the API route import each other with .ts specifiers; safe because the
+    // project is noEmit.
+    "allowImportingTsExtensions": true,
     "jsx": "react-jsx",
     "incremental": true,
     "plugins": [

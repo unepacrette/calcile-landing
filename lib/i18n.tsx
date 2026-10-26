@@ -115,7 +115,6 @@ export const translations = {
       submit: "Je m'inscris",
       submitLoading: "Inscription…",
       success: "Merci, tu es sur la liste !",
-      alreadySubscribed: "Tu es déjà inscrit !",
       error: "Une erreur est survenue, réessaie dans un instant.",
     },
     auth: {
@@ -704,7 +703,6 @@ export const translations = {
       submit: "Sign me up",
       submitLoading: "Signing up…",
       success: "Thanks, you're on the list!",
-      alreadySubscribed: "You're already signed up!",
       error: "Something went wrong, try again in a moment.",
     },
     auth: {

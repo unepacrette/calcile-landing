@@ -1,8 +1,16 @@
 import { createHash } from "crypto";
 import type { NextApiRequest, NextApiResponse } from "next";
+// Imported with an explicit .ts extension (not the usual @/ alias) so the
+// node --test suite can load this module directly — Node's ESM resolver
+// requires exact specifiers (tsconfig has allowImportingTsExtensions).
+import {
+  createWaitlistLimiter,
+  getClientIp,
+  normalizeIpKey,
+} from "../../lib/rate-limit.ts";
 
 type WaitlistResponse =
-  | { success: true; alreadySubscribed?: boolean }
+  | { success: true }
   | { success: false; error: string };
 
 // Simple RFC-5322-ish check: good enough to reject obvious garbage without
@@ -38,14 +46,15 @@ function basicAuthHeader(apiKey: string): string {
 async function tagSubscriberByTier(
   email: string,
   tagName: string,
-  config: MailchimpConfig
+  config: MailchimpConfig,
+  fetchFn: typeof fetch
 ): Promise<void> {
   const subscriberHash = createHash("md5")
     .update(email.toLowerCase())
     .digest("hex");
 
   try {
-    const response = await fetch(
+    const response = await fetchFn(
       `https://${config.serverPrefix}.api.mailchimp.com/3.0/lists/${config.audienceId}/members/${subscriberHash}/tags`,
       {
         method: "POST",
@@ -66,81 +75,122 @@ async function tagSubscriberByTier(
   }
 }
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<WaitlistResponse>
-) {
-  if (req.method !== "POST") {
-    res.setHeader("Allow", ["POST"]);
-    return res.status(405).json({ success: false, error: "Méthode non autorisée." });
-  }
+// The handler's two external effects (rate limiter, Mailchimp HTTP calls)
+// are injectable so the node --test suite can exercise the handler without
+// Upstash or network access.
+export type WaitlistHandlerDeps = {
+  // Resolves to true when the request may proceed. The production limiter
+  // (lib/rate-limit.ts) never throws — it fails open.
+  limit?: (key: string) => Promise<boolean>;
+  fetchFn?: typeof fetch;
+};
 
-  const { email, tier } = req.body ?? {};
+export function createWaitlistHandler(deps: WaitlistHandlerDeps = {}) {
+  // The production limiter is built lazily on first request: importing this
+  // module (tests, or a cold start that never serves a request) must not
+  // touch Upstash.
+  let fallbackLimiter: ((key: string) => Promise<boolean>) | null = null;
 
-  if (typeof email !== "string" || !EMAIL_REGEX.test(email)) {
-    return res.status(400).json({ success: false, error: "Email invalide." });
-  }
+  return async function handler(
+    req: NextApiRequest,
+    res: NextApiResponse<WaitlistResponse>
+  ) {
+    if (req.method !== "POST") {
+      res.setHeader("Allow", ["POST"]);
+      return res.status(405).json({ success: false, error: "Méthode non autorisée." });
+    }
 
-  // Unknown/invalid tier values are ignored rather than rejected: tagging
-  // is a bonus on top of the signup, not a requirement.
-  const tagName = typeof tier === "string" ? TIER_TAG_MAP[tier] : undefined;
+    // M-4: bound the endpoint before anything else — every allowed request
+    // costs a Mailchimp API call with our key plus a serverless invocation.
+    // Key: client IP, IPv6 collapsed to its /64 so one client can't rotate
+    // buckets within its allocation.
+    const limit = deps.limit ?? (fallbackLimiter ??= createWaitlistLimiter());
+    const allowed = await limit(normalizeIpKey(getClientIp(req)));
+    if (!allowed) {
+      res.setHeader("Retry-After", "60");
+      return res.status(429).json({
+        success: false,
+        error: "Trop de requêtes, réessayez dans une minute.",
+      });
+    }
 
-  const { MAILCHIMP_API_KEY, MAILCHIMP_SERVER_PREFIX, MAILCHIMP_AUDIENCE_ID } =
-    process.env;
+    const { email, tier } = req.body ?? {};
 
-  if (!MAILCHIMP_API_KEY || !MAILCHIMP_SERVER_PREFIX || !MAILCHIMP_AUDIENCE_ID) {
-    console.error("[waitlist] variables d'environnement Mailchimp manquantes");
-    return res
-      .status(500)
-      .json({ success: false, error: "Une erreur est survenue" });
-  }
+    if (typeof email !== "string" || !EMAIL_REGEX.test(email)) {
+      return res.status(400).json({ success: false, error: "Email invalide." });
+    }
 
-  const mailchimpConfig: MailchimpConfig = {
-    serverPrefix: MAILCHIMP_SERVER_PREFIX,
-    audienceId: MAILCHIMP_AUDIENCE_ID,
-    apiKey: MAILCHIMP_API_KEY,
+    // Unknown/invalid tier values are ignored rather than rejected: tagging
+    // is a bonus on top of the signup, not a requirement.
+    const tagName = typeof tier === "string" ? TIER_TAG_MAP[tier] : undefined;
+
+    const { MAILCHIMP_API_KEY, MAILCHIMP_SERVER_PREFIX, MAILCHIMP_AUDIENCE_ID } =
+      process.env;
+
+    if (!MAILCHIMP_API_KEY || !MAILCHIMP_SERVER_PREFIX || !MAILCHIMP_AUDIENCE_ID) {
+      console.error("[waitlist] variables d'environnement Mailchimp manquantes");
+      return res
+        .status(500)
+        .json({ success: false, error: "Une erreur est survenue" });
+    }
+
+    const mailchimpConfig: MailchimpConfig = {
+      serverPrefix: MAILCHIMP_SERVER_PREFIX,
+      audienceId: MAILCHIMP_AUDIENCE_ID,
+      apiKey: MAILCHIMP_API_KEY,
+    };
+
+    const fetchFn = deps.fetchFn ?? fetch;
+
+    try {
+      const mailchimpResponse = await fetchFn(
+        `https://${MAILCHIMP_SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${MAILCHIMP_AUDIENCE_ID}/members`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: basicAuthHeader(MAILCHIMP_API_KEY),
+          },
+          body: JSON.stringify({ email_address: email, status: "subscribed" }),
+        }
+      );
+
+      if (mailchimpResponse.status === 200) {
+        if (tagName) {
+          await tagSubscriberByTier(email, tagName, mailchimpConfig, fetchFn);
+        }
+        return res.status(200).json({ success: true });
+      }
+
+      const body = (await mailchimpResponse
+        .json()
+        .catch(() => ({}))) as MailchimpErrorBody;
+
+      if (mailchimpResponse.status === 400 && body.title === "Member Exists") {
+        // L-1: a duplicate must be indistinguishable from a fresh signup —
+        // the old alreadySubscribed flag let anyone probe whether an
+        // arbitrary email was on the waitlist. Still logged server-side,
+        // without PII: the raw email must never land in logs (same pattern
+        // as audit finding L-2 on the API side).
+        console.info("[waitlist] duplicate signup (tier=%s)", tagName ?? "none");
+        if (tagName) {
+          await tagSubscriberByTier(email, tagName, mailchimpConfig, fetchFn);
+        }
+        return res.status(200).json({ success: true });
+      }
+
+      // Détail Mailchimp loggé côté serveur uniquement — jamais exposé au client.
+      console.error(
+        "[waitlist] erreur Mailchimp :",
+        mailchimpResponse.status,
+        body
+      );
+      return res.status(500).json({ success: false, error: "Une erreur est survenue" });
+    } catch (error) {
+      console.error("[waitlist] échec de l'appel à Mailchimp :", error);
+      return res.status(500).json({ success: false, error: "Une erreur est survenue" });
+    }
   };
-
-  try {
-    const mailchimpResponse = await fetch(
-      `https://${MAILCHIMP_SERVER_PREFIX}.api.mailchimp.com/3.0/lists/${MAILCHIMP_AUDIENCE_ID}/members`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: basicAuthHeader(MAILCHIMP_API_KEY),
-        },
-        body: JSON.stringify({ email_address: email, status: "subscribed" }),
-      }
-    );
-
-    if (mailchimpResponse.status === 200) {
-      if (tagName) {
-        await tagSubscriberByTier(email, tagName, mailchimpConfig);
-      }
-      return res.status(200).json({ success: true });
-    }
-
-    const body = (await mailchimpResponse
-      .json()
-      .catch(() => ({}))) as MailchimpErrorBody;
-
-    if (mailchimpResponse.status === 400 && body.title === "Member Exists") {
-      if (tagName) {
-        await tagSubscriberByTier(email, tagName, mailchimpConfig);
-      }
-      return res.status(200).json({ success: true, alreadySubscribed: true });
-    }
-
-    // Détail Mailchimp loggé côté serveur uniquement — jamais exposé au client.
-    console.error(
-      "[waitlist] erreur Mailchimp :",
-      mailchimpResponse.status,
-      body
-    );
-    return res.status(500).json({ success: false, error: "Une erreur est survenue" });
-  } catch (error) {
-    console.error("[waitlist] échec de l'appel à Mailchimp :", error);
-    return res.status(500).json({ success: false, error: "Une erreur est survenue" });
-  }
 }
+
+export default createWaitlistHandler();
