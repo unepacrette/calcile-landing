@@ -17,58 +17,6 @@
       "source_location": "L3"
     },
     {
-      "id": "components_privacynotice_privacynoticeprops",
-      "label": "PrivacyNoticeProps",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "useLanguage",
-      "file_type": "code",
-      "norm_label": "privacynoticeprops",
-      "source_file": "components/PrivacyNotice.tsx",
-      "source_location": "L4"
-    },
-    {
-      "id": "components_waitlistform_status",
-      "label": "Status",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "useLanguage",
-      "file_type": "code",
-      "norm_label": "status",
-      "source_file": "components/WaitlistForm.tsx",
-      "source_location": "L5"
-    },
-    {
-      "id": "components_waitlistform_waitlistapiresponse",
-      "label": "WaitlistApiResponse",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "useLanguage",
-      "file_type": "code",
-      "norm_label": "waitlistapiresponse",
-      "source_file": "components/WaitlistForm.tsx",
-      "source_location": "L11"
-    },
-    {
-      "id": "components_waitlistform_waitlistformprops",
-      "label": "WaitlistFormProps",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "useLanguage",
-      "file_type": "code",
-      "norm_label": "waitlistformprops",
-      "source_file": "components/WaitlistForm.tsx",
-      "source_location": "L15"
-    },
-    {
       "id": "lib_i18n_lang",
       "label": "Lang",
       "_callable": true,
@@ -106,45 +54,6 @@
       "norm_label": "translations",
       "source_file": "lib/i18n.tsx",
       "source_location": "L5"
-    },
-    {
-      "id": "pages_login_loginsuccess",
-      "label": "LoginSuccess",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "useLanguage",
-      "file_type": "code",
-      "norm_label": "loginsuccess",
-      "source_file": "pages/login.tsx",
-      "source_location": "L12"
-    },
-    {
-      "id": "pages_login_status",
-      "label": "Status",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "useLanguage",
-      "file_type": "code",
-      "norm_label": "status",
-      "source_file": "pages/login.tsx",
-      "source_location": "L10"
-    },
-    {
-      "id": "pages_reset_password_status",
-      "label": "Status",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "useLanguage",
-      "file_type": "code",
-      "norm_label": "status",
-      "source_file": "pages/reset-password.tsx",
-      "source_location": "L10"
     },
     {
       "id": "pages_solve_alternativemethod",
@@ -431,6 +340,97 @@
       "norm_label": "vectorsapiresponse",
       "source_file": "pages/solve.tsx",
       "source_location": "L145"
+    },
+    {
+      "id": "components_privacynotice_privacynoticeprops",
+      "label": "PrivacyNoticeProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "login.tsx",
+      "file_type": "code",
+      "norm_label": "privacynoticeprops",
+      "source_file": "components/PrivacyNotice.tsx",
+      "source_location": "L4"
+    },
+    {
+      "id": "components_waitlistform_status",
+      "label": "Status",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "login.tsx",
+      "file_type": "code",
+      "norm_label": "status",
+      "source_file": "components/WaitlistForm.tsx",
+      "source_location": "L5"
+    },
+    {
+      "id": "components_waitlistform_waitlistapiresponse",
+      "label": "WaitlistApiResponse",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "login.tsx",
+      "file_type": "code",
+      "norm_label": "waitlistapiresponse",
+      "source_file": "components/WaitlistForm.tsx",
+      "source_location": "L11"
+    },
+    {
+      "id": "components_waitlistform_waitlistformprops",
+      "label": "WaitlistFormProps",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "login.tsx",
+      "file_type": "code",
+      "norm_label": "waitlistformprops",
+      "source_file": "components/WaitlistForm.tsx",
+      "source_location": "L15"
+    },
+    {
+      "id": "pages_login_loginsuccess",
+      "label": "LoginSuccess",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "login.tsx",
+      "file_type": "code",
+      "norm_label": "loginsuccess",
+      "source_file": "pages/login.tsx",
+      "source_location": "L12"
+    },
+    {
+      "id": "pages_login_status",
+      "label": "Status",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "login.tsx",
+      "file_type": "code",
+      "norm_label": "status",
+      "source_file": "pages/login.tsx",
+      "source_location": "L10"
+    },
+    {
+      "id": "pages_reset_password_status",
+      "label": "Status",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "login.tsx",
+      "file_type": "code",
+      "norm_label": "status",
+      "source_file": "pages/reset-password.tsx",
+      "source_location": "L10"
     },
     {
       "id": "pages_history_answercheckapi",
@@ -752,18 +752,6 @@
       "source_location": "L7"
     },
     {
-      "id": "components_privacynotice_privacynotice",
-      "label": "PrivacyNotice()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "useLanguage",
-      "file_type": "code",
-      "norm_label": "privacynotice()",
-      "source_file": "components/PrivacyNotice.tsx",
-      "source_location": "L14"
-    },
-    {
       "id": "components_waitlistform_waitlistform",
       "label": "WaitlistForm()",
       "_callable": true,
@@ -798,18 +786,6 @@
       "norm_label": "handlesubmit()",
       "source_file": "components/WaitlistForm.tsx",
       "source_location": "L37"
-    },
-    {
-      "id": "lib_api_setstoredtoken",
-      "label": "setStoredToken()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "useLanguage",
-      "file_type": "code",
-      "norm_label": "setstoredtoken()",
-      "source_file": "lib/api.ts",
-      "source_location": "L18"
     },
     {
       "id": "lib_i18n_uselanguage",
@@ -884,30 +860,6 @@
       "source_location": "L102"
     },
     {
-      "id": "pages_login_login",
-      "label": "Login()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "useLanguage",
-      "file_type": "code",
-      "norm_label": "login()",
-      "source_file": "pages/login.tsx",
-      "source_location": "L14"
-    },
-    {
-      "id": "pages_login_login_handlesubmit",
-      "label": "handleSubmit()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "useLanguage",
-      "file_type": "code",
-      "norm_label": "handlesubmit()",
-      "source_file": "pages/login.tsx",
-      "source_location": "L22"
-    },
-    {
       "id": "pages_mentions_legales_mentionslegales",
       "label": "MentionsLegales()",
       "_callable": true,
@@ -930,66 +882,6 @@
       "norm_label": "privacy()",
       "source_file": "pages/privacy.tsx",
       "source_location": "L7"
-    },
-    {
-      "id": "pages_reset_password_confirmform",
-      "label": "ConfirmForm()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "useLanguage",
-      "file_type": "code",
-      "norm_label": "confirmform()",
-      "source_file": "pages/reset-password.tsx",
-      "source_location": "L96"
-    },
-    {
-      "id": "pages_reset_password_confirmform_handlesubmit",
-      "label": "handleSubmit()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "useLanguage",
-      "file_type": "code",
-      "norm_label": "handlesubmit()",
-      "source_file": "pages/reset-password.tsx",
-      "source_location": "L104"
-    },
-    {
-      "id": "pages_reset_password_requestform",
-      "label": "RequestForm()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "useLanguage",
-      "file_type": "code",
-      "norm_label": "requestform()",
-      "source_file": "pages/reset-password.tsx",
-      "source_location": "L17"
-    },
-    {
-      "id": "pages_reset_password_requestform_handlesubmit",
-      "label": "handleSubmit()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "useLanguage",
-      "file_type": "code",
-      "norm_label": "handlesubmit()",
-      "source_file": "pages/reset-password.tsx",
-      "source_location": "L24"
-    },
-    {
-      "id": "pages_reset_password_resetpassword",
-      "label": "ResetPassword()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "useLanguage",
-      "file_type": "code",
-      "norm_label": "resetpassword()",
-      "source_file": "pages/reset-password.tsx",
-      "source_location": "L206"
     },
     {
       "id": "pages_retractation_retractation",
@@ -1518,6 +1410,114 @@
       "norm_label": "document()",
       "source_file": "pages/_document.tsx",
       "source_location": "L3"
+    },
+    {
+      "id": "components_privacynotice_privacynotice",
+      "label": "PrivacyNotice()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "login.tsx",
+      "file_type": "code",
+      "norm_label": "privacynotice()",
+      "source_file": "components/PrivacyNotice.tsx",
+      "source_location": "L14"
+    },
+    {
+      "id": "lib_api_setstoredtoken",
+      "label": "setStoredToken()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "login.tsx",
+      "file_type": "code",
+      "norm_label": "setstoredtoken()",
+      "source_file": "lib/api.ts",
+      "source_location": "L18"
+    },
+    {
+      "id": "pages_login_login",
+      "label": "Login()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "login.tsx",
+      "file_type": "code",
+      "norm_label": "login()",
+      "source_file": "pages/login.tsx",
+      "source_location": "L14"
+    },
+    {
+      "id": "pages_login_login_handlesubmit",
+      "label": "handleSubmit()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "login.tsx",
+      "file_type": "code",
+      "norm_label": "handlesubmit()",
+      "source_file": "pages/login.tsx",
+      "source_location": "L22"
+    },
+    {
+      "id": "pages_reset_password_confirmform",
+      "label": "ConfirmForm()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "login.tsx",
+      "file_type": "code",
+      "norm_label": "confirmform()",
+      "source_file": "pages/reset-password.tsx",
+      "source_location": "L96"
+    },
+    {
+      "id": "pages_reset_password_confirmform_handlesubmit",
+      "label": "handleSubmit()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "login.tsx",
+      "file_type": "code",
+      "norm_label": "handlesubmit()",
+      "source_file": "pages/reset-password.tsx",
+      "source_location": "L104"
+    },
+    {
+      "id": "pages_reset_password_requestform",
+      "label": "RequestForm()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "login.tsx",
+      "file_type": "code",
+      "norm_label": "requestform()",
+      "source_file": "pages/reset-password.tsx",
+      "source_location": "L17"
+    },
+    {
+      "id": "pages_reset_password_requestform_handlesubmit",
+      "label": "handleSubmit()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "login.tsx",
+      "file_type": "code",
+      "norm_label": "handlesubmit()",
+      "source_file": "pages/reset-password.tsx",
+      "source_location": "L24"
+    },
+    {
+      "id": "pages_reset_password_resetpassword",
+      "label": "ResetPassword()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "login.tsx",
+      "file_type": "code",
+      "norm_label": "resetpassword()",
+      "source_file": "pages/reset-password.tsx",
+      "source_location": "L206"
     },
     {
       "id": "lib_api_authheaders",
@@ -2065,28 +2065,6 @@
       "source_location": "L1"
     },
     {
-      "id": "components_privacynotice",
-      "label": "PrivacyNotice.tsx",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "useLanguage",
-      "file_type": "code",
-      "norm_label": "privacynotice.tsx",
-      "source_file": "components/PrivacyNotice.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "components_waitlistform",
-      "label": "WaitlistForm.tsx",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "useLanguage",
-      "file_type": "code",
-      "norm_label": "waitlistform.tsx",
-      "source_file": "components/WaitlistForm.tsx",
-      "source_location": "L1"
-    },
-    {
       "id": "lib_i18n",
       "label": "i18n.tsx",
       "_origin": "ast",
@@ -2175,17 +2153,6 @@
       "source_location": "L35"
     },
     {
-      "id": "pages_login",
-      "label": "login.tsx",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "useLanguage",
-      "file_type": "code",
-      "norm_label": "login.tsx",
-      "source_file": "pages/login.tsx",
-      "source_location": "L1"
-    },
-    {
       "id": "pages_mentions_legales",
       "label": "mentions-legales.tsx",
       "_origin": "ast",
@@ -2205,17 +2172,6 @@
       "file_type": "code",
       "norm_label": "privacy.tsx",
       "source_file": "pages/privacy.tsx",
-      "source_location": "L1"
-    },
-    {
-      "id": "pages_reset_password",
-      "label": "reset-password.tsx",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "useLanguage",
-      "file_type": "code",
-      "norm_label": "reset-password.tsx",
-      "source_file": "pages/reset-password.tsx",
       "source_location": "L1"
     },
     {
@@ -2239,17 +2195,6 @@
       "norm_label": "terms.tsx",
       "source_file": "pages/terms.tsx",
       "source_location": "L1"
-    },
-    {
-      "id": "ref_react",
-      "label": "react",
-      "_origin": "ast",
-      "community": 0,
-      "community_name": "useLanguage",
-      "file_type": "concept",
-      "norm_label": "react",
-      "source_file": "package.json",
-      "source_location": "L19"
     },
     {
       "id": "pages_solve",
@@ -2536,6 +2481,94 @@
       "norm_label": "how to contribute",
       "source_file": "README.md",
       "source_location": "L14"
+    },
+    {
+      "id": "components_privacynotice",
+      "label": "PrivacyNotice.tsx",
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "login.tsx",
+      "file_type": "code",
+      "norm_label": "privacynotice.tsx",
+      "source_file": "components/PrivacyNotice.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "components_waitlistform",
+      "label": "WaitlistForm.tsx",
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "login.tsx",
+      "file_type": "code",
+      "norm_label": "waitlistform.tsx",
+      "source_file": "components/WaitlistForm.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_api",
+      "label": "api.ts",
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "login.tsx",
+      "file_type": "code",
+      "norm_label": "api.ts",
+      "source_file": "lib/api.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "lib_api_api_url",
+      "label": "API_URL",
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "login.tsx",
+      "file_type": "code",
+      "norm_label": "api_url",
+      "source_file": "lib/api.ts",
+      "source_location": "L4"
+    },
+    {
+      "id": "lib_api_auth_token_key",
+      "label": "AUTH_TOKEN_KEY",
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "login.tsx",
+      "file_type": "code",
+      "norm_label": "auth_token_key",
+      "source_file": "lib/api.ts",
+      "source_location": "L8"
+    },
+    {
+      "id": "pages_login",
+      "label": "login.tsx",
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "login.tsx",
+      "file_type": "code",
+      "norm_label": "login.tsx",
+      "source_file": "pages/login.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "pages_reset_password",
+      "label": "reset-password.tsx",
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "login.tsx",
+      "file_type": "code",
+      "norm_label": "reset-password.tsx",
+      "source_file": "pages/reset-password.tsx",
+      "source_location": "L1"
+    },
+    {
+      "id": "ref_react",
+      "label": "react",
+      "_origin": "ast",
+      "community": 17,
+      "community_name": "login.tsx",
+      "file_type": "concept",
+      "norm_label": "react",
+      "source_file": "package.json",
+      "source_location": "L19"
     },
     {
       "id": "eslint_config",
@@ -2967,39 +3000,6 @@
       "source_location": "L30"
     },
     {
-      "id": "lib_api",
-      "label": "api.ts",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "profile.tsx",
-      "file_type": "code",
-      "norm_label": "api.ts",
-      "source_file": "lib/api.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "lib_api_api_url",
-      "label": "API_URL",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "profile.tsx",
-      "file_type": "code",
-      "norm_label": "api_url",
-      "source_file": "lib/api.ts",
-      "source_location": "L4"
-    },
-    {
-      "id": "lib_api_auth_token_key",
-      "label": "AUTH_TOKEN_KEY",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "profile.tsx",
-      "file_type": "code",
-      "norm_label": "auth_token_key",
-      "source_file": "lib/api.ts",
-      "source_location": "L8"
-    },
-    {
       "id": "pages_history",
       "label": "history.tsx",
       "_origin": "ast",
@@ -3264,6 +3264,17 @@
       "source_location": "L1"
     },
     {
+      "id": "next_config_csp",
+      "label": "CSP",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "waitlist.ts",
+      "file_type": "code",
+      "norm_label": "csp",
+      "source_file": "next.config.ts",
+      "source_location": "L28"
+    },
+    {
       "id": "next_config_nextconfig",
       "label": "nextConfig",
       "_origin": "ast",
@@ -3272,7 +3283,7 @@
       "file_type": "code",
       "norm_label": "nextconfig",
       "source_file": "next.config.ts",
-      "source_location": "L18"
+      "source_location": "L40"
     },
     {
       "id": "pages_api_waitlist",
@@ -8402,13 +8413,24 @@
     },
     {
       "source": "next_config",
+      "target": "next_config_csp",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "next.config.ts",
+      "source_location": "L28",
+      "weight": 1.0
+    },
+    {
+      "source": "next_config",
       "target": "next_config_nextconfig",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "next.config.ts",
-      "source_location": "L18",
+      "source_location": "L40",
       "weight": 1.0
     },
     {
@@ -10359,5 +10381,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "f40bece8c12c178c0f607dff82915d9e7c5b445b"
+  "built_at_commit": "b2d72a7deae7fad4d719f7284e21e51d0ac55bb5"
 }

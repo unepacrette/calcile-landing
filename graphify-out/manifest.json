@@ -72,15 +72,15 @@
     "semantic_hash": "f5590625045b8727b3f0b95833d3f825"
   },
   "next.config.ts": {
-    "mtime": 1793035793.9763753,
-    "seen": 1793035794.900655,
-    "ast_hash": "e7983e0fa5d05ab2980da8932123ad0c",
+    "mtime": 1793035813.0734441,
+    "seen": 1793035813.947951,
+    "ast_hash": "0972ad937b3ef0535ee1bd175fd613b7",
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1793035793.9881372,
-    "seen": 1793035794.900655,
-    "ast_hash": "32c864bac05e4bac9ee47b7130f543f8",
+    "mtime": 1793035813.073709,
+    "seen": 1793035813.947952,
+    "ast_hash": "d0758952e7a61c566f2d8608c820fa5c",
     "semantic_hash": ""
   },
   "pages/_app.tsx": {
