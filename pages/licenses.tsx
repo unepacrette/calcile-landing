@@ -56,6 +56,9 @@ const NPM_DEPS: Array<[string, string]> = [
   ["tailwindcss", "MIT"],
   ["eslint", "MIT"],
   ["eslint-config-next", "MIT"],
+  // Browser end-to-end tests (tests/browser/, local-only -- see its
+  // README). devDependency only, never shipped to production.
+  ["@playwright/test", "Apache-2.0"],
   // Renders the LaTeX every calculation result already comes back as.
   ["katex", "MIT"],
   // Live WYSIWYG math input (MathLive's <math-field>) -- the equation
