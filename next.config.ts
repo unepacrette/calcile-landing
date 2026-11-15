@@ -25,12 +25,25 @@ import type { NextConfig } from "next";
 //   bootstrap), which 'self' blocks; hashing it would break on every
 //   chunk reshuffle, and a nonce can't work on statically prerendered
 //   pages. Keep build/dev on --webpack while this CSP is in place.
+// Dev-only relaxations, applied only when NODE_ENV !== "production"
+// (i.e. `next dev`; `next build`/`next start` and the Vercel deployment
+// keep the audited strict policy byte-for-byte):
+// - connect-src: a local calcile-api (NEXT_PUBLIC_CALCILE_API_URL=
+//   http://localhost:8000, see tests/browser/README.md) must be allowed
+//   or every API fetch is blocked by the browser.
+// - script-src 'unsafe-eval': next dev's HMR/React-refresh runtime
+//   evaluates strings, which script-src 'self' blocks -- without this,
+//   pages served by `next dev` never hydrate at all.
+const isProd = process.env.NODE_ENV === "production";
+const DEV_CONNECT_SRC = isProd ? [] : ["http://localhost:8000"];
+const DEV_SCRIPT_SRC = isProd ? [] : ["'unsafe-eval'"];
+
 const CSP = [
   "default-src 'self'",
-  "script-src 'self'",
+  `script-src 'self'${DEV_SCRIPT_SRC.map((s) => ` ${s}`).join("")}`,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data:",
-  "connect-src 'self' https://web-production-853a5.up.railway.app",
+  `connect-src 'self' https://web-production-853a5.up.railway.app${DEV_CONNECT_SRC.map((o) => ` ${o}`).join("")}`,
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",

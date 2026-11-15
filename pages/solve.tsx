@@ -1028,6 +1028,14 @@ export default function Solve() {
         const response = await fetch(`${API_URL}/api/billing/status`, {
           headers: authHeaders(token as string),
         });
+        // Same 401 handling as pages/history.tsx and pages/profile.tsx:
+        // an expired/invalid token must send the user back to /login, not
+        // leave them on a workspace where every calculation will fail.
+        if (response.status === 401) {
+          clearStoredToken();
+          router.replace("/login");
+          return;
+        }
         if (!response.ok) return;
         const body = (await response.json()) as { tier: string };
         if (cancelled) return;
@@ -1041,7 +1049,8 @@ export default function Solve() {
     return () => {
       cancelled = true;
     };
-  }, [token]);
+    // Same dep list as the identical effect in pages/history.tsx.
+  }, [token, router]);
 
   const [operation, setOperation] = useState<Operation>("solve");
   const [equation, setEquation] = useState("");
